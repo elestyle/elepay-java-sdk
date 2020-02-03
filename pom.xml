@@ -5,7 +5,7 @@
     <artifactId>elepay-java-sdk</artifactId>
     <packaging>jar</packaging>
     <name>elepay-java-sdk</name>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <url>https://github.com/elestyle/elepay-java-sdk</url>
     <description>elepay Java SDK</description>
     <scm>
@@ -17,7 +17,7 @@
     <licenses>
         <license>
             <name>MIT</name>
-            <url>https://github.com/elestyle/elepay-java-sdk/blob/master/LICENSE</url>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -154,6 +154,8 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                    <source>8</source>
                     <tags>
                         <tag>
                             <name>http.response.details</name>
