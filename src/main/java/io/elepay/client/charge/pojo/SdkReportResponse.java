@@ -21,83 +21,82 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * カスタマリクエスト
+ * sdk report response
  */
-@ApiModel(description = "カスタマリクエスト")
+@ApiModel(description = "sdk report response")
 @JsonPropertyOrder({
-  CustomerReq.JSON_PROPERTY_DESCRIPTION,
-  CustomerReq.JSON_PROPERTY_METADATA
+  SdkReportResponse.JSON_PROPERTY_COMPLETED,
+  SdkReportResponse.JSON_PROPERTY_FAILED_INDEXES
 })
 
-public class CustomerReq {
-  public static final String JSON_PROPERTY_DESCRIPTION = "description";
-  private String description;
+public class SdkReportResponse {
+  public static final String JSON_PROPERTY_COMPLETED = "completed";
+  private Integer completed;
 
-  public static final String JSON_PROPERTY_METADATA = "metadata";
-  private Map<String, String> metadata = null;
+  public static final String JSON_PROPERTY_FAILED_INDEXES = "failedIndexes";
+  private List<Integer> failedIndexes = null;
 
 
-  public CustomerReq description(String description) {
+  public SdkReportResponse completed(Integer completed) {
     
-    this.description = description;
+    this.completed = completed;
     return this;
   }
 
    /**
-   * カスタマに関する説明
-   * @return description
+   * Get completed
+   * @return completed
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "カスタマに関する説明")
-  @JsonProperty(JSON_PROPERTY_DESCRIPTION)
+  @ApiModelProperty(value = "")
+  @JsonProperty(JSON_PROPERTY_COMPLETED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public String getDescription() {
-    return description;
+  public Integer getCompleted() {
+    return completed;
   }
 
 
-  public void setDescription(String description) {
-    this.description = description;
+  public void setCompleted(Integer completed) {
+    this.completed = completed;
   }
 
 
-  public CustomerReq metadata(Map<String, String> metadata) {
+  public SdkReportResponse failedIndexes(List<Integer> failedIndexes) {
     
-    this.metadata = metadata;
+    this.failedIndexes = failedIndexes;
     return this;
   }
 
-  public CustomerReq putMetadataItem(String key, String metadataItem) {
-    if (this.metadata == null) {
-      this.metadata = new HashMap<>();
+  public SdkReportResponse addFailedIndexesItem(Integer failedIndexesItem) {
+    if (this.failedIndexes == null) {
+      this.failedIndexes = new ArrayList<>();
     }
-    this.metadata.put(key, metadataItem);
+    this.failedIndexes.add(failedIndexesItem);
     return this;
   }
 
    /**
-   * メタデータ
-   * @return metadata
+   * Get failedIndexes
+   * @return failedIndexes
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "メタデータ")
-  @JsonProperty(JSON_PROPERTY_METADATA)
+  @ApiModelProperty(value = "")
+  @JsonProperty(JSON_PROPERTY_FAILED_INDEXES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public Map<String, String> getMetadata() {
-    return metadata;
+  public List<Integer> getFailedIndexes() {
+    return failedIndexes;
   }
 
 
-  public void setMetadata(Map<String, String> metadata) {
-    this.metadata = metadata;
+  public void setFailedIndexes(List<Integer> failedIndexes) {
+    this.failedIndexes = failedIndexes;
   }
 
 
@@ -109,23 +108,23 @@ public class CustomerReq {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    CustomerReq customerReq = (CustomerReq) o;
-    return Objects.equals(this.description, customerReq.description) &&
-        Objects.equals(this.metadata, customerReq.metadata);
+    SdkReportResponse sdkReportResponse = (SdkReportResponse) o;
+    return Objects.equals(this.completed, sdkReportResponse.completed) &&
+        Objects.equals(this.failedIndexes, sdkReportResponse.failedIndexes);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(description, metadata);
+    return Objects.hash(completed, failedIndexes);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class CustomerReq {\n");
-    sb.append("    description: ").append(toIndentedString(description)).append("\n");
-    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
+    sb.append("class SdkReportResponse {\n");
+    sb.append("    completed: ").append(toIndentedString(completed)).append("\n");
+    sb.append("    failedIndexes: ").append(toIndentedString(failedIndexes)).append("\n");
     sb.append("}");
     return sb.toString();
   }

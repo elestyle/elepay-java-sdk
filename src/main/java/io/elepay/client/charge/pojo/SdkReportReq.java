@@ -21,54 +21,53 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * Capture request
+ * sdk report request
  */
-@ApiModel(description = "Capture request")
+@ApiModel(description = "sdk report request")
 @JsonPropertyOrder({
-  ChargeCaptureReq.JSON_PROPERTY_EXTRA
+  SdkReportReq.JSON_PROPERTY_REPORTS
 })
 
-public class ChargeCaptureReq {
-  public static final String JSON_PROPERTY_EXTRA = "extra";
-  private Map<String, String> extra = null;
+public class SdkReportReq {
+  public static final String JSON_PROPERTY_REPORTS = "reports";
+  private List<String> reports = null;
 
 
-  public ChargeCaptureReq extra(Map<String, String> extra) {
+  public SdkReportReq reports(List<String> reports) {
     
-    this.extra = extra;
+    this.reports = reports;
     return this;
   }
 
-  public ChargeCaptureReq putExtraItem(String key, String extraItem) {
-    if (this.extra == null) {
-      this.extra = new HashMap<>();
+  public SdkReportReq addReportsItem(String reportsItem) {
+    if (this.reports == null) {
+      this.reports = new ArrayList<>();
     }
-    this.extra.put(key, extraItem);
+    this.reports.add(reportsItem);
     return this;
   }
 
    /**
-   * Get extra
-   * @return extra
+   * Get reports
+   * @return reports
   **/
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
-  @JsonProperty(JSON_PROPERTY_EXTRA)
+  @JsonProperty(JSON_PROPERTY_REPORTS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public Map<String, String> getExtra() {
-    return extra;
+  public List<String> getReports() {
+    return reports;
   }
 
 
-  public void setExtra(Map<String, String> extra) {
-    this.extra = extra;
+  public void setReports(List<String> reports) {
+    this.reports = reports;
   }
 
 
@@ -80,21 +79,21 @@ public class ChargeCaptureReq {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ChargeCaptureReq chargeCaptureReq = (ChargeCaptureReq) o;
-    return Objects.equals(this.extra, chargeCaptureReq.extra);
+    SdkReportReq sdkReportReq = (SdkReportReq) o;
+    return Objects.equals(this.reports, sdkReportReq.reports);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(extra);
+    return Objects.hash(reports);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ChargeCaptureReq {\n");
-    sb.append("    extra: ").append(toIndentedString(extra)).append("\n");
+    sb.append("class SdkReportReq {\n");
+    sb.append("    reports: ").append(toIndentedString(reports)).append("\n");
     sb.append("}");
     return sb.toString();
   }

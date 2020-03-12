@@ -35,5 +35,7 @@
 
 * `WECHATPAY` (value: `"wechatpay"`)
 
+* `AMAZONPAY` (value: `"amazonpay"`)
+
 
 

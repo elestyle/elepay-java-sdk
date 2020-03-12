@@ -5,7 +5,7 @@
     <artifactId>elepay-java-sdk</artifactId>
     <packaging>jar</packaging>
     <name>elepay-java-sdk</name>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
     <url>https://github.com/elestyle/elepay-java-sdk</url>
     <description>elepay Java SDK</description>
     <scm>
