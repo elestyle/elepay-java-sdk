@@ -244,7 +244,7 @@ public class CustomerApi {
   }
   /**
    * Delete source
-   * カスタマソースを削除します
+   * カスタマソースを削除します。
    * @param customerId Customer ID (required)
    * @param sourceId Source ID (required)
    * @throws ApiException if fails to make API call
@@ -261,7 +261,7 @@ public class CustomerApi {
 
   /**
    * Delete source
-   * カスタマソースを削除します
+   * カスタマソースを削除します。
    * @param customerId Customer ID (required)
    * @param sourceId Source ID (required)
    * @return ApiResponse&lt;Void&gt;

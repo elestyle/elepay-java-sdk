@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.ChargeDto;
+import io.elepay.client.charge.pojo.PaymentMethodDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
@@ -27,23 +27,23 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * 支払い情報リスト
+ * 利用できる決済方法リスト
  */
-@ApiModel(description = "支払い情報リスト")
+@ApiModel(description = "利用できる決済方法リスト")
 @JsonPropertyOrder({
-  ChargesResponse.JSON_PROPERTY_TOTAL,
-  ChargesResponse.JSON_PROPERTY_CHARGES
+  PaymentMethodResponse.JSON_PROPERTY_TOTAL,
+  PaymentMethodResponse.JSON_PROPERTY_PAYMENT_METHODS
 })
 
-public class ChargesResponse {
+public class PaymentMethodResponse {
   public static final String JSON_PROPERTY_TOTAL = "total";
   private Integer total;
 
-  public static final String JSON_PROPERTY_CHARGES = "charges";
-  private List<ChargeDto> charges = null;
+  public static final String JSON_PROPERTY_PAYMENT_METHODS = "paymentMethods";
+  private List<PaymentMethodDto> paymentMethods = null;
 
 
-  public ChargesResponse total(Integer total) {
+  public PaymentMethodResponse total(Integer total) {
     
     this.total = total;
     return this;
@@ -68,36 +68,36 @@ public class ChargesResponse {
   }
 
 
-  public ChargesResponse charges(List<ChargeDto> charges) {
+  public PaymentMethodResponse paymentMethods(List<PaymentMethodDto> paymentMethods) {
     
-    this.charges = charges;
+    this.paymentMethods = paymentMethods;
     return this;
   }
 
-  public ChargesResponse addChargesItem(ChargeDto chargesItem) {
-    if (this.charges == null) {
-      this.charges = new ArrayList<>();
+  public PaymentMethodResponse addPaymentMethodsItem(PaymentMethodDto paymentMethodsItem) {
+    if (this.paymentMethods == null) {
+      this.paymentMethods = new ArrayList<>();
     }
-    this.charges.add(chargesItem);
+    this.paymentMethods.add(paymentMethodsItem);
     return this;
   }
 
    /**
-   * 支払い詳細内容
-   * @return charges
+   * 決済方法詳細情報
+   * @return paymentMethods
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "支払い詳細内容")
-  @JsonProperty(JSON_PROPERTY_CHARGES)
+  @ApiModelProperty(value = "決済方法詳細情報")
+  @JsonProperty(JSON_PROPERTY_PAYMENT_METHODS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public List<ChargeDto> getCharges() {
-    return charges;
+  public List<PaymentMethodDto> getPaymentMethods() {
+    return paymentMethods;
   }
 
 
-  public void setCharges(List<ChargeDto> charges) {
-    this.charges = charges;
+  public void setPaymentMethods(List<PaymentMethodDto> paymentMethods) {
+    this.paymentMethods = paymentMethods;
   }
 
 
@@ -109,23 +109,23 @@ public class ChargesResponse {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ChargesResponse chargesResponse = (ChargesResponse) o;
-    return Objects.equals(this.total, chargesResponse.total) &&
-        Objects.equals(this.charges, chargesResponse.charges);
+    PaymentMethodResponse paymentMethodResponse = (PaymentMethodResponse) o;
+    return Objects.equals(this.total, paymentMethodResponse.total) &&
+        Objects.equals(this.paymentMethods, paymentMethodResponse.paymentMethods);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(total, charges);
+    return Objects.hash(total, paymentMethods);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ChargesResponse {\n");
+    sb.append("class PaymentMethodResponse {\n");
     sb.append("    total: ").append(toIndentedString(total)).append("\n");
-    sb.append("    charges: ").append(toIndentedString(charges)).append("\n");
+    sb.append("    paymentMethods: ").append(toIndentedString(paymentMethods)).append("\n");
     sb.append("}");
     return sb.toString();
   }
