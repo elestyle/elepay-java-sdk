@@ -13,5 +13,7 @@
 
 * `LIFF` (value: `"liff"`)
 
+* `MINI` (value: `"mini"`)
+
 
 
