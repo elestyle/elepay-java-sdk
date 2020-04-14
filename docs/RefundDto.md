@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **liveMode** | **Boolean** | 本番モードかどうか - false テストモード - true 本番モード  |  [optional]
 **amount** | **Integer** | 返金金額。全額返金、及び amount を指定することで金額の部分返金を行うことができます。 |  [optional]
 **currency** | **String** | 通貨コード (ISO_4217) |  [optional]
+**metadata** | **Map&lt;String, String&gt;** | 返金メタデータ |  [optional]
 **reason** | **String** | 返金理由 |  [optional]
 **status** | [**RefundStatusType**](RefundStatusType.md) |  |  [optional]
 **refundedTime** | **Long** | 返金を行う時間のUTCタイムスタンプ。 |  [optional]
