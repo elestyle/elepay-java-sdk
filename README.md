@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.1.6
+- API version: 1.1.7
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.1.6</version>
+  <version>1.1.7</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.1.6"
+compile "io.elepay:elepay-java-sdk:1.1.7"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.1.6.jar`
+- `target/elepay-java-sdk-1.1.7.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -85,10 +85,6 @@ public class ChargeApiExample {
         apiInstance.getApiClient().setUsername("elepay secret key");
 
         ChargeReq chargeReq = new ChargeReq(); // ChargeReq | 支払リクエスト
-        chargeReq.setAmount(100);
-        chargeReq.setPaymentMethod(PaymentMethodType.CREDITCARD);
-        chargeReq.setResource(ResourceType.WEB);
-        chargeReq.setOrderNo("ORD0000000001");
         try {
             ChargeDto result = apiInstance.createCharge(chargeReq);
             System.out.println(result);
@@ -113,6 +109,9 @@ Class | Method | HTTP request | Description
 *ChargeApi* | [**createCharge**](docs/ChargeApi.md#createCharge) | **POST** /charges | Create charge
 *ChargeApi* | [**listCharges**](docs/ChargeApi.md#listCharges) | **GET** /charges | List charges
 *ChargeApi* | [**retrieveCharge**](docs/ChargeApi.md#retrieveCharge) | **GET** /charges/{id} | Retrieve charge
+*CodeApi* | [**closeCode**](docs/CodeApi.md#closeCode) | **DELETE** /codes/{codeId} | Close EasyQR code
+*CodeApi* | [**createCode**](docs/CodeApi.md#createCode) | **POST** /codes | Create EasyQR code
+*CodeApi* | [**retrieveCode**](docs/CodeApi.md#retrieveCode) | **GET** /codes/{codeId} | Retrieve EasyQR code
 *CustomerApi* | [**createCustomer**](docs/CustomerApi.md#createCustomer) | **POST** /customers | Create customer
 *CustomerApi* | [**createSource**](docs/CustomerApi.md#createSource) | **POST** /customers/{customerId}/sources | Create source
 *CustomerApi* | [**deleteCustomer**](docs/CustomerApi.md#deleteCustomer) | **DELETE** /customers/{customerId} | Delete customer
@@ -134,6 +133,9 @@ Class | Method | HTTP request | Description
  - [ChargeReq](docs/ChargeReq.md)
  - [ChargeStatusType](docs/ChargeStatusType.md)
  - [ChargesResponse](docs/ChargesResponse.md)
+ - [CodeDto](docs/CodeDto.md)
+ - [CodeReq](docs/CodeReq.md)
+ - [CodeStatusType](docs/CodeStatusType.md)
  - [CustomerDto](docs/CustomerDto.md)
  - [CustomerReq](docs/CustomerReq.md)
  - [CustomerResponse](docs/CustomerResponse.md)

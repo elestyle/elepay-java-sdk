@@ -22,23 +22,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * 決済リソース - web WEBブラウザ - ios iOS Nativeアプリ - android Android Nativeアプリ - liff Line LIFFアプリ - mini WeChatミニプログラム 
+ * EasyQrコード状態 - pending 未支払 - captured 支払済み - closed 有効期限切れ・削除された 
  */
-public enum ResourceType {
+public enum CodeStatusType {
   
-  WEB("web"),
+  PENDING("pending"),
   
-  IOS("ios"),
+  CAPTURED("captured"),
   
-  ANDROID("android"),
-  
-  LIFF("liff"),
-  
-  MINI("mini");
+  CLOSED("closed");
 
   private String value;
 
-  ResourceType(String value) {
+  CodeStatusType(String value) {
     this.value = value;
   }
 
@@ -53,8 +49,8 @@ public enum ResourceType {
   }
 
   @JsonCreator
-  public static ResourceType fromValue(String value) {
-    for (ResourceType b : ResourceType.values()) {
+  public static CodeStatusType fromValue(String value) {
+    for (CodeStatusType b : CodeStatusType.values()) {
       if (b.value.equals(value)) {
         return b;
       }

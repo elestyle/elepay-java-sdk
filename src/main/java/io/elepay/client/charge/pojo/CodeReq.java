@@ -27,41 +27,49 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * 返金リクエスト
+ * EasyQRコードリクエスト
  */
-@ApiModel(description = "返金リクエスト")
+@ApiModel(description = "EasyQRコードリクエスト")
 @JsonPropertyOrder({
-  RefundReq.JSON_PROPERTY_AMOUNT,
-  RefundReq.JSON_PROPERTY_CURRENCY,
-  RefundReq.JSON_PROPERTY_METADATA,
-  RefundReq.JSON_PROPERTY_REASON
+  CodeReq.JSON_PROPERTY_AMOUNT,
+  CodeReq.JSON_PROPERTY_CURRENCY,
+  CodeReq.JSON_PROPERTY_ORDER_NO,
+  CodeReq.JSON_PROPERTY_DESCRIPTION,
+  CodeReq.JSON_PROPERTY_METADATA,
+  CodeReq.JSON_PROPERTY_EXPIRY_DURATION
 })
 
-public class RefundReq {
+public class CodeReq {
   public static final String JSON_PROPERTY_AMOUNT = "amount";
   private Integer amount;
 
   public static final String JSON_PROPERTY_CURRENCY = "currency";
   private String currency = "JPY";
 
+  public static final String JSON_PROPERTY_ORDER_NO = "orderNo";
+  private String orderNo;
+
+  public static final String JSON_PROPERTY_DESCRIPTION = "description";
+  private String description;
+
   public static final String JSON_PROPERTY_METADATA = "metadata";
   private Map<String, String> metadata = null;
 
-  public static final String JSON_PROPERTY_REASON = "reason";
-  private String reason;
+  public static final String JSON_PROPERTY_EXPIRY_DURATION = "expiryDuration";
+  private Integer expiryDuration;
 
 
-  public RefundReq amount(Integer amount) {
+  public CodeReq amount(Integer amount) {
     
     this.amount = amount;
     return this;
   }
 
    /**
-   * 返金額。全額返金、及び amount の指定で任意の金額で返金ができます。
+   * 金額
    * @return amount
   **/
-  @ApiModelProperty(required = true, value = "返金額。全額返金、及び amount の指定で任意の金額で返金ができます。")
+  @ApiModelProperty(required = true, value = "金額")
   @JsonProperty(JSON_PROPERTY_AMOUNT)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -75,7 +83,7 @@ public class RefundReq {
   }
 
 
-  public RefundReq currency(String currency) {
+  public CodeReq currency(String currency) {
     
     this.currency = currency;
     return this;
@@ -100,13 +108,62 @@ public class RefundReq {
   }
 
 
-  public RefundReq metadata(Map<String, String> metadata) {
+  public CodeReq orderNo(String orderNo) {
+    
+    this.orderNo = orderNo;
+    return this;
+  }
+
+   /**
+   * お客様側のシステムオーダーNo（例：注文番号、決済IDなど） 最大桁数は50桁です。 
+   * @return orderNo
+  **/
+  @ApiModelProperty(required = true, value = "お客様側のシステムオーダーNo（例：注文番号、決済IDなど） 最大桁数は50桁です。 ")
+  @JsonProperty(JSON_PROPERTY_ORDER_NO)
+  @JsonInclude(value = JsonInclude.Include.ALWAYS)
+
+  public String getOrderNo() {
+    return orderNo;
+  }
+
+
+  public void setOrderNo(String orderNo) {
+    this.orderNo = orderNo;
+  }
+
+
+  public CodeReq description(String description) {
+    
+    this.description = description;
+    return this;
+  }
+
+   /**
+   * 支払いオブジェクトの「決済に関する説明」
+   * @return description
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "支払いオブジェクトの「決済に関する説明」")
+  @JsonProperty(JSON_PROPERTY_DESCRIPTION)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+
+  public String getDescription() {
+    return description;
+  }
+
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+
+  public CodeReq metadata(Map<String, String> metadata) {
     
     this.metadata = metadata;
     return this;
   }
 
-  public RefundReq putMetadataItem(String key, String metadataItem) {
+  public CodeReq putMetadataItem(String key, String metadataItem) {
     if (this.metadata == null) {
       this.metadata = new HashMap<>();
     }
@@ -115,11 +172,11 @@ public class RefundReq {
   }
 
    /**
-   * 返金メタデータ
+   * 支払いオブジェクトの「メタデータ」
    * @return metadata
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "返金メタデータ")
+  @ApiModelProperty(value = "支払いオブジェクトの「メタデータ」")
   @JsonProperty(JSON_PROPERTY_METADATA)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -133,28 +190,28 @@ public class RefundReq {
   }
 
 
-  public RefundReq reason(String reason) {
+  public CodeReq expiryDuration(Integer expiryDuration) {
     
-    this.reason = reason;
+    this.expiryDuration = expiryDuration;
     return this;
   }
 
    /**
-   * 返金理由
-   * @return reason
+   * EasyQRコード有効期限(分) 最小:3分、最大:30分、デフォルト:10分 
+   * @return expiryDuration
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "返金理由")
-  @JsonProperty(JSON_PROPERTY_REASON)
+  @ApiModelProperty(value = "EasyQRコード有効期限(分) 最小:3分、最大:30分、デフォルト:10分 ")
+  @JsonProperty(JSON_PROPERTY_EXPIRY_DURATION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public String getReason() {
-    return reason;
+  public Integer getExpiryDuration() {
+    return expiryDuration;
   }
 
 
-  public void setReason(String reason) {
-    this.reason = reason;
+  public void setExpiryDuration(Integer expiryDuration) {
+    this.expiryDuration = expiryDuration;
   }
 
 
@@ -166,27 +223,31 @@ public class RefundReq {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    RefundReq refundReq = (RefundReq) o;
-    return Objects.equals(this.amount, refundReq.amount) &&
-        Objects.equals(this.currency, refundReq.currency) &&
-        Objects.equals(this.metadata, refundReq.metadata) &&
-        Objects.equals(this.reason, refundReq.reason);
+    CodeReq codeReq = (CodeReq) o;
+    return Objects.equals(this.amount, codeReq.amount) &&
+        Objects.equals(this.currency, codeReq.currency) &&
+        Objects.equals(this.orderNo, codeReq.orderNo) &&
+        Objects.equals(this.description, codeReq.description) &&
+        Objects.equals(this.metadata, codeReq.metadata) &&
+        Objects.equals(this.expiryDuration, codeReq.expiryDuration);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(amount, currency, metadata, reason);
+    return Objects.hash(amount, currency, orderNo, description, metadata, expiryDuration);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class RefundReq {\n");
+    sb.append("class CodeReq {\n");
     sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
     sb.append("    currency: ").append(toIndentedString(currency)).append("\n");
+    sb.append("    orderNo: ").append(toIndentedString(orderNo)).append("\n");
+    sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
-    sb.append("    reason: ").append(toIndentedString(reason)).append("\n");
+    sb.append("    expiryDuration: ").append(toIndentedString(expiryDuration)).append("\n");
     sb.append("}");
     return sb.toString();
   }
