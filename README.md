@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.1.7
+- API version: 1.1.11
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.1.7</version>
+  <version>1.1.11</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.1.7"
+compile "io.elepay:elepay-java-sdk:1.1.11"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.1.7.jar`
+- `target/elepay-java-sdk-1.1.11.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -84,6 +84,7 @@ public class ChargeApiExample {
         ChargeApi apiInstance = new ChargeApi();
         apiInstance.getApiClient().setUsername("elepay secret key");
 
+        ChargeApi apiInstance = new ChargeApi(defaultClient);
         ChargeReq chargeReq = new ChargeReq(); // ChargeReq | 支払リクエスト
         try {
             ChargeDto result = apiInstance.createCharge(chargeReq);
@@ -150,6 +151,7 @@ Class | Method | HTTP request | Description
  - [ResourceType](docs/ResourceType.md)
  - [SortOrderType](docs/SortOrderType.md)
  - [SourceDto](docs/SourceDto.md)
+ - [SourceInfo](docs/SourceInfo.md)
  - [SourceReq](docs/SourceReq.md)
  - [SourceResponse](docs/SourceResponse.md)
  - [SourceStatusType](docs/SourceStatusType.md)

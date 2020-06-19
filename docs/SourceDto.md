@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 **resource** | [**ResourceType**](ResourceType.md) |  |  [optional]
 **description** | **String** | カスタマソースに関する説明 |  [optional]
 **extra** | **Map&lt;String, String&gt;** | カスタマソースエキストラデータ |  [optional]
-**info** | **Map&lt;String, String&gt;** | カスタマソース補助情報 |  [optional]
+**info** | **Map&lt;String, Object&gt;** | カスタマソース補助情報 |  [optional]
 **metadata** | **Map&lt;String, String&gt;** | 支払いメタデータ |  [optional]
 **credential** | **String** | Client SDK の認証情報 |  [optional]
 **status** | [**SourceStatusType**](SourceStatusType.md) |  |  [optional]

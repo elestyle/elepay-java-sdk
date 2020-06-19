@@ -37,5 +37,7 @@
 
 * `AMAZONPAY` (value: `"amazonpay"`)
 
+* `AUPAY` (value: `"aupay"`)
+
 
 
