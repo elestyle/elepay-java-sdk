@@ -18,6 +18,8 @@ Name | Type | Description | Notes
 **metadata** | **Map&lt;String, String&gt;** | 支払いオブジェクトの「メタデータ」 |  [optional]
 **status** | [**CodeStatusType**](CodeStatusType.md) |  |  [optional]
 **charge** | [**ChargeDto**](ChargeDto.md) |  |  [optional]
+**frontUrl** | **String** |  |  [optional]
+**items** | [**List&lt;CodeItem&gt;**](CodeItem.md) |  |  [optional]
 **expired** | **Boolean** | EasyQRコード有効有無 |  [optional]
 **expiryTime** | **Long** | EasyQRコード有効期限のUTCタイムスタンプ |  [optional]
 **expiryPeriod** | **Long** | EasyQRコード有効期限までの残りミリ秒数 |  [optional]

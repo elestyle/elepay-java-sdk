@@ -18,6 +18,8 @@ Name | Type | Description | Notes
 **description** | **String** | 支払い説明文 |  [optional]
 **extra** | **Map&lt;String, String&gt;** | 支払いエキストラデータ |  [optional]
 **metadata** | **Map&lt;String, String&gt;** | 支払いメタデータ |  [optional]
+**cardInfo** | [**CardInfo**](CardInfo.md) |  |  [optional]
+**voucherNo** | **String** | プロバイダー決済伝票番号 |  [optional]
 **clientIp** | **String** | Client IP アドレス |  [optional]
 **paid** | **Boolean** | 支払い済みフラグ |  [optional]
 **refunded** | **Boolean** | 返金済みフラグ |  [optional]

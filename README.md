@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.1.11
+- API version: 1.1.12
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.1.11</version>
+  <version>1.1.12</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.1.11"
+compile "io.elepay:elepay-java-sdk:1.1.12"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.1.11.jar`
+- `target/elepay-java-sdk-1.1.12.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -129,12 +129,15 @@ Class | Method | HTTP request | Description
 
 ## Documentation for Models
 
+ - [CardBrandType](docs/CardBrandType.md)
+ - [CardInfo](docs/CardInfo.md)
  - [ChargeDateTimeType](docs/ChargeDateTimeType.md)
  - [ChargeDto](docs/ChargeDto.md)
  - [ChargeReq](docs/ChargeReq.md)
  - [ChargeStatusType](docs/ChargeStatusType.md)
  - [ChargesResponse](docs/ChargesResponse.md)
  - [CodeDto](docs/CodeDto.md)
+ - [CodeItem](docs/CodeItem.md)
  - [CodeReq](docs/CodeReq.md)
  - [CodeStatusType](docs/CodeStatusType.md)
  - [CustomerDto](docs/CustomerDto.md)
@@ -151,7 +154,6 @@ Class | Method | HTTP request | Description
  - [ResourceType](docs/ResourceType.md)
  - [SortOrderType](docs/SortOrderType.md)
  - [SourceDto](docs/SourceDto.md)
- - [SourceInfo](docs/SourceInfo.md)
  - [SourceReq](docs/SourceReq.md)
  - [SourceResponse](docs/SourceResponse.md)
  - [SourceStatusType](docs/SourceStatusType.md)

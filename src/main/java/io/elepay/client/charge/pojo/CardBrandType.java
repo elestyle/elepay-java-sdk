@@ -22,17 +22,25 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * 時間項目
+ * カードブランド
  */
-public enum ChargeDateTimeType {
+public enum CardBrandType {
   
-  PAID_TIME("paid_time"),
+  VISA("visa"),
   
-  CREATE_TIME("create_time");
+  MASTERCARD("mastercard"),
+  
+  AMEX("amex"),
+  
+  JCB("jcb"),
+  
+  DINERS("diners"),
+  
+  UNKNOWN("unknown");
 
   private String value;
 
-  ChargeDateTimeType(String value) {
+  CardBrandType(String value) {
     this.value = value;
   }
 
@@ -47,8 +55,8 @@ public enum ChargeDateTimeType {
   }
 
   @JsonCreator
-  public static ChargeDateTimeType fromValue(String value) {
-    for (ChargeDateTimeType b : ChargeDateTimeType.values()) {
+  public static CardBrandType fromValue(String value) {
+    for (CardBrandType b : CardBrandType.values()) {
       if (b.value.equals(value)) {
         return b;
       }
