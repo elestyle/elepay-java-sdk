@@ -13,5 +13,7 @@
 
 * `REFUNDED` (value: `"refunded"`)
 
+* `REVOKED` (value: `"revoked"`)
+
 
 

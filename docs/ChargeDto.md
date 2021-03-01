@@ -8,6 +8,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **String** | Charge ID |  [optional]
+**appId** | **String** | App ID |  [optional]
 **_object** | **String** | 対象種類の表記 |  [optional]
 **liveMode** | **Boolean** | 本番モードかどうか - false テストモード - true 本番モード  |  [optional]
 **amount** | **Integer** | 支払い金額 |  [optional]
@@ -25,6 +26,7 @@ Name | Type | Description | Notes
 **refunded** | **Boolean** | 返金済みフラグ |  [optional]
 **refunds** | [**RefundsDto**](RefundsDto.md) |  |  [optional]
 **status** | [**ChargeStatusType**](ChargeStatusType.md) |  |  [optional]
+**codeContent** | **String** | 店舗側提示型QRコード(リソースはmpm場合のみ) |  [optional]
 **credential** | **String** | Client SDK の認証情報 |  [optional]
 **paidTime** | **Long** | 支払い時間のUTCタイムスタンプ |  [optional]
 **refundTime** | **Long** | 返金時間のUTCタイムスタンプ |  [optional]

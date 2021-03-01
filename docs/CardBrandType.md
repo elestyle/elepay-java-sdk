@@ -15,6 +15,12 @@
 
 * `DINERS` (value: `"diners"`)
 
+* `UNIONPAY` (value: `"unionpay"`)
+
+* `DISCOVER` (value: `"discover"`)
+
+* `FELICA` (value: `"felica"`)
+
 * `UNKNOWN` (value: `"unknown"`)
 
 

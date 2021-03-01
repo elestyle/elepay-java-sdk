@@ -39,5 +39,13 @@
 
 * `AUPAY` (value: `"aupay"`)
 
+* `RAKUTENPAY` (value: `"rakutenpay"`)
+
+* `JCOINPAY` (value: `"jcoinpay"`)
+
+* `CARD` (value: `"card"`)
+
+* `AUTO` (value: `"auto"`)
+
 
 

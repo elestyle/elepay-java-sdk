@@ -15,5 +15,11 @@
 
 * `MINI` (value: `"mini"`)
 
+* `OFFLINE` (value: `"offline"`)
+
+* `MPM` (value: `"mpm"`)
+
+* `READER` (value: `"reader"`)
+
 
 

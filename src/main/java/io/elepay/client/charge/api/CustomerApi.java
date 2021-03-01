@@ -318,6 +318,7 @@ public class CustomerApi {
   /**
    * List customers
    * カスタマ情報を一覧で取得します。
+   * @param keyword keyword (optional)
    * @param limit 最大件数 (optional, default to 20)
    * @param offset 検索開始位置 (optional, default to 0)
    * @return CustomerResponse
@@ -328,13 +329,14 @@ public class CustomerApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
    */
-  public CustomerResponse listCustomers(Integer limit, Integer offset) throws ApiException {
-    return listCustomersWithHttpInfo(limit, offset).getData();
+  public CustomerResponse listCustomers(String keyword, Integer limit, Integer offset) throws ApiException {
+    return listCustomersWithHttpInfo(keyword, limit, offset).getData();
       }
 
   /**
    * List customers
    * カスタマ情報を一覧で取得します。
+   * @param keyword keyword (optional)
    * @param limit 最大件数 (optional, default to 20)
    * @param offset 検索開始位置 (optional, default to 0)
    * @return ApiResponse&lt;CustomerResponse&gt;
@@ -345,7 +347,7 @@ public class CustomerApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
    */
-  public ApiResponse<CustomerResponse> listCustomersWithHttpInfo(Integer limit, Integer offset) throws ApiException {
+  public ApiResponse<CustomerResponse> listCustomersWithHttpInfo(String keyword, Integer limit, Integer offset) throws ApiException {
     Object localVarPostBody = null;
     
     // create path and map variables
@@ -357,6 +359,7 @@ public class CustomerApi {
     Map<String, String> localVarCookieParams = new HashMap<String, String>();
     Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "keyword", keyword));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "limit", limit));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "offset", offset));
 
@@ -583,5 +586,77 @@ public class CustomerApi {
 
     GenericType<SourceDto> localVarReturnType = new GenericType<SourceDto>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+      }
+  /**
+   * update customer
+   * カスタマを更新します。
+   * @param customerId Customer ID (required)
+   * @param customerReq カスタマリクエスト (required)
+   * @return CustomerDto
+   * @throws ApiException if fails to make API call
+   * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+   */
+  public CustomerDto updateCustomer(String customerId, CustomerReq customerReq) throws ApiException {
+    return updateCustomerWithHttpInfo(customerId, customerReq).getData();
+      }
+
+  /**
+   * update customer
+   * カスタマを更新します。
+   * @param customerId Customer ID (required)
+   * @param customerReq カスタマリクエスト (required)
+   * @return ApiResponse&lt;CustomerDto&gt;
+   * @throws ApiException if fails to make API call
+   * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+   */
+  public ApiResponse<CustomerDto> updateCustomerWithHttpInfo(String customerId, CustomerReq customerReq) throws ApiException {
+    Object localVarPostBody = customerReq;
+    
+    // verify the required parameter 'customerId' is set
+    if (customerId == null) {
+      throw new ApiException(400, "Missing the required parameter 'customerId' when calling updateCustomer");
+    }
+    
+    // verify the required parameter 'customerReq' is set
+    if (customerReq == null) {
+      throw new ApiException(400, "Missing the required parameter 'customerReq' when calling updateCustomer");
+    }
+    
+    // create path and map variables
+    String localVarPath = "/customers/{customerId}"
+      .replaceAll("\\{" + "customerId" + "\\}", apiClient.escapeString(customerId.toString()));
+
+    // query params
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, String> localVarCookieParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+
+    
+    
+    
+    final String[] localVarAccepts = {
+      "application/json;charset=utf-8"
+    };
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {
+      "application/json;charset=utf-8"
+    };
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] { "basicAuth" };
+
+    GenericType<CustomerDto> localVarReturnType = new GenericType<CustomerDto>() {};
+    return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
 }

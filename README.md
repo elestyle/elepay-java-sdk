@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.1.12
+- API version: 1.1.14
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.1.12</version>
+  <version>1.1.14</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.1.12"
+compile "io.elepay:elepay-java-sdk:1.1.14"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.1.12.jar`
+- `target/elepay-java-sdk-1.1.14.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -81,8 +81,13 @@ import io.elepay.client.charge.api.ChargeApi;
 public class ChargeApiExample {
 
     public static void main(String[] args) {
-        ChargeApi apiInstance = new ChargeApi();
-        apiInstance.getApiClient().setUsername("elepay secret key");
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("https://api.elepay.io");
+        
+        // Configure HTTP basic authorization: basicAuth
+        HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
+        basicAuth.setUsername("YOUR USERNAME");
+        basicAuth.setPassword("YOUR PASSWORD");
 
         ChargeApi apiInstance = new ChargeApi(defaultClient);
         ChargeReq chargeReq = new ChargeReq(); // ChargeReq | 支払リクエスト
@@ -110,6 +115,7 @@ Class | Method | HTTP request | Description
 *ChargeApi* | [**createCharge**](docs/ChargeApi.md#createCharge) | **POST** /charges | Create charge
 *ChargeApi* | [**listCharges**](docs/ChargeApi.md#listCharges) | **GET** /charges | List charges
 *ChargeApi* | [**retrieveCharge**](docs/ChargeApi.md#retrieveCharge) | **GET** /charges/{id} | Retrieve charge
+*ChargeApi* | [**retrieveChargeStatus**](docs/ChargeApi.md#retrieveChargeStatus) | **GET** /charges/{id}/status | Retrieve charge&#39;s status
 *CodeApi* | [**closeCode**](docs/CodeApi.md#closeCode) | **DELETE** /codes/{codeId} | Close EasyQR code
 *CodeApi* | [**createCode**](docs/CodeApi.md#createCode) | **POST** /codes | Create EasyQR code
 *CodeApi* | [**retrieveCode**](docs/CodeApi.md#retrieveCode) | **GET** /codes/{codeId} | Retrieve EasyQR code
@@ -121,10 +127,20 @@ Class | Method | HTTP request | Description
 *CustomerApi* | [**listSources**](docs/CustomerApi.md#listSources) | **GET** /customers/{customerId}/sources | List sources by customer ID
 *CustomerApi* | [**retrieveCustomer**](docs/CustomerApi.md#retrieveCustomer) | **GET** /customers/{customerId} | Retrieve customer
 *CustomerApi* | [**retrieveSource**](docs/CustomerApi.md#retrieveSource) | **GET** /customers/{customerId}/sources/{sourceId} | Retrieve source
+*CustomerApi* | [**updateCustomer**](docs/CustomerApi.md#updateCustomer) | **POST** /customers/{customerId} | update customer
+*InvoiceApi* | [**cancelInvoice**](docs/InvoiceApi.md#cancelInvoice) | **POST** /invoices/{invoiceId}/cancel | cancel invoice
+*InvoiceApi* | [**createInvoice**](docs/InvoiceApi.md#createInvoice) | **POST** /invoices | Create invoice
+*InvoiceApi* | [**deleteInvoice**](docs/InvoiceApi.md#deleteInvoice) | **DELETE** /invoices/{invoiceId} | Delete invoice
+*InvoiceApi* | [**listInvoices**](docs/InvoiceApi.md#listInvoices) | **GET** /invoices | List invoices
+*InvoiceApi* | [**retrieveInvoice**](docs/InvoiceApi.md#retrieveInvoice) | **GET** /invoices/{invoiceId} | Retrieve invoice
+*InvoiceApi* | [**sendInvoice**](docs/InvoiceApi.md#sendInvoice) | **POST** /invoices/{invoiceId}/send | send invoice
+*InvoiceApi* | [**updateInvoice**](docs/InvoiceApi.md#updateInvoice) | **POST** /invoices/{invoiceId} | Update invoice
 *PaymentMethodApi* | [**listPaymentMethods**](docs/PaymentMethodApi.md#listPaymentMethods) | **GET** /payment-methods | List supported payment methods
 *RefundApi* | [**createRefund**](docs/RefundApi.md#createRefund) | **POST** /charges/{id}/refunds | Create refund
 *RefundApi* | [**listChargesRefunds**](docs/RefundApi.md#listChargesRefunds) | **GET** /charges/{id}/refunds | List refunds
 *RefundApi* | [**retrieveChargeRefund**](docs/RefundApi.md#retrieveChargeRefund) | **GET** /charges/{id}/refunds/{refundId} | Retrieve refund
+*SquareApi* | [**createSquareTerminalToken**](docs/SquareApi.md#createSquareTerminalToken) | **POST** /terminal/square/token | create square terminal token
+*SquareApi* | [**listSquareLocations**](docs/SquareApi.md#listSquareLocations) | **GET** /terminal/square/locations | list Square locations
 
 
 ## Documentation for Models
@@ -134,6 +150,7 @@ Class | Method | HTTP request | Description
  - [ChargeDateTimeType](docs/ChargeDateTimeType.md)
  - [ChargeDto](docs/ChargeDto.md)
  - [ChargeReq](docs/ChargeReq.md)
+ - [ChargeStatusDto](docs/ChargeStatusDto.md)
  - [ChargeStatusType](docs/ChargeStatusType.md)
  - [ChargesResponse](docs/ChargesResponse.md)
  - [CodeDto](docs/CodeDto.md)
@@ -143,6 +160,14 @@ Class | Method | HTTP request | Description
  - [CustomerDto](docs/CustomerDto.md)
  - [CustomerReq](docs/CustomerReq.md)
  - [CustomerResponse](docs/CustomerResponse.md)
+ - [CustomerStatusType](docs/CustomerStatusType.md)
+ - [InvoiceDto](docs/InvoiceDto.md)
+ - [InvoiceItem](docs/InvoiceItem.md)
+ - [InvoiceReq](docs/InvoiceReq.md)
+ - [InvoiceStatusType](docs/InvoiceStatusType.md)
+ - [InvoicesResponse](docs/InvoicesResponse.md)
+ - [LocationDto](docs/LocationDto.md)
+ - [LocationsResponse](docs/LocationsResponse.md)
  - [PaymentMethodDto](docs/PaymentMethodDto.md)
  - [PaymentMethodResponse](docs/PaymentMethodResponse.md)
  - [PaymentMethodType](docs/PaymentMethodType.md)
@@ -157,6 +182,8 @@ Class | Method | HTTP request | Description
  - [SourceReq](docs/SourceReq.md)
  - [SourceResponse](docs/SourceResponse.md)
  - [SourceStatusType](docs/SourceStatusType.md)
+ - [TerminalTokenDto](docs/TerminalTokenDto.md)
+ - [TerminalTokenReq](docs/TerminalTokenReq.md)
 
 
 ## Documentation for Authorization
