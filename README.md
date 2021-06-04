@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.1.14
+- API version: 1.1.16
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.1.14</version>
+  <version>1.1.16</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.1.14"
+compile "io.elepay:elepay-java-sdk:1.1.16"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.1.14.jar`
+- `target/elepay-java-sdk-1.1.16.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -116,6 +116,7 @@ Class | Method | HTTP request | Description
 *ChargeApi* | [**listCharges**](docs/ChargeApi.md#listCharges) | **GET** /charges | List charges
 *ChargeApi* | [**retrieveCharge**](docs/ChargeApi.md#retrieveCharge) | **GET** /charges/{id} | Retrieve charge
 *ChargeApi* | [**retrieveChargeStatus**](docs/ChargeApi.md#retrieveChargeStatus) | **GET** /charges/{id}/status | Retrieve charge&#39;s status
+*ChargeApi* | [**revokeCharge**](docs/ChargeApi.md#revokeCharge) | **POST** /charges/{id}/revoke | Revoke charge
 *CodeApi* | [**closeCode**](docs/CodeApi.md#closeCode) | **DELETE** /codes/{codeId} | Close EasyQR code
 *CodeApi* | [**createCode**](docs/CodeApi.md#createCode) | **POST** /codes | Create EasyQR code
 *CodeApi* | [**retrieveCode**](docs/CodeApi.md#retrieveCode) | **GET** /codes/{codeId} | Retrieve EasyQR code
@@ -139,14 +140,18 @@ Class | Method | HTTP request | Description
 *RefundApi* | [**createRefund**](docs/RefundApi.md#createRefund) | **POST** /charges/{id}/refunds | Create refund
 *RefundApi* | [**listChargesRefunds**](docs/RefundApi.md#listChargesRefunds) | **GET** /charges/{id}/refunds | List refunds
 *RefundApi* | [**retrieveChargeRefund**](docs/RefundApi.md#retrieveChargeRefund) | **GET** /charges/{id}/refunds/{refundId} | Retrieve refund
-*SquareApi* | [**createSquareTerminalToken**](docs/SquareApi.md#createSquareTerminalToken) | **POST** /terminal/square/token | create square terminal token
-*SquareApi* | [**listSquareLocations**](docs/SquareApi.md#listSquareLocations) | **GET** /terminal/square/locations | list Square locations
+*TerminalApi* | [**createReader**](docs/TerminalApi.md#createReader) | **POST** /terminal/readers | create terminal reader
+*TerminalApi* | [**deleteReader**](docs/TerminalApi.md#deleteReader) | **DELETE** /terminal/readers/{readerId} | delete reader
+*TerminalApi* | [**getReader**](docs/TerminalApi.md#getReader) | **GET** /terminal/readers/{readerId} | get reader
+*TerminalApi* | [**listLocations**](docs/TerminalApi.md#listLocations) | **GET** /terminal/locations | list locations
+*TerminalApi* | [**listReaders**](docs/TerminalApi.md#listReaders) | **GET** /terminal/readers | list readers
 
 
 ## Documentation for Models
 
  - [CardBrandType](docs/CardBrandType.md)
  - [CardInfo](docs/CardInfo.md)
+ - [ChannelPropertiesDto](docs/ChannelPropertiesDto.md)
  - [ChargeDateTimeType](docs/ChargeDateTimeType.md)
  - [ChargeDto](docs/ChargeDto.md)
  - [ChargeReq](docs/ChargeReq.md)
@@ -171,6 +176,7 @@ Class | Method | HTTP request | Description
  - [PaymentMethodDto](docs/PaymentMethodDto.md)
  - [PaymentMethodResponse](docs/PaymentMethodResponse.md)
  - [PaymentMethodType](docs/PaymentMethodType.md)
+ - [ReaderStatusType](docs/ReaderStatusType.md)
  - [RefundDto](docs/RefundDto.md)
  - [RefundReq](docs/RefundReq.md)
  - [RefundStatusType](docs/RefundStatusType.md)
@@ -182,6 +188,9 @@ Class | Method | HTTP request | Description
  - [SourceReq](docs/SourceReq.md)
  - [SourceResponse](docs/SourceResponse.md)
  - [SourceStatusType](docs/SourceStatusType.md)
+ - [TerminalReaderDto](docs/TerminalReaderDto.md)
+ - [TerminalReaderReq](docs/TerminalReaderReq.md)
+ - [TerminalReadersResponse](docs/TerminalReadersResponse.md)
  - [TerminalTokenDto](docs/TerminalTokenDto.md)
  - [TerminalTokenReq](docs/TerminalTokenReq.md)
 

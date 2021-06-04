@@ -21,21 +21,28 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * TerminalTokenReq
+ * TerminalReaderReq
  */
 @JsonPropertyOrder({
-  TerminalTokenReq.JSON_PROPERTY_LOCATION_ID
+  TerminalReaderReq.JSON_PROPERTY_LOCATION_ID,
+  TerminalReaderReq.JSON_PROPERTY_METADATA
 })
 
-public class TerminalTokenReq {
+public class TerminalReaderReq {
   public static final String JSON_PROPERTY_LOCATION_ID = "locationId";
   private String locationId;
 
+  public static final String JSON_PROPERTY_METADATA = "metadata";
+  private Map<String, String> metadata = null;
 
-  public TerminalTokenReq locationId(String locationId) {
+
+  public TerminalReaderReq locationId(String locationId) {
     
     this.locationId = locationId;
     return this;
@@ -45,10 +52,9 @@ public class TerminalTokenReq {
    * Get locationId
    * @return locationId
   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(required = true, value = "")
   @JsonProperty(JSON_PROPERTY_LOCATION_ID)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
   public String getLocationId() {
     return locationId;
@@ -60,6 +66,39 @@ public class TerminalTokenReq {
   }
 
 
+  public TerminalReaderReq metadata(Map<String, String> metadata) {
+    
+    this.metadata = metadata;
+    return this;
+  }
+
+  public TerminalReaderReq putMetadataItem(String key, String metadataItem) {
+    if (this.metadata == null) {
+      this.metadata = new HashMap<>();
+    }
+    this.metadata.put(key, metadataItem);
+    return this;
+  }
+
+   /**
+   * Get metadata
+   * @return metadata
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+  @JsonProperty(JSON_PROPERTY_METADATA)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+
+  public Map<String, String> getMetadata() {
+    return metadata;
+  }
+
+
+  public void setMetadata(Map<String, String> metadata) {
+    this.metadata = metadata;
+  }
+
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -68,21 +107,23 @@ public class TerminalTokenReq {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TerminalTokenReq terminalTokenReq = (TerminalTokenReq) o;
-    return Objects.equals(this.locationId, terminalTokenReq.locationId);
+    TerminalReaderReq terminalReaderReq = (TerminalReaderReq) o;
+    return Objects.equals(this.locationId, terminalReaderReq.locationId) &&
+        Objects.equals(this.metadata, terminalReaderReq.metadata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(locationId);
+    return Objects.hash(locationId, metadata);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TerminalTokenReq {\n");
+    sb.append("class TerminalReaderReq {\n");
     sb.append("    locationId: ").append(toIndentedString(locationId)).append("\n");
+    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("}");
     return sb.toString();
   }

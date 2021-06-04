@@ -15,7 +15,7 @@
 
 * `MINI` (value: `"mini"`)
 
-* `OFFLINE` (value: `"offline"`)
+* `CPM` (value: `"cpm"`)
 
 * `MPM` (value: `"mpm"`)
 

@@ -15,24 +15,23 @@ package io.elepay.client.charge.pojo;
 
 import java.util.Objects;
 import java.util.Arrays;
-import io.swagger.annotations.ApiModel;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * 返金状態 - pending 未返金 - refunded 返金済み 
+ * Gets or Sets ReaderStatusType
  */
-public enum RefundStatusType {
+public enum ReaderStatusType {
   
   PENDING("pending"),
   
-  REFUNDED("refunded");
+  ACTIVE("active");
 
   private String value;
 
-  RefundStatusType(String value) {
+  ReaderStatusType(String value) {
     this.value = value;
   }
 
@@ -47,8 +46,8 @@ public enum RefundStatusType {
   }
 
   @JsonCreator
-  public static RefundStatusType fromValue(String value) {
-    for (RefundStatusType b : RefundStatusType.values()) {
+  public static ReaderStatusType fromValue(String value) {
+    for (ReaderStatusType b : ReaderStatusType.values()) {
       if (b.value.equals(value)) {
         return b;
       }

@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.CustomerDto;
+import io.elepay.client.charge.pojo.TerminalReaderDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
@@ -27,23 +27,22 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * カスタマ情報リスト
+ * TerminalReadersResponse
  */
-@ApiModel(description = "カスタマ情報リスト")
 @JsonPropertyOrder({
-  CustomerResponse.JSON_PROPERTY_TOTAL,
-  CustomerResponse.JSON_PROPERTY_CUSTOMERS
+  TerminalReadersResponse.JSON_PROPERTY_TOTAL,
+  TerminalReadersResponse.JSON_PROPERTY_READERS
 })
 
-public class CustomerResponse {
+public class TerminalReadersResponse {
   public static final String JSON_PROPERTY_TOTAL = "total";
   private Integer total;
 
-  public static final String JSON_PROPERTY_CUSTOMERS = "customers";
-  private List<CustomerDto> customers = null;
+  public static final String JSON_PROPERTY_READERS = "readers";
+  private List<TerminalReaderDto> readers = null;
 
 
-  public CustomerResponse total(Integer total) {
+  public TerminalReadersResponse total(Integer total) {
     
     this.total = total;
     return this;
@@ -68,36 +67,36 @@ public class CustomerResponse {
   }
 
 
-  public CustomerResponse customers(List<CustomerDto> customers) {
+  public TerminalReadersResponse readers(List<TerminalReaderDto> readers) {
     
-    this.customers = customers;
+    this.readers = readers;
     return this;
   }
 
-  public CustomerResponse addCustomersItem(CustomerDto customersItem) {
-    if (this.customers == null) {
-      this.customers = new ArrayList<>();
+  public TerminalReadersResponse addReadersItem(TerminalReaderDto readersItem) {
+    if (this.readers == null) {
+      this.readers = new ArrayList<>();
     }
-    this.customers.add(customersItem);
+    this.readers.add(readersItem);
     return this;
   }
 
    /**
-   * カスタマ詳細内容
-   * @return customers
+   * Get readers
+   * @return readers
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "カスタマ詳細内容")
-  @JsonProperty(JSON_PROPERTY_CUSTOMERS)
+  @ApiModelProperty(value = "")
+  @JsonProperty(JSON_PROPERTY_READERS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public List<CustomerDto> getCustomers() {
-    return customers;
+  public List<TerminalReaderDto> getReaders() {
+    return readers;
   }
 
 
-  public void setCustomers(List<CustomerDto> customers) {
-    this.customers = customers;
+  public void setReaders(List<TerminalReaderDto> readers) {
+    this.readers = readers;
   }
 
 
@@ -109,23 +108,23 @@ public class CustomerResponse {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    CustomerResponse customerResponse = (CustomerResponse) o;
-    return Objects.equals(this.total, customerResponse.total) &&
-        Objects.equals(this.customers, customerResponse.customers);
+    TerminalReadersResponse terminalReadersResponse = (TerminalReadersResponse) o;
+    return Objects.equals(this.total, terminalReadersResponse.total) &&
+        Objects.equals(this.readers, terminalReadersResponse.readers);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(total, customers);
+    return Objects.hash(total, readers);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class CustomerResponse {\n");
+    sb.append("class TerminalReadersResponse {\n");
     sb.append("    total: ").append(toIndentedString(total)).append("\n");
-    sb.append("    customers: ").append(toIndentedString(customers)).append("\n");
+    sb.append("    readers: ").append(toIndentedString(readers)).append("\n");
     sb.append("}");
     return sb.toString();
   }

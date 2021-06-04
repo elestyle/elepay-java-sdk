@@ -43,7 +43,11 @@
 
 * `JCOINPAY` (value: `"jcoinpay"`)
 
-* `CARD` (value: `"card"`)
+* `FELICA_ID` (value: `"felica_id"`)
+
+* `FELICA_QUICKPAY` (value: `"felica_quickpay"`)
+
+* `FELICA_TRANSPORT_IC` (value: `"felica_transport_ic"`)
 
 * `AUTO` (value: `"auto"`)
 
