@@ -22,59 +22,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * 決済方法 - auto (CPM決済のみ利用可能) 
+ * 時間項目
  */
-public enum PaymentMethodType {
+public enum DisputeDateTimeType {
   
-  ALIPAY("alipay"),
+  RESOLVED_TIME("resolved_time"),
   
-  APPLEPAY("applepay"),
-  
-  APPLEPAY_CN("applepay_cn"),
-  
-  CREDITCARD("creditcard"),
-  
-  GOOGLEPAY("googlepay"),
-  
-  PAYPAL("paypal"),
-  
-  UNIONPAY("unionpay"),
-  
-  LINEPAY("linepay"),
-  
-  PAIDY("paidy"),
-  
-  PAYPAY("paypay"),
-  
-  DOCOMOPAY("docomopay"),
-  
-  ATONE("atone"),
-  
-  ORIGAMIPAY("origamipay"),
-  
-  MERPAY("merpay"),
-  
-  WECHATPAY("wechatpay"),
-  
-  AMAZONPAY("amazonpay"),
-  
-  AUPAY("aupay"),
-  
-  RAKUTENPAY("rakutenpay"),
-  
-  JCOINPAY("jcoinpay"),
-  
-  FELICA_ID("felica_id"),
-  
-  FELICA_QUICKPAY("felica_quickpay"),
-  
-  FELICA_TRANSPORT_IC("felica_transport_ic"),
-  
-  AUTO("auto");
+  CREATE_TIME("create_time");
 
   private String value;
 
-  PaymentMethodType(String value) {
+  DisputeDateTimeType(String value) {
     this.value = value;
   }
 
@@ -89,8 +47,8 @@ public enum PaymentMethodType {
   }
 
   @JsonCreator
-  public static PaymentMethodType fromValue(String value) {
-    for (PaymentMethodType b : PaymentMethodType.values()) {
+  public static DisputeDateTimeType fromValue(String value) {
+    for (DisputeDateTimeType b : DisputeDateTimeType.values()) {
       if (b.value.equals(value)) {
         return b;
       }

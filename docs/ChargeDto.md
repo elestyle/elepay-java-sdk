@@ -24,6 +24,7 @@ Name | Type | Description | Notes
 **clientIp** | **String** | Client IP アドレス |  [optional]
 **paid** | **Boolean** | 支払い済みフラグ |  [optional]
 **refunded** | **Boolean** | 返金済みフラグ |  [optional]
+**disputed** | **Boolean** | TODO |  [optional]
 **refunds** | [**RefundsDto**](RefundsDto.md) |  |  [optional]
 **status** | [**ChargeStatusType**](ChargeStatusType.md) |  |  [optional]
 **codeContent** | **String** | 店舗側提示型QRコード(リソースはmpm場合のみ) |  [optional]

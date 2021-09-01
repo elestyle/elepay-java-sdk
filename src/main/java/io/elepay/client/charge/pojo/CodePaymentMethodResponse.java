@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.CustomerDto;
+import io.elepay.client.charge.pojo.PaymentMethodDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
@@ -27,23 +27,23 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * カスタマ情報リスト
+ * EasyQR利用できる決済方法リスト
  */
-@ApiModel(description = "カスタマ情報リスト")
+@ApiModel(description = "EasyQR利用できる決済方法リスト")
 @JsonPropertyOrder({
-  CustomerResponse.JSON_PROPERTY_TOTAL,
-  CustomerResponse.JSON_PROPERTY_CUSTOMERS
+  CodePaymentMethodResponse.JSON_PROPERTY_TOTAL,
+  CodePaymentMethodResponse.JSON_PROPERTY_PAYMENT_METHODS
 })
 
-public class CustomerResponse {
+public class CodePaymentMethodResponse {
   public static final String JSON_PROPERTY_TOTAL = "total";
   private Integer total;
 
-  public static final String JSON_PROPERTY_CUSTOMERS = "customers";
-  private List<CustomerDto> customers = null;
+  public static final String JSON_PROPERTY_PAYMENT_METHODS = "paymentMethods";
+  private List<PaymentMethodDto> paymentMethods = null;
 
 
-  public CustomerResponse total(Integer total) {
+  public CodePaymentMethodResponse total(Integer total) {
     
     this.total = total;
     return this;
@@ -68,36 +68,36 @@ public class CustomerResponse {
   }
 
 
-  public CustomerResponse customers(List<CustomerDto> customers) {
+  public CodePaymentMethodResponse paymentMethods(List<PaymentMethodDto> paymentMethods) {
     
-    this.customers = customers;
+    this.paymentMethods = paymentMethods;
     return this;
   }
 
-  public CustomerResponse addCustomersItem(CustomerDto customersItem) {
-    if (this.customers == null) {
-      this.customers = new ArrayList<>();
+  public CodePaymentMethodResponse addPaymentMethodsItem(PaymentMethodDto paymentMethodsItem) {
+    if (this.paymentMethods == null) {
+      this.paymentMethods = new ArrayList<>();
     }
-    this.customers.add(customersItem);
+    this.paymentMethods.add(paymentMethodsItem);
     return this;
   }
 
    /**
-   * カスタマ詳細内容
-   * @return customers
+   * 決済方法詳細情報
+   * @return paymentMethods
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "カスタマ詳細内容")
-  @JsonProperty(JSON_PROPERTY_CUSTOMERS)
+  @ApiModelProperty(value = "決済方法詳細情報")
+  @JsonProperty(JSON_PROPERTY_PAYMENT_METHODS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public List<CustomerDto> getCustomers() {
-    return customers;
+  public List<PaymentMethodDto> getPaymentMethods() {
+    return paymentMethods;
   }
 
 
-  public void setCustomers(List<CustomerDto> customers) {
-    this.customers = customers;
+  public void setPaymentMethods(List<PaymentMethodDto> paymentMethods) {
+    this.paymentMethods = paymentMethods;
   }
 
 
@@ -109,23 +109,23 @@ public class CustomerResponse {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    CustomerResponse customerResponse = (CustomerResponse) o;
-    return Objects.equals(this.total, customerResponse.total) &&
-        Objects.equals(this.customers, customerResponse.customers);
+    CodePaymentMethodResponse codePaymentMethodResponse = (CodePaymentMethodResponse) o;
+    return Objects.equals(this.total, codePaymentMethodResponse.total) &&
+        Objects.equals(this.paymentMethods, codePaymentMethodResponse.paymentMethods);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(total, customers);
+    return Objects.hash(total, paymentMethods);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class CustomerResponse {\n");
+    sb.append("class CodePaymentMethodResponse {\n");
     sb.append("    total: ").append(toIndentedString(total)).append("\n");
-    sb.append("    customers: ").append(toIndentedString(customers)).append("\n");
+    sb.append("    paymentMethods: ").append(toIndentedString(paymentMethods)).append("\n");
     sb.append("}");
     return sb.toString();
   }

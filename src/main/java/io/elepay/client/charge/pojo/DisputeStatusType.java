@@ -15,66 +15,25 @@ package io.elepay.client.charge.pojo;
 
 import java.util.Objects;
 import java.util.Arrays;
-import io.swagger.annotations.ApiModel;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * 決済方法 - auto (CPM決済のみ利用可能) 
+ * Gets or Sets DisputeStatusType
  */
-public enum PaymentMethodType {
+public enum DisputeStatusType {
   
-  ALIPAY("alipay"),
+  NEW("new"),
   
-  APPLEPAY("applepay"),
+  WON("won"),
   
-  APPLEPAY_CN("applepay_cn"),
-  
-  CREDITCARD("creditcard"),
-  
-  GOOGLEPAY("googlepay"),
-  
-  PAYPAL("paypal"),
-  
-  UNIONPAY("unionpay"),
-  
-  LINEPAY("linepay"),
-  
-  PAIDY("paidy"),
-  
-  PAYPAY("paypay"),
-  
-  DOCOMOPAY("docomopay"),
-  
-  ATONE("atone"),
-  
-  ORIGAMIPAY("origamipay"),
-  
-  MERPAY("merpay"),
-  
-  WECHATPAY("wechatpay"),
-  
-  AMAZONPAY("amazonpay"),
-  
-  AUPAY("aupay"),
-  
-  RAKUTENPAY("rakutenpay"),
-  
-  JCOINPAY("jcoinpay"),
-  
-  FELICA_ID("felica_id"),
-  
-  FELICA_QUICKPAY("felica_quickpay"),
-  
-  FELICA_TRANSPORT_IC("felica_transport_ic"),
-  
-  AUTO("auto");
+  LOST("lost");
 
   private String value;
 
-  PaymentMethodType(String value) {
+  DisputeStatusType(String value) {
     this.value = value;
   }
 
@@ -89,8 +48,8 @@ public enum PaymentMethodType {
   }
 
   @JsonCreator
-  public static PaymentMethodType fromValue(String value) {
-    for (PaymentMethodType b : PaymentMethodType.values()) {
+  public static DisputeStatusType fromValue(String value) {
+    for (DisputeStatusType b : DisputeStatusType.values()) {
       if (b.value.equals(value)) {
         return b;
       }

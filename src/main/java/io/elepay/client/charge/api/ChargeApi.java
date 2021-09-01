@@ -8,6 +8,7 @@ import io.elepay.client.charge.Pair;
 
 import javax.ws.rs.core.GenericType;
 
+import io.elepay.client.charge.pojo.ChargeCaptureReq;
 import io.elepay.client.charge.pojo.ChargeDateTimeType;
 import io.elepay.client.charge.pojo.ChargeDto;
 import io.elepay.client.charge.pojo.ChargeReq;
@@ -42,6 +43,73 @@ public class ChargeApi {
     this.apiClient = apiClient;
   }
 
+  /**
+   * Capture charge
+   * 決済を確定します。
+   * @param id Charge ID (required)
+   * @param chargeCaptureReq  (optional)
+   * @return ChargeDto
+   * @throws ApiException if fails to make API call
+   * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+   */
+  public ChargeDto captureCharge(String id, ChargeCaptureReq chargeCaptureReq) throws ApiException {
+    return captureChargeWithHttpInfo(id, chargeCaptureReq).getData();
+      }
+
+  /**
+   * Capture charge
+   * 決済を確定します。
+   * @param id Charge ID (required)
+   * @param chargeCaptureReq  (optional)
+   * @return ApiResponse&lt;ChargeDto&gt;
+   * @throws ApiException if fails to make API call
+   * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+   */
+  public ApiResponse<ChargeDto> captureChargeWithHttpInfo(String id, ChargeCaptureReq chargeCaptureReq) throws ApiException {
+    Object localVarPostBody = chargeCaptureReq;
+    
+    // verify the required parameter 'id' is set
+    if (id == null) {
+      throw new ApiException(400, "Missing the required parameter 'id' when calling captureCharge");
+    }
+    
+    // create path and map variables
+    String localVarPath = "/charges/{id}/capture"
+      .replaceAll("\\{" + "id" + "\\}", apiClient.escapeString(id.toString()));
+
+    // query params
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, String> localVarCookieParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+
+    
+    
+    
+    final String[] localVarAccepts = {
+      "application/json;charset=utf-8"
+    };
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {
+      "application/json;charset=utf-8"
+    };
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] { "basicAuth" };
+
+    GenericType<ChargeDto> localVarReturnType = new GenericType<ChargeDto>() {};
+    return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+      }
   /**
    * Create charge
    * 決済処理を行います。
@@ -322,7 +390,7 @@ public class ChargeApi {
       }
   /**
    * Revoke charge
-   * 
+   * 決済を取消します。
    * @param id Charge ID (required)
    * @return ChargeDto
    * @throws ApiException if fails to make API call
@@ -338,7 +406,7 @@ public class ChargeApi {
 
   /**
    * Revoke charge
-   * 
+   * 決済を取消します。
    * @param id Charge ID (required)
    * @return ApiResponse&lt;ChargeDto&gt;
    * @throws ApiException if fails to make API call

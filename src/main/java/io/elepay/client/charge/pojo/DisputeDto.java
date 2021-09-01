@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.RefundStatusType;
+import io.elepay.client.charge.pojo.DisputeStatusType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.HashMap;
@@ -28,29 +28,29 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * 返金オブジェクト
+ * TODO
  */
-@ApiModel(description = "返金オブジェクト")
+@ApiModel(description = "TODO")
 @JsonPropertyOrder({
-  RefundDto.JSON_PROPERTY_ID,
-  RefundDto.JSON_PROPERTY_OBJECT,
-  RefundDto.JSON_PROPERTY_CHARGE_ID,
-  RefundDto.JSON_PROPERTY_LIVE_MODE,
-  RefundDto.JSON_PROPERTY_AMOUNT,
-  RefundDto.JSON_PROPERTY_CURRENCY,
-  RefundDto.JSON_PROPERTY_METADATA,
-  RefundDto.JSON_PROPERTY_REASON,
-  RefundDto.JSON_PROPERTY_STATUS,
-  RefundDto.JSON_PROPERTY_REFUNDED_TIME,
-  RefundDto.JSON_PROPERTY_CREATE_TIME
+  DisputeDto.JSON_PROPERTY_ID,
+  DisputeDto.JSON_PROPERTY_OBJECT,
+  DisputeDto.JSON_PROPERTY_CHARGE_ID,
+  DisputeDto.JSON_PROPERTY_LIVE_MODE,
+  DisputeDto.JSON_PROPERTY_AMOUNT,
+  DisputeDto.JSON_PROPERTY_CURRENCY,
+  DisputeDto.JSON_PROPERTY_METADATA,
+  DisputeDto.JSON_PROPERTY_REASON,
+  DisputeDto.JSON_PROPERTY_STATUS,
+  DisputeDto.JSON_PROPERTY_RESOLVED_TIME,
+  DisputeDto.JSON_PROPERTY_CREATE_TIME
 })
 
-public class RefundDto {
+public class DisputeDto {
   public static final String JSON_PROPERTY_ID = "id";
   private String id;
 
   public static final String JSON_PROPERTY_OBJECT = "object";
-  private String _object = "refund";
+  private String _object = "dispute";
 
   public static final String JSON_PROPERTY_CHARGE_ID = "chargeId";
   private String chargeId;
@@ -71,27 +71,27 @@ public class RefundDto {
   private String reason;
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private RefundStatusType status;
+  private DisputeStatusType status;
 
-  public static final String JSON_PROPERTY_REFUNDED_TIME = "refundedTime";
-  private Long refundedTime;
+  public static final String JSON_PROPERTY_RESOLVED_TIME = "resolvedTime";
+  private Long resolvedTime;
 
   public static final String JSON_PROPERTY_CREATE_TIME = "createTime";
   private Long createTime;
 
 
-  public RefundDto id(String id) {
+  public DisputeDto id(String id) {
     
     this.id = id;
     return this;
   }
 
    /**
-   * Refund ID
+   * Dispute ID
    * @return id
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "Refund ID")
+  @ApiModelProperty(value = "Dispute ID")
   @JsonProperty(JSON_PROPERTY_ID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -105,7 +105,7 @@ public class RefundDto {
   }
 
 
-  public RefundDto _object(String _object) {
+  public DisputeDto _object(String _object) {
     
     this._object = _object;
     return this;
@@ -130,7 +130,7 @@ public class RefundDto {
   }
 
 
-  public RefundDto chargeId(String chargeId) {
+  public DisputeDto chargeId(String chargeId) {
     
     this.chargeId = chargeId;
     return this;
@@ -155,7 +155,7 @@ public class RefundDto {
   }
 
 
-  public RefundDto liveMode(Boolean liveMode) {
+  public DisputeDto liveMode(Boolean liveMode) {
     
     this.liveMode = liveMode;
     return this;
@@ -180,18 +180,18 @@ public class RefundDto {
   }
 
 
-  public RefundDto amount(Integer amount) {
+  public DisputeDto amount(Integer amount) {
     
     this.amount = amount;
     return this;
   }
 
    /**
-   * 返金金額。全額返金、及び amount を指定することで金額の部分返金を行うことができます。
+   * Disputed amount. Usually the amount of the charge,  but can differ (usually because of currency fluctuation or because only part of the order is disputed). 
    * @return amount
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "返金金額。全額返金、及び amount を指定することで金額の部分返金を行うことができます。")
+  @ApiModelProperty(value = "Disputed amount. Usually the amount of the charge,  but can differ (usually because of currency fluctuation or because only part of the order is disputed). ")
   @JsonProperty(JSON_PROPERTY_AMOUNT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -205,7 +205,7 @@ public class RefundDto {
   }
 
 
-  public RefundDto currency(String currency) {
+  public DisputeDto currency(String currency) {
     
     this.currency = currency;
     return this;
@@ -230,13 +230,13 @@ public class RefundDto {
   }
 
 
-  public RefundDto metadata(Map<String, String> metadata) {
+  public DisputeDto metadata(Map<String, String> metadata) {
     
     this.metadata = metadata;
     return this;
   }
 
-  public RefundDto putMetadataItem(String key, String metadataItem) {
+  public DisputeDto putMetadataItem(String key, String metadataItem) {
     if (this.metadata == null) {
       this.metadata = new HashMap<>();
     }
@@ -263,18 +263,18 @@ public class RefundDto {
   }
 
 
-  public RefundDto reason(String reason) {
+  public DisputeDto reason(String reason) {
     
     this.reason = reason;
     return this;
   }
 
    /**
-   * 返金理由
+   * TODO
    * @return reason
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "返金理由")
+  @ApiModelProperty(value = "TODO")
   @JsonProperty(JSON_PROPERTY_REASON)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -288,7 +288,7 @@ public class RefundDto {
   }
 
 
-  public RefundDto status(RefundStatusType status) {
+  public DisputeDto status(DisputeStatusType status) {
     
     this.status = status;
     return this;
@@ -303,42 +303,42 @@ public class RefundDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public RefundStatusType getStatus() {
+  public DisputeStatusType getStatus() {
     return status;
   }
 
 
-  public void setStatus(RefundStatusType status) {
+  public void setStatus(DisputeStatusType status) {
     this.status = status;
   }
 
 
-  public RefundDto refundedTime(Long refundedTime) {
+  public DisputeDto resolvedTime(Long resolvedTime) {
     
-    this.refundedTime = refundedTime;
+    this.resolvedTime = resolvedTime;
     return this;
   }
 
    /**
-   * 返金を行う時間のUTCタイムスタンプ。
-   * @return refundedTime
+   * TODO
+   * @return resolvedTime
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "返金を行う時間のUTCタイムスタンプ。")
-  @JsonProperty(JSON_PROPERTY_REFUNDED_TIME)
+  @ApiModelProperty(value = "TODO")
+  @JsonProperty(JSON_PROPERTY_RESOLVED_TIME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public Long getRefundedTime() {
-    return refundedTime;
+  public Long getResolvedTime() {
+    return resolvedTime;
   }
 
 
-  public void setRefundedTime(Long refundedTime) {
-    this.refundedTime = refundedTime;
+  public void setResolvedTime(Long resolvedTime) {
+    this.resolvedTime = resolvedTime;
   }
 
 
-  public RefundDto createTime(Long createTime) {
+  public DisputeDto createTime(Long createTime) {
     
     this.createTime = createTime;
     return this;
@@ -371,30 +371,30 @@ public class RefundDto {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    RefundDto refundDto = (RefundDto) o;
-    return Objects.equals(this.id, refundDto.id) &&
-        Objects.equals(this._object, refundDto._object) &&
-        Objects.equals(this.chargeId, refundDto.chargeId) &&
-        Objects.equals(this.liveMode, refundDto.liveMode) &&
-        Objects.equals(this.amount, refundDto.amount) &&
-        Objects.equals(this.currency, refundDto.currency) &&
-        Objects.equals(this.metadata, refundDto.metadata) &&
-        Objects.equals(this.reason, refundDto.reason) &&
-        Objects.equals(this.status, refundDto.status) &&
-        Objects.equals(this.refundedTime, refundDto.refundedTime) &&
-        Objects.equals(this.createTime, refundDto.createTime);
+    DisputeDto disputeDto = (DisputeDto) o;
+    return Objects.equals(this.id, disputeDto.id) &&
+        Objects.equals(this._object, disputeDto._object) &&
+        Objects.equals(this.chargeId, disputeDto.chargeId) &&
+        Objects.equals(this.liveMode, disputeDto.liveMode) &&
+        Objects.equals(this.amount, disputeDto.amount) &&
+        Objects.equals(this.currency, disputeDto.currency) &&
+        Objects.equals(this.metadata, disputeDto.metadata) &&
+        Objects.equals(this.reason, disputeDto.reason) &&
+        Objects.equals(this.status, disputeDto.status) &&
+        Objects.equals(this.resolvedTime, disputeDto.resolvedTime) &&
+        Objects.equals(this.createTime, disputeDto.createTime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, _object, chargeId, liveMode, amount, currency, metadata, reason, status, refundedTime, createTime);
+    return Objects.hash(id, _object, chargeId, liveMode, amount, currency, metadata, reason, status, resolvedTime, createTime);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class RefundDto {\n");
+    sb.append("class DisputeDto {\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    _object: ").append(toIndentedString(_object)).append("\n");
     sb.append("    chargeId: ").append(toIndentedString(chargeId)).append("\n");
@@ -404,7 +404,7 @@ public class RefundDto {
     sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    reason: ").append(toIndentedString(reason)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    refundedTime: ").append(toIndentedString(refundedTime)).append("\n");
+    sb.append("    resolvedTime: ").append(toIndentedString(resolvedTime)).append("\n");
     sb.append("    createTime: ").append(toIndentedString(createTime)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -19,46 +19,42 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.RefundDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * 返金のサマリー。複数回返金された場合、返金内容をサマリーして返します。
+ * 決済確定リクエスト
  */
-@ApiModel(description = "返金のサマリー。複数回返金された場合、返金内容をサマリーして返します。")
+@ApiModel(description = "決済確定リクエスト")
 @JsonPropertyOrder({
-  RefundsDto.JSON_PROPERTY_AMOUNT,
-  RefundsDto.JSON_PROPERTY_TOTAL_COUNT,
-  RefundsDto.JSON_PROPERTY_DATA
+  ChargeCaptureReq.JSON_PROPERTY_AMOUNT,
+  ChargeCaptureReq.JSON_PROPERTY_EXTRA
 })
 
-public class RefundsDto {
+public class ChargeCaptureReq {
   public static final String JSON_PROPERTY_AMOUNT = "amount";
   private Integer amount;
 
-  public static final String JSON_PROPERTY_TOTAL_COUNT = "totalCount";
-  private Integer totalCount;
-
-  public static final String JSON_PROPERTY_DATA = "data";
-  private List<RefundDto> data = null;
+  public static final String JSON_PROPERTY_EXTRA = "extra";
+  private Map<String, String> extra = null;
 
 
-  public RefundsDto amount(Integer amount) {
+  public ChargeCaptureReq amount(Integer amount) {
     
     this.amount = amount;
     return this;
   }
 
    /**
-   * 返金総額
+   * 確定金額 これをセットすることで、支払い生成時の金額と異なる金額の支払い処理を行うことができます。 ただし支払い生成時の金額よりも少額である必要があるためご注意ください。 
    * @return amount
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "返金総額")
+  @ApiModelProperty(value = "確定金額 これをセットすることで、支払い生成時の金額と異なる金額の支払い処理を行うことができます。 ただし支払い生成時の金額よりも少額である必要があるためご注意ください。 ")
   @JsonProperty(JSON_PROPERTY_AMOUNT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -72,61 +68,36 @@ public class RefundsDto {
   }
 
 
-  public RefundsDto totalCount(Integer totalCount) {
+  public ChargeCaptureReq extra(Map<String, String> extra) {
     
-    this.totalCount = totalCount;
+    this.extra = extra;
     return this;
   }
 
-   /**
-   * 返金回数
-   * @return totalCount
-  **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "返金回数")
-  @JsonProperty(JSON_PROPERTY_TOTAL_COUNT)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-
-  public Integer getTotalCount() {
-    return totalCount;
-  }
-
-
-  public void setTotalCount(Integer totalCount) {
-    this.totalCount = totalCount;
-  }
-
-
-  public RefundsDto data(List<RefundDto> data) {
-    
-    this.data = data;
-    return this;
-  }
-
-  public RefundsDto addDataItem(RefundDto dataItem) {
-    if (this.data == null) {
-      this.data = new ArrayList<>();
+  public ChargeCaptureReq putExtraItem(String key, String extraItem) {
+    if (this.extra == null) {
+      this.extra = new HashMap<>();
     }
-    this.data.add(dataItem);
+    this.extra.put(key, extraItem);
     return this;
   }
 
    /**
-   * 返金詳細情報
-   * @return data
+   * Get extra
+   * @return extra
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "返金詳細情報")
-  @JsonProperty(JSON_PROPERTY_DATA)
+  @ApiModelProperty(value = "")
+  @JsonProperty(JSON_PROPERTY_EXTRA)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public List<RefundDto> getData() {
-    return data;
+  public Map<String, String> getExtra() {
+    return extra;
   }
 
 
-  public void setData(List<RefundDto> data) {
-    this.data = data;
+  public void setExtra(Map<String, String> extra) {
+    this.extra = extra;
   }
 
 
@@ -138,25 +109,23 @@ public class RefundsDto {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    RefundsDto refundsDto = (RefundsDto) o;
-    return Objects.equals(this.amount, refundsDto.amount) &&
-        Objects.equals(this.totalCount, refundsDto.totalCount) &&
-        Objects.equals(this.data, refundsDto.data);
+    ChargeCaptureReq chargeCaptureReq = (ChargeCaptureReq) o;
+    return Objects.equals(this.amount, chargeCaptureReq.amount) &&
+        Objects.equals(this.extra, chargeCaptureReq.extra);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(amount, totalCount, data);
+    return Objects.hash(amount, extra);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class RefundsDto {\n");
+    sb.append("class ChargeCaptureReq {\n");
     sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
-    sb.append("    totalCount: ").append(toIndentedString(totalCount)).append("\n");
-    sb.append("    data: ").append(toIndentedString(data)).append("\n");
+    sb.append("    extra: ").append(toIndentedString(extra)).append("\n");
     sb.append("}");
     return sb.toString();
   }

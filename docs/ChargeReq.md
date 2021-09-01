@@ -8,6 +8,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **amount** | **Integer** | 金額 | 
+**capture** | **Boolean** | 支払い処理を確定するかどうか falseの場合、承認と支払い額の確保のみ行う。デフォルトはtrue  |  [optional]
 **currency** | **String** | 通貨コード (ISO_4217) |  [optional]
 **paymentMethod** | [**PaymentMethodType**](PaymentMethodType.md) |  | 
 **resource** | [**ResourceType**](ResourceType.md) |  |  [optional]

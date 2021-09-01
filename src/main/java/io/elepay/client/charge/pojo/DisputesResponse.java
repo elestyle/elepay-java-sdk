@@ -19,73 +19,85 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.elepay.client.charge.pojo.DisputeDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * TerminalTokenDto
+ * TODO
  */
+@ApiModel(description = "TODO")
 @JsonPropertyOrder({
-  TerminalTokenDto.JSON_PROPERTY_TOKEN,
-  TerminalTokenDto.JSON_PROPERTY_EXPIRY_TIME
+  DisputesResponse.JSON_PROPERTY_TOTAL,
+  DisputesResponse.JSON_PROPERTY_DISPUTES
 })
 
-public class TerminalTokenDto {
-  public static final String JSON_PROPERTY_TOKEN = "token";
-  private String token;
+public class DisputesResponse {
+  public static final String JSON_PROPERTY_TOTAL = "total";
+  private Integer total;
 
-  public static final String JSON_PROPERTY_EXPIRY_TIME = "expiryTime";
-  private Long expiryTime;
+  public static final String JSON_PROPERTY_DISPUTES = "disputes";
+  private List<DisputeDto> disputes = null;
 
 
-  public TerminalTokenDto token(String token) {
+  public DisputesResponse total(Integer total) {
     
-    this.token = token;
+    this.total = total;
     return this;
   }
 
    /**
-   * Get token
-   * @return token
+   * 件数
+   * @return total
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
-  @JsonProperty(JSON_PROPERTY_TOKEN)
+  @ApiModelProperty(value = "件数")
+  @JsonProperty(JSON_PROPERTY_TOTAL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public String getToken() {
-    return token;
+  public Integer getTotal() {
+    return total;
   }
 
 
-  public void setToken(String token) {
-    this.token = token;
+  public void setTotal(Integer total) {
+    this.total = total;
   }
 
 
-  public TerminalTokenDto expiryTime(Long expiryTime) {
+  public DisputesResponse disputes(List<DisputeDto> disputes) {
     
-    this.expiryTime = expiryTime;
+    this.disputes = disputes;
+    return this;
+  }
+
+  public DisputesResponse addDisputesItem(DisputeDto disputesItem) {
+    if (this.disputes == null) {
+      this.disputes = new ArrayList<>();
+    }
+    this.disputes.add(disputesItem);
     return this;
   }
 
    /**
-   * Get expiryTime
-   * @return expiryTime
+   * TODO
+   * @return disputes
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
-  @JsonProperty(JSON_PROPERTY_EXPIRY_TIME)
+  @ApiModelProperty(value = "TODO")
+  @JsonProperty(JSON_PROPERTY_DISPUTES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public Long getExpiryTime() {
-    return expiryTime;
+  public List<DisputeDto> getDisputes() {
+    return disputes;
   }
 
 
-  public void setExpiryTime(Long expiryTime) {
-    this.expiryTime = expiryTime;
+  public void setDisputes(List<DisputeDto> disputes) {
+    this.disputes = disputes;
   }
 
 
@@ -97,23 +109,23 @@ public class TerminalTokenDto {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TerminalTokenDto terminalTokenDto = (TerminalTokenDto) o;
-    return Objects.equals(this.token, terminalTokenDto.token) &&
-        Objects.equals(this.expiryTime, terminalTokenDto.expiryTime);
+    DisputesResponse disputesResponse = (DisputesResponse) o;
+    return Objects.equals(this.total, disputesResponse.total) &&
+        Objects.equals(this.disputes, disputesResponse.disputes);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(token, expiryTime);
+    return Objects.hash(total, disputes);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TerminalTokenDto {\n");
-    sb.append("    token: ").append(toIndentedString(token)).append("\n");
-    sb.append("    expiryTime: ").append(toIndentedString(expiryTime)).append("\n");
+    sb.append("class DisputesResponse {\n");
+    sb.append("    total: ").append(toIndentedString(total)).append("\n");
+    sb.append("    disputes: ").append(toIndentedString(disputes)).append("\n");
     sb.append("}");
     return sb.toString();
   }

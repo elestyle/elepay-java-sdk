@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.1.16
+- API version: 1.1.19
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.1.16</version>
+  <version>1.1.19</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.1.16"
+compile "io.elepay:elepay-java-sdk:1.1.19"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.1.16.jar`
+- `target/elepay-java-sdk-1.1.19.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -83,11 +83,10 @@ public class ChargeApiExample {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath("https://api.elepay.io");
-        
+
         // Configure HTTP basic authorization: basicAuth
         HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
-        basicAuth.setUsername("YOUR USERNAME");
-        basicAuth.setPassword("YOUR PASSWORD");
+        basicAuth.setUsername("Your Elepay Secret Key");
 
         ChargeApi apiInstance = new ChargeApi(defaultClient);
         ChargeReq chargeReq = new ChargeReq(); // ChargeReq | 支払リクエスト
@@ -112,6 +111,7 @@ All URIs are relative to *https://api.elepay.io*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*ChargeApi* | [**captureCharge**](docs/ChargeApi.md#captureCharge) | **POST** /charges/{id}/capture | Capture charge
 *ChargeApi* | [**createCharge**](docs/ChargeApi.md#createCharge) | **POST** /charges | Create charge
 *ChargeApi* | [**listCharges**](docs/ChargeApi.md#listCharges) | **GET** /charges | List charges
 *ChargeApi* | [**retrieveCharge**](docs/ChargeApi.md#retrieveCharge) | **GET** /charges/{id} | Retrieve charge
@@ -120,6 +120,7 @@ Class | Method | HTTP request | Description
 *CodeApi* | [**closeCode**](docs/CodeApi.md#closeCode) | **DELETE** /codes/{codeId} | Close EasyQR code
 *CodeApi* | [**createCode**](docs/CodeApi.md#createCode) | **POST** /codes | Create EasyQR code
 *CodeApi* | [**retrieveCode**](docs/CodeApi.md#retrieveCode) | **GET** /codes/{codeId} | Retrieve EasyQR code
+*CodeSettingApi* | [**listCodePaymentMethods**](docs/CodeSettingApi.md#listCodePaymentMethods) | **GET** /code-setting/payment-methods | List all enabled EasyQR payment methods
 *CustomerApi* | [**createCustomer**](docs/CustomerApi.md#createCustomer) | **POST** /customers | Create customer
 *CustomerApi* | [**createSource**](docs/CustomerApi.md#createSource) | **POST** /customers/{customerId}/sources | Create source
 *CustomerApi* | [**deleteCustomer**](docs/CustomerApi.md#deleteCustomer) | **DELETE** /customers/{customerId} | Delete customer
@@ -129,6 +130,8 @@ Class | Method | HTTP request | Description
 *CustomerApi* | [**retrieveCustomer**](docs/CustomerApi.md#retrieveCustomer) | **GET** /customers/{customerId} | Retrieve customer
 *CustomerApi* | [**retrieveSource**](docs/CustomerApi.md#retrieveSource) | **GET** /customers/{customerId}/sources/{sourceId} | Retrieve source
 *CustomerApi* | [**updateCustomer**](docs/CustomerApi.md#updateCustomer) | **POST** /customers/{customerId} | update customer
+*DisputeApi* | [**listDisputes**](docs/DisputeApi.md#listDisputes) | **GET** /disputes | List disputes
+*DisputeApi* | [**retrieveDispute**](docs/DisputeApi.md#retrieveDispute) | **GET** /disputes/{id} | Retrieve dispute
 *InvoiceApi* | [**cancelInvoice**](docs/InvoiceApi.md#cancelInvoice) | **POST** /invoices/{invoiceId}/cancel | cancel invoice
 *InvoiceApi* | [**createInvoice**](docs/InvoiceApi.md#createInvoice) | **POST** /invoices | Create invoice
 *InvoiceApi* | [**deleteInvoice**](docs/InvoiceApi.md#deleteInvoice) | **DELETE** /invoices/{invoiceId} | Delete invoice
@@ -152,6 +155,7 @@ Class | Method | HTTP request | Description
  - [CardBrandType](docs/CardBrandType.md)
  - [CardInfo](docs/CardInfo.md)
  - [ChannelPropertiesDto](docs/ChannelPropertiesDto.md)
+ - [ChargeCaptureReq](docs/ChargeCaptureReq.md)
  - [ChargeDateTimeType](docs/ChargeDateTimeType.md)
  - [ChargeDto](docs/ChargeDto.md)
  - [ChargeReq](docs/ChargeReq.md)
@@ -160,12 +164,17 @@ Class | Method | HTTP request | Description
  - [ChargesResponse](docs/ChargesResponse.md)
  - [CodeDto](docs/CodeDto.md)
  - [CodeItem](docs/CodeItem.md)
+ - [CodePaymentMethodResponse](docs/CodePaymentMethodResponse.md)
  - [CodeReq](docs/CodeReq.md)
  - [CodeStatusType](docs/CodeStatusType.md)
  - [CustomerDto](docs/CustomerDto.md)
  - [CustomerReq](docs/CustomerReq.md)
  - [CustomerResponse](docs/CustomerResponse.md)
  - [CustomerStatusType](docs/CustomerStatusType.md)
+ - [DisputeDateTimeType](docs/DisputeDateTimeType.md)
+ - [DisputeDto](docs/DisputeDto.md)
+ - [DisputeStatusType](docs/DisputeStatusType.md)
+ - [DisputesResponse](docs/DisputesResponse.md)
  - [InvoiceDto](docs/InvoiceDto.md)
  - [InvoiceItem](docs/InvoiceItem.md)
  - [InvoiceReq](docs/InvoiceReq.md)
