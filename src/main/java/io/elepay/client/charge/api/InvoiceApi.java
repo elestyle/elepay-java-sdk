@@ -235,7 +235,7 @@ public class InvoiceApi {
   /**
    * List invoices
    * インボイス情報を一覧で取得します。
-   * @param keyword keyword (optional)
+   * @param keyword キーワード (optional)
    * @param from dateRange from (optional)
    * @param to dateRange from (optional)
    * @param status status (optional, default to new ArrayList&lt;&gt;())
@@ -256,7 +256,7 @@ public class InvoiceApi {
   /**
    * List invoices
    * インボイス情報を一覧で取得します。
-   * @param keyword keyword (optional)
+   * @param keyword キーワード (optional)
    * @param from dateRange from (optional)
    * @param to dateRange from (optional)
    * @param status status (optional, default to new ArrayList&lt;&gt;())
@@ -410,6 +410,71 @@ public class InvoiceApi {
     
     // create path and map variables
     String localVarPath = "/invoices/{invoiceId}/send"
+      .replaceAll("\\{" + "invoiceId" + "\\}", apiClient.escapeString(invoiceId.toString()));
+
+    // query params
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, String> localVarCookieParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+
+    
+    
+    
+    final String[] localVarAccepts = {
+      "application/json;charset=utf-8"
+    };
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {
+      
+    };
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] { "basicAuth" };
+
+    GenericType<InvoiceDto> localVarReturnType = new GenericType<InvoiceDto>() {};
+    return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+      }
+  /**
+   * submit invoice
+   * TODO。
+   * @param invoiceId Invoice ID (required)
+   * @return InvoiceDto
+   * @throws ApiException if fails to make API call
+   * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+   */
+  public InvoiceDto submitInvoice(String invoiceId) throws ApiException {
+    return submitInvoiceWithHttpInfo(invoiceId).getData();
+      }
+
+  /**
+   * submit invoice
+   * TODO。
+   * @param invoiceId Invoice ID (required)
+   * @return ApiResponse&lt;InvoiceDto&gt;
+   * @throws ApiException if fails to make API call
+   * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+   */
+  public ApiResponse<InvoiceDto> submitInvoiceWithHttpInfo(String invoiceId) throws ApiException {
+    Object localVarPostBody = null;
+    
+    // verify the required parameter 'invoiceId' is set
+    if (invoiceId == null) {
+      throw new ApiException(400, "Missing the required parameter 'invoiceId' when calling submitInvoice");
+    }
+    
+    // create path and map variables
+    String localVarPath = "/invoices/{invoiceId}/submit"
       .replaceAll("\\{" + "invoiceId" + "\\}", apiClient.escapeString(invoiceId.toString()));
 
     // query params

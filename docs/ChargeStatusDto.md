@@ -2,7 +2,7 @@
 
 # ChargeStatusDto
 
-支払いオブジェクト
+支払いステータスオブジェクト
 ## Properties
 
 Name | Type | Description | Notes

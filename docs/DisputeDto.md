@@ -2,7 +2,7 @@
 
 # DisputeDto
 
-TODO
+不審請求オブジェクト
 ## Properties
 
 Name | Type | Description | Notes
@@ -11,13 +11,13 @@ Name | Type | Description | Notes
 **_object** | **String** | 対象種類の表記 |  [optional]
 **chargeId** | **String** | Charge ID |  [optional]
 **liveMode** | **Boolean** | 本番モードかどうか - false テストモード - true 本番モード  |  [optional]
-**amount** | **Integer** | Disputed amount. Usually the amount of the charge,  but can differ (usually because of currency fluctuation or because only part of the order is disputed).  |  [optional]
+**amount** | **Integer** | 不審請求金額 |  [optional]
 **currency** | **String** | 通貨コード (ISO_4217) |  [optional]
-**metadata** | **Map&lt;String, String&gt;** | 返金メタデータ |  [optional]
-**reason** | **String** | TODO |  [optional]
+**metadata** | **Map&lt;String, String&gt;** | メタデータ |  [optional]
+**reason** | **String** | 不審請求理由 |  [optional]
 **status** | [**DisputeStatusType**](DisputeStatusType.md) |  |  [optional]
-**resolvedTime** | **Long** | TODO |  [optional]
-**createTime** | **Long** | 返金新規時間のUTCタイムスタンプ。 |  [optional]
+**resolvedTime** | **Long** | 対応時間のUTCタイムスタンプ |  [optional]
+**createTime** | **Long** | 発生時間のUTCタイムスタンプ。 |  [optional]
 
 
 

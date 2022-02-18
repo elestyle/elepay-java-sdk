@@ -2,7 +2,7 @@ lazy val root = (project in file(".")).
   settings(
     organization := "io.elepay",
     name := "elepay-java-sdk",
-    version := "1.1.19",
+    version := "1.1.24",
     scalaVersion := "2.11.4",
     scalacOptions ++= Seq("-feature"),
     javacOptions in compile ++= Seq("-Xlint:deprecation"),

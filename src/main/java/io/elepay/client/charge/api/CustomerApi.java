@@ -15,6 +15,7 @@ import io.elepay.client.charge.pojo.PaymentMethodType;
 import io.elepay.client.charge.pojo.SourceDto;
 import io.elepay.client.charge.pojo.SourceReq;
 import io.elepay.client.charge.pojo.SourceResponse;
+import io.elepay.client.charge.pojo.SourceStatusDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -318,7 +319,7 @@ public class CustomerApi {
   /**
    * List customers
    * カスタマ情報を一覧で取得します。
-   * @param keyword keyword (optional)
+   * @param keyword キーワード (optional)
    * @param limit 最大件数 (optional, default to 20)
    * @param offset 検索開始位置 (optional, default to 0)
    * @return CustomerResponse
@@ -336,7 +337,7 @@ public class CustomerApi {
   /**
    * List customers
    * カスタマ情報を一覧で取得します。
-   * @param keyword keyword (optional)
+   * @param keyword キーワード (optional)
    * @param limit 最大件数 (optional, default to 20)
    * @param offset 検索開始位置 (optional, default to 0)
    * @return ApiResponse&lt;CustomerResponse&gt;
@@ -588,7 +589,72 @@ public class CustomerApi {
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
-   * update customer
+   * Retrieve source&#39;s status
+   * カスタマソースのステータスに関する詳細情報を取得します。
+   * @param sourceId Source ID (required)
+   * @return SourceStatusDto
+   * @throws ApiException if fails to make API call
+   * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+   */
+  public SourceStatusDto retrieveSourceStatus(String sourceId) throws ApiException {
+    return retrieveSourceStatusWithHttpInfo(sourceId).getData();
+      }
+
+  /**
+   * Retrieve source&#39;s status
+   * カスタマソースのステータスに関する詳細情報を取得します。
+   * @param sourceId Source ID (required)
+   * @return ApiResponse&lt;SourceStatusDto&gt;
+   * @throws ApiException if fails to make API call
+   * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+   */
+  public ApiResponse<SourceStatusDto> retrieveSourceStatusWithHttpInfo(String sourceId) throws ApiException {
+    Object localVarPostBody = null;
+    
+    // verify the required parameter 'sourceId' is set
+    if (sourceId == null) {
+      throw new ApiException(400, "Missing the required parameter 'sourceId' when calling retrieveSourceStatus");
+    }
+    
+    // create path and map variables
+    String localVarPath = "/sources/{sourceId}/status"
+      .replaceAll("\\{" + "sourceId" + "\\}", apiClient.escapeString(sourceId.toString()));
+
+    // query params
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, String> localVarCookieParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+
+    
+    
+    
+    final String[] localVarAccepts = {
+      "application/json;charset=utf-8"
+    };
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {
+      
+    };
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] { "basicAuth" };
+
+    GenericType<SourceStatusDto> localVarReturnType = new GenericType<SourceStatusDto>() {};
+    return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+      }
+  /**
+   * Update customer
    * カスタマを更新します。
    * @param customerId Customer ID (required)
    * @param customerReq カスタマリクエスト (required)
@@ -605,7 +671,7 @@ public class CustomerApi {
       }
 
   /**
-   * update customer
+   * Update customer
    * カスタマを更新します。
    * @param customerId Customer ID (required)
    * @param customerReq カスタマリクエスト (required)

@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.1.19
+- API version: 1.1.24
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.1.19</version>
+  <version>1.1.24</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.1.19"
+compile "io.elepay:elepay-java-sdk:1.1.24"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.1.19.jar`
+- `target/elepay-java-sdk-1.1.24.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -82,7 +82,6 @@ public class ChargeApiExample {
 
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("https://api.elepay.io");
 
         // Configure HTTP basic authorization: basicAuth
         HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
@@ -129,7 +128,8 @@ Class | Method | HTTP request | Description
 *CustomerApi* | [**listSources**](docs/CustomerApi.md#listSources) | **GET** /customers/{customerId}/sources | List sources by customer ID
 *CustomerApi* | [**retrieveCustomer**](docs/CustomerApi.md#retrieveCustomer) | **GET** /customers/{customerId} | Retrieve customer
 *CustomerApi* | [**retrieveSource**](docs/CustomerApi.md#retrieveSource) | **GET** /customers/{customerId}/sources/{sourceId} | Retrieve source
-*CustomerApi* | [**updateCustomer**](docs/CustomerApi.md#updateCustomer) | **POST** /customers/{customerId} | update customer
+*CustomerApi* | [**retrieveSourceStatus**](docs/CustomerApi.md#retrieveSourceStatus) | **GET** /sources/{sourceId}/status | Retrieve source&#39;s status
+*CustomerApi* | [**updateCustomer**](docs/CustomerApi.md#updateCustomer) | **POST** /customers/{customerId} | Update customer
 *DisputeApi* | [**listDisputes**](docs/DisputeApi.md#listDisputes) | **GET** /disputes | List disputes
 *DisputeApi* | [**retrieveDispute**](docs/DisputeApi.md#retrieveDispute) | **GET** /disputes/{id} | Retrieve dispute
 *InvoiceApi* | [**cancelInvoice**](docs/InvoiceApi.md#cancelInvoice) | **POST** /invoices/{invoiceId}/cancel | cancel invoice
@@ -138,11 +138,24 @@ Class | Method | HTTP request | Description
 *InvoiceApi* | [**listInvoices**](docs/InvoiceApi.md#listInvoices) | **GET** /invoices | List invoices
 *InvoiceApi* | [**retrieveInvoice**](docs/InvoiceApi.md#retrieveInvoice) | **GET** /invoices/{invoiceId} | Retrieve invoice
 *InvoiceApi* | [**sendInvoice**](docs/InvoiceApi.md#sendInvoice) | **POST** /invoices/{invoiceId}/send | send invoice
+*InvoiceApi* | [**submitInvoice**](docs/InvoiceApi.md#submitInvoice) | **POST** /invoices/{invoiceId}/submit | submit invoice
 *InvoiceApi* | [**updateInvoice**](docs/InvoiceApi.md#updateInvoice) | **POST** /invoices/{invoiceId} | Update invoice
 *PaymentMethodApi* | [**listPaymentMethods**](docs/PaymentMethodApi.md#listPaymentMethods) | **GET** /payment-methods | List supported payment methods
+*PlanApi* | [**createPlan**](docs/PlanApi.md#createPlan) | **POST** /plans | Create plan
+*PlanApi* | [**listPlans**](docs/PlanApi.md#listPlans) | **GET** /plans | List plans
+*PlanApi* | [**retrievePlan**](docs/PlanApi.md#retrievePlan) | **GET** /plans/{planId} | Retrieve plan
+*PlanApi* | [**updatePlan**](docs/PlanApi.md#updatePlan) | **POST** /plans/{planId} | Update plan
 *RefundApi* | [**createRefund**](docs/RefundApi.md#createRefund) | **POST** /charges/{id}/refunds | Create refund
 *RefundApi* | [**listChargesRefunds**](docs/RefundApi.md#listChargesRefunds) | **GET** /charges/{id}/refunds | List refunds
 *RefundApi* | [**retrieveChargeRefund**](docs/RefundApi.md#retrieveChargeRefund) | **GET** /charges/{id}/refunds/{refundId} | Retrieve refund
+*SubscriptionApi* | [**cancelSubscription**](docs/SubscriptionApi.md#cancelSubscription) | **POST** /subscriptions/{subscriptionId}/cancel | Cancel subscription
+*SubscriptionApi* | [**createSubscription**](docs/SubscriptionApi.md#createSubscription) | **POST** /subscriptions | Create subscription
+*SubscriptionApi* | [**listSubscriptionScheduleCharges**](docs/SubscriptionApi.md#listSubscriptionScheduleCharges) | **GET** /subscriptions/{subscriptionId}/schedules/{scheduleId}/charges | List subscription schedule charges
+*SubscriptionApi* | [**listSubscriptionSchedules**](docs/SubscriptionApi.md#listSubscriptionSchedules) | **GET** /subscriptions/{subscriptionId}/schedules | List subscription schedules
+*SubscriptionApi* | [**listSubscriptions**](docs/SubscriptionApi.md#listSubscriptions) | **GET** /subscriptions | List subscriptions
+*SubscriptionApi* | [**resumeSubscription**](docs/SubscriptionApi.md#resumeSubscription) | **POST** /subscriptions/{subscriptionId}/resume | Resume subscription
+*SubscriptionApi* | [**retrieveSubscription**](docs/SubscriptionApi.md#retrieveSubscription) | **GET** /subscriptions/{subscriptionId} | Retrieve subscription
+*SubscriptionApi* | [**updateSubscription**](docs/SubscriptionApi.md#updateSubscription) | **POST** /subscriptions/{subscriptionId} | Update subscription
 *TerminalApi* | [**createReader**](docs/TerminalApi.md#createReader) | **POST** /terminal/readers | create terminal reader
 *TerminalApi* | [**deleteReader**](docs/TerminalApi.md#deleteReader) | **DELETE** /terminal/readers/{readerId} | delete reader
 *TerminalApi* | [**getReader**](docs/TerminalApi.md#getReader) | **GET** /terminal/readers/{readerId} | get reader
@@ -168,9 +181,12 @@ Class | Method | HTTP request | Description
  - [CodeReq](docs/CodeReq.md)
  - [CodeStatusType](docs/CodeStatusType.md)
  - [CustomerDto](docs/CustomerDto.md)
+ - [CustomerPropertiesDto](docs/CustomerPropertiesDto.md)
  - [CustomerReq](docs/CustomerReq.md)
  - [CustomerResponse](docs/CustomerResponse.md)
  - [CustomerStatusType](docs/CustomerStatusType.md)
+ - [DiscountDto](docs/DiscountDto.md)
+ - [DiscountType](docs/DiscountType.md)
  - [DisputeDateTimeType](docs/DisputeDateTimeType.md)
  - [DisputeDto](docs/DisputeDto.md)
  - [DisputeStatusType](docs/DisputeStatusType.md)
@@ -185,6 +201,12 @@ Class | Method | HTTP request | Description
  - [PaymentMethodDto](docs/PaymentMethodDto.md)
  - [PaymentMethodResponse](docs/PaymentMethodResponse.md)
  - [PaymentMethodType](docs/PaymentMethodType.md)
+ - [PlanDto](docs/PlanDto.md)
+ - [PlanIntervalType](docs/PlanIntervalType.md)
+ - [PlanReq](docs/PlanReq.md)
+ - [PlanStatusType](docs/PlanStatusType.md)
+ - [PlanUpdateReq](docs/PlanUpdateReq.md)
+ - [PlansResponse](docs/PlansResponse.md)
  - [ReaderStatusType](docs/ReaderStatusType.md)
  - [RefundDto](docs/RefundDto.md)
  - [RefundReq](docs/RefundReq.md)
@@ -196,12 +218,20 @@ Class | Method | HTTP request | Description
  - [SourceDto](docs/SourceDto.md)
  - [SourceReq](docs/SourceReq.md)
  - [SourceResponse](docs/SourceResponse.md)
+ - [SourceStatusDto](docs/SourceStatusDto.md)
  - [SourceStatusType](docs/SourceStatusType.md)
+ - [SubscriptionDto](docs/SubscriptionDto.md)
+ - [SubscriptionReq](docs/SubscriptionReq.md)
+ - [SubscriptionScheduleChargesResponse](docs/SubscriptionScheduleChargesResponse.md)
+ - [SubscriptionScheduleDto](docs/SubscriptionScheduleDto.md)
+ - [SubscriptionScheduleStatusType](docs/SubscriptionScheduleStatusType.md)
+ - [SubscriptionSchedulesResponse](docs/SubscriptionSchedulesResponse.md)
+ - [SubscriptionStatusType](docs/SubscriptionStatusType.md)
+ - [SubscriptionUpdateReq](docs/SubscriptionUpdateReq.md)
+ - [SubscriptionsResponse](docs/SubscriptionsResponse.md)
  - [TerminalReaderDto](docs/TerminalReaderDto.md)
  - [TerminalReaderReq](docs/TerminalReaderReq.md)
  - [TerminalReadersResponse](docs/TerminalReadersResponse.md)
- - [TerminalTokenDto](docs/TerminalTokenDto.md)
- - [TerminalTokenReq](docs/TerminalTokenReq.md)
 
 
 ## Documentation for Authorization

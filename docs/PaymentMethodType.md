@@ -7,47 +7,63 @@
 
 * `ALIPAY` (value: `"alipay"`)
 
+* `ALIPAYHK` (value: `"alipayhk"`)
+
+* `ALIPAYPLUS` (value: `"alipayplus"`)
+
+* `AMAZONPAY` (value: `"amazonpay"`)
+
 * `APPLEPAY` (value: `"applepay"`)
 
 * `APPLEPAY_CN` (value: `"applepay_cn"`)
 
-* `CREDITCARD` (value: `"creditcard"`)
-
-* `GOOGLEPAY` (value: `"googlepay"`)
-
-* `PAYPAL` (value: `"paypal"`)
-
-* `UNIONPAY` (value: `"unionpay"`)
-
-* `LINEPAY` (value: `"linepay"`)
-
-* `PAIDY` (value: `"paidy"`)
-
-* `PAYPAY` (value: `"paypay"`)
-
-* `DOCOMOPAY` (value: `"docomopay"`)
-
 * `ATONE` (value: `"atone"`)
-
-* `ORIGAMIPAY` (value: `"origamipay"`)
-
-* `MERPAY` (value: `"merpay"`)
-
-* `WECHATPAY` (value: `"wechatpay"`)
-
-* `AMAZONPAY` (value: `"amazonpay"`)
 
 * `AUPAY` (value: `"aupay"`)
 
-* `RAKUTENPAY` (value: `"rakutenpay"`)
+* `CREDITCARD` (value: `"creditcard"`)
 
-* `JCOINPAY` (value: `"jcoinpay"`)
+* `DOCOMOPAY` (value: `"docomopay"`)
+
+* `EZLINK` (value: `"ezlink"`)
 
 * `FELICA_ID` (value: `"felica_id"`)
 
 * `FELICA_QUICKPAY` (value: `"felica_quickpay"`)
 
 * `FELICA_TRANSPORT_IC` (value: `"felica_transport_ic"`)
+
+* `GCASH` (value: `"gcash"`)
+
+* `GINKOPAY` (value: `"ginkopay"`)
+
+* `GOOGLEPAY` (value: `"googlepay"`)
+
+* `JCOINPAY` (value: `"jcoinpay"`)
+
+* `JKOPAY` (value: `"jkopay"`)
+
+* `KAKAOPAY` (value: `"kakaopay"`)
+
+* `LINEPAY` (value: `"linepay"`)
+
+* `MERPAY` (value: `"merpay"`)
+
+* `ORIGAMIPAY` (value: `"origamipay"`)
+
+* `PAIDY` (value: `"paidy"`)
+
+* `PAYPAL` (value: `"paypal"`)
+
+* `PAYPAY` (value: `"paypay"`)
+
+* `RAKUTENPAY` (value: `"rakutenpay"`)
+
+* `TNG` (value: `"tng"`)
+
+* `UNIONPAY` (value: `"unionpay"`)
+
+* `WECHATPAY` (value: `"wechatpay"`)
 
 * `AUTO` (value: `"auto"`)
 

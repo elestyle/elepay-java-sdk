@@ -41,15 +41,15 @@ public class DisputeApi {
 
   /**
    * List disputes
-   * TODO
+   * 不審請求情報を一覧で取得します
    * @param chargeId Charge ID (optional)
    * @param from 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。 (optional)
    * @param to 終了時間（UTC）。指定した時間以前に作成されたデータを取得します (optional)
-   * @param dateField 開始時間と終了時間の項目を指定します。 - resolved_time TODO - create_time 決済新規時間  (optional, default to create_time)
-   * @param status TODO (optional)
+   * @param dateField 開始時間と終了時間の項目を指定します。 - resolved_time 不審請求解決時間 - create_time 不審請求発生時間  (optional, default to create_time)
+   * @param status 不審請求ステータス (optional)
    * @param limit 最大件数 (optional, default to 20)
    * @param offset 検索開始位置 (optional, default to 0)
-   * @param sort ソート項目 - resolved_time TODO - create_time 決済新規時間  (optional, default to create_time)
+   * @param sort ソート項目 - resolved_time 不審請求解決時間 - create_time 決済新規時間  (optional, default to create_time)
    * @param order ソート順 - desc 降順 - asc 昇順  (optional, default to desc)
    * @return DisputesResponse
    * @throws ApiException if fails to make API call
@@ -65,15 +65,15 @@ public class DisputeApi {
 
   /**
    * List disputes
-   * TODO
+   * 不審請求情報を一覧で取得します
    * @param chargeId Charge ID (optional)
    * @param from 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。 (optional)
    * @param to 終了時間（UTC）。指定した時間以前に作成されたデータを取得します (optional)
-   * @param dateField 開始時間と終了時間の項目を指定します。 - resolved_time TODO - create_time 決済新規時間  (optional, default to create_time)
-   * @param status TODO (optional)
+   * @param dateField 開始時間と終了時間の項目を指定します。 - resolved_time 不審請求解決時間 - create_time 不審請求発生時間  (optional, default to create_time)
+   * @param status 不審請求ステータス (optional)
    * @param limit 最大件数 (optional, default to 20)
    * @param offset 検索開始位置 (optional, default to 0)
-   * @param sort ソート項目 - resolved_time TODO - create_time 決済新規時間  (optional, default to create_time)
+   * @param sort ソート項目 - resolved_time 不審請求解決時間 - create_time 決済新規時間  (optional, default to create_time)
    * @param order ソート順 - desc 降順 - asc 昇順  (optional, default to desc)
    * @return ApiResponse&lt;DisputesResponse&gt;
    * @throws ApiException if fails to make API call
@@ -125,7 +125,7 @@ public class DisputeApi {
       }
   /**
    * Retrieve dispute
-   * TODO
+   * 不審請求に関する詳細情報を取得します。
    * @param id Dispute ID (required)
    * @return DisputeDto
    * @throws ApiException if fails to make API call
@@ -141,7 +141,7 @@ public class DisputeApi {
 
   /**
    * Retrieve dispute
-   * TODO
+   * 不審請求に関する詳細情報を取得します。
    * @param id Dispute ID (required)
    * @return ApiResponse&lt;DisputeDto&gt;
    * @throws ApiException if fails to make API call

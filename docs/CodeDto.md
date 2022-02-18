@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **currency** | **String** | 通貨コード (ISO_4217) |  [optional]
 **orderNo** | **String** | お客様システム側のオーダーNo、例えば注文番号、決済IDなど |  [optional]
 **description** | **String** | 支払いオブジェクトの「決済に関する説明」 |  [optional]
+**extra** | **Map&lt;String, String&gt;** | 支払いエキストラデータ |  [optional]
 **metadata** | **Map&lt;String, String&gt;** | 支払いオブジェクトの「メタデータ」 |  [optional]
 **status** | [**CodeStatusType**](CodeStatusType.md) |  |  [optional]
 **charge** | [**ChargeDto**](ChargeDto.md) |  |  [optional]

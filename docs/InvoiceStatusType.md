@@ -9,6 +9,8 @@
 
 * `SUBMIT` (value: `"submit"`)
 
+* `SENT` (value: `"sent"`)
+
 * `PAID` (value: `"paid"`)
 
 * `EXPIRED` (value: `"expired"`)

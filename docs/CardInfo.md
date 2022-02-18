@@ -2,7 +2,7 @@
 
 # CardInfo
 
-カード情報
+カード情報やウォレット情報
 ## Properties
 
 Name | Type | Description | Notes
@@ -12,6 +12,9 @@ Name | Type | Description | Notes
 **expMonth** | **Integer** | 有効期限月 |  [optional]
 **expYear** | **Integer** | 有効期限年 |  [optional]
 **name** | **String** | カード保有者名 |  [optional]
+**wallet** | **String** | ウォレット情報 |  [optional]
+**threeDSecure** | **Boolean** | 3Dセキュア有無 |  [optional]
+**threeDSecureVersion** | **String** | 3Dセキュアバージョン |  [optional]
 
 
 

@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **brand** | **List&lt;String&gt;** | クレジットカードの場合、利用できるクレジットカードブランド |  [optional]
 **ua** | **String** | 利用できるブラウザのUserAgent |  [optional]
 **channelProperties** | [**ChannelPropertiesDto**](ChannelPropertiesDto.md) |  |  [optional]
+**customerProperties** | [**CustomerPropertiesDto**](CustomerPropertiesDto.md) |  |  [optional]
 
 
 

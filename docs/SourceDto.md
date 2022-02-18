@@ -16,7 +16,7 @@ Name | Type | Description | Notes
 **extra** | **Map&lt;String, String&gt;** | カスタマソースエキストラデータ |  [optional]
 **info** | **Map&lt;String, Object&gt;** | カスタマソース情報 |  [optional]
 **cardInfo** | [**CardInfo**](CardInfo.md) |  |  [optional]
-**metadata** | **Map&lt;String, String&gt;** | 支払いメタデータ |  [optional]
+**metadata** | **Map&lt;String, String&gt;** | メタデータ |  [optional]
 **credential** | **String** | Client SDK の認証情報 |  [optional]
 **status** | [**SourceStatusType**](SourceStatusType.md) |  |  [optional]
 
