@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **String** |  |  [optional]
 **memo** | **String** |  |  [optional]
-**customerId** | **String** | customer id |  [optional]
+**customerId** | **String** | カスタマID |  [optional]
 **amount** | **Integer** | payment amount |  [optional]
 **currency** | **String** | currency code |  [optional]
 **expiryTime** | **Long** | expiry time |  [optional]

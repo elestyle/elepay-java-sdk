@@ -9,9 +9,8 @@ import io.elepay.client.charge.Pair;
 import javax.ws.rs.core.GenericType;
 
 import io.elepay.client.charge.pojo.SubscriptionDto;
+import io.elepay.client.charge.pojo.SubscriptionPeriodsResponse;
 import io.elepay.client.charge.pojo.SubscriptionReq;
-import io.elepay.client.charge.pojo.SubscriptionScheduleChargesResponse;
-import io.elepay.client.charge.pojo.SubscriptionSchedulesResponse;
 import io.elepay.client.charge.pojo.SubscriptionStatusType;
 import io.elepay.client.charge.pojo.SubscriptionUpdateReq;
 import io.elepay.client.charge.pojo.SubscriptionsResponse;
@@ -43,7 +42,7 @@ public class SubscriptionApi {
 
   /**
    * Cancel subscription
-   * 定期課金をキャンセルし、現在の周期の終了日をもって定期課金を終了させます。 終了日以前であれば、定期課金の再開リクエスト(/resume)を行うことで、キャンセルを取り消すことができます。 終了日をむかえた定期課金は自動的に削除されますのでご注意ください。 
+   * 定期課金をキャンセルし、現在の周期の終了日をもって定期課金を終了させます。 キャンセルした定期課金は再スタートできません。 処理中の定期課金はキャンセルできません。 
    * @param subscriptionId Subscription ID (required)
    * @return SubscriptionDto
    * @throws ApiException if fails to make API call
@@ -59,7 +58,7 @@ public class SubscriptionApi {
 
   /**
    * Cancel subscription
-   * 定期課金をキャンセルし、現在の周期の終了日をもって定期課金を終了させます。 終了日以前であれば、定期課金の再開リクエスト(/resume)を行うことで、キャンセルを取り消すことができます。 終了日をむかえた定期課金は自動的に削除されますのでご注意ください。 
+   * 定期課金をキャンセルし、現在の周期の終了日をもって定期課金を終了させます。 キャンセルした定期課金は再スタートできません。 処理中の定期課金はキャンセルできません。 
    * @param subscriptionId Subscription ID (required)
    * @return ApiResponse&lt;SubscriptionDto&gt;
    * @throws ApiException if fails to make API call
@@ -171,91 +170,12 @@ public class SubscriptionApi {
     return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
-   * List subscription schedule charges
-   * 定期課金周期の支払情報をリストで取得します。
-   * @param subscriptionId Subscription ID (required)
-   * @param scheduleId Subscription schedule ID (required)
-   * @param limit 最大件数 (optional, default to 20)
-   * @param offset 検索開始位置 (optional, default to 0)
-   * @return SubscriptionScheduleChargesResponse
-   * @throws ApiException if fails to make API call
-   * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-   */
-  public SubscriptionScheduleChargesResponse listSubscriptionScheduleCharges(String subscriptionId, String scheduleId, Integer limit, Integer offset) throws ApiException {
-    return listSubscriptionScheduleChargesWithHttpInfo(subscriptionId, scheduleId, limit, offset).getData();
-      }
-
-  /**
-   * List subscription schedule charges
-   * 定期課金周期の支払情報をリストで取得します。
-   * @param subscriptionId Subscription ID (required)
-   * @param scheduleId Subscription schedule ID (required)
-   * @param limit 最大件数 (optional, default to 20)
-   * @param offset 検索開始位置 (optional, default to 0)
-   * @return ApiResponse&lt;SubscriptionScheduleChargesResponse&gt;
-   * @throws ApiException if fails to make API call
-   * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-   */
-  public ApiResponse<SubscriptionScheduleChargesResponse> listSubscriptionScheduleChargesWithHttpInfo(String subscriptionId, String scheduleId, Integer limit, Integer offset) throws ApiException {
-    Object localVarPostBody = null;
-    
-    // verify the required parameter 'subscriptionId' is set
-    if (subscriptionId == null) {
-      throw new ApiException(400, "Missing the required parameter 'subscriptionId' when calling listSubscriptionScheduleCharges");
-    }
-    
-    // verify the required parameter 'scheduleId' is set
-    if (scheduleId == null) {
-      throw new ApiException(400, "Missing the required parameter 'scheduleId' when calling listSubscriptionScheduleCharges");
-    }
-    
-    // create path and map variables
-    String localVarPath = "/subscriptions/{subscriptionId}/schedules/{scheduleId}/charges"
-      .replaceAll("\\{" + "subscriptionId" + "\\}", apiClient.escapeString(subscriptionId.toString()))
-      .replaceAll("\\{" + "scheduleId" + "\\}", apiClient.escapeString(scheduleId.toString()));
-
-    // query params
-    List<Pair> localVarQueryParams = new ArrayList<Pair>();
-    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-    Map<String, String> localVarCookieParams = new HashMap<String, String>();
-    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-
-    localVarQueryParams.addAll(apiClient.parameterToPairs("", "limit", limit));
-    localVarQueryParams.addAll(apiClient.parameterToPairs("", "offset", offset));
-
-    
-    
-    
-    final String[] localVarAccepts = {
-      "application/json;charset=utf-8"
-    };
-    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-
-    final String[] localVarContentTypes = {
-      
-    };
-    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-
-    String[] localVarAuthNames = new String[] { "basicAuth" };
-
-    GenericType<SubscriptionScheduleChargesResponse> localVarReturnType = new GenericType<SubscriptionScheduleChargesResponse>() {};
-    return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
-      }
-  /**
-   * List subscription schedules
+   * List subscription periods
    * 定期課金の周期情報をリストで取得します。
    * @param subscriptionId Subscription ID (required)
    * @param limit 最大件数 (optional, default to 20)
    * @param offset 検索開始位置 (optional, default to 0)
-   * @return SubscriptionSchedulesResponse
+   * @return SubscriptionPeriodsResponse
    * @throws ApiException if fails to make API call
    * @http.response.details
      <table summary="Response Details" border="1">
@@ -263,17 +183,17 @@ public class SubscriptionApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
    */
-  public SubscriptionSchedulesResponse listSubscriptionSchedules(String subscriptionId, Integer limit, Integer offset) throws ApiException {
-    return listSubscriptionSchedulesWithHttpInfo(subscriptionId, limit, offset).getData();
+  public SubscriptionPeriodsResponse listSubscriptionPeriods(String subscriptionId, Integer limit, Integer offset) throws ApiException {
+    return listSubscriptionPeriodsWithHttpInfo(subscriptionId, limit, offset).getData();
       }
 
   /**
-   * List subscription schedules
+   * List subscription periods
    * 定期課金の周期情報をリストで取得します。
    * @param subscriptionId Subscription ID (required)
    * @param limit 最大件数 (optional, default to 20)
    * @param offset 検索開始位置 (optional, default to 0)
-   * @return ApiResponse&lt;SubscriptionSchedulesResponse&gt;
+   * @return ApiResponse&lt;SubscriptionPeriodsResponse&gt;
    * @throws ApiException if fails to make API call
    * @http.response.details
      <table summary="Response Details" border="1">
@@ -281,16 +201,16 @@ public class SubscriptionApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
    */
-  public ApiResponse<SubscriptionSchedulesResponse> listSubscriptionSchedulesWithHttpInfo(String subscriptionId, Integer limit, Integer offset) throws ApiException {
+  public ApiResponse<SubscriptionPeriodsResponse> listSubscriptionPeriodsWithHttpInfo(String subscriptionId, Integer limit, Integer offset) throws ApiException {
     Object localVarPostBody = null;
     
     // verify the required parameter 'subscriptionId' is set
     if (subscriptionId == null) {
-      throw new ApiException(400, "Missing the required parameter 'subscriptionId' when calling listSubscriptionSchedules");
+      throw new ApiException(400, "Missing the required parameter 'subscriptionId' when calling listSubscriptionPeriods");
     }
     
     // create path and map variables
-    String localVarPath = "/subscriptions/{subscriptionId}/schedules"
+    String localVarPath = "/subscriptions/{subscriptionId}/periods"
       .replaceAll("\\{" + "subscriptionId" + "\\}", apiClient.escapeString(subscriptionId.toString()));
 
     // query params
@@ -317,7 +237,7 @@ public class SubscriptionApi {
 
     String[] localVarAuthNames = new String[] { "basicAuth" };
 
-    GenericType<SubscriptionSchedulesResponse> localVarReturnType = new GenericType<SubscriptionSchedulesResponse>() {};
+    GenericType<SubscriptionPeriodsResponse> localVarReturnType = new GenericType<SubscriptionPeriodsResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
@@ -397,7 +317,7 @@ public class SubscriptionApi {
       }
   /**
    * Resume subscription
-   * 定期課金を再開します。 停止中(status&#x3D;paused)、取消済み(statue&#x3D;canceled)の定期課金を再開させます。 再開時の支払いに失敗すると、定期課金は再開されません。 
+   * 延滞中(status&#x3D;past_due)の定期課金を再開させます。 
    * @param subscriptionId Subscription ID (required)
    * @return SubscriptionDto
    * @throws ApiException if fails to make API call
@@ -413,7 +333,7 @@ public class SubscriptionApi {
 
   /**
    * Resume subscription
-   * 定期課金を再開します。 停止中(status&#x3D;paused)、取消済み(statue&#x3D;canceled)の定期課金を再開させます。 再開時の支払いに失敗すると、定期課金は再開されません。 
+   * 延滞中(status&#x3D;past_due)の定期課金を再開させます。 
    * @param subscriptionId Subscription ID (required)
    * @return ApiResponse&lt;SubscriptionDto&gt;
    * @throws ApiException if fails to make API call
@@ -524,6 +444,71 @@ public class SubscriptionApi {
 
     GenericType<SubscriptionDto> localVarReturnType = new GenericType<SubscriptionDto>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+      }
+  /**
+   * Start subscription
+   * 新規(status&#x3D;new)の定期課金を開始させます。 
+   * @param subscriptionId Subscription ID (required)
+   * @return SubscriptionDto
+   * @throws ApiException if fails to make API call
+   * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+   */
+  public SubscriptionDto startSubscription(String subscriptionId) throws ApiException {
+    return startSubscriptionWithHttpInfo(subscriptionId).getData();
+      }
+
+  /**
+   * Start subscription
+   * 新規(status&#x3D;new)の定期課金を開始させます。 
+   * @param subscriptionId Subscription ID (required)
+   * @return ApiResponse&lt;SubscriptionDto&gt;
+   * @throws ApiException if fails to make API call
+   * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+   */
+  public ApiResponse<SubscriptionDto> startSubscriptionWithHttpInfo(String subscriptionId) throws ApiException {
+    Object localVarPostBody = null;
+    
+    // verify the required parameter 'subscriptionId' is set
+    if (subscriptionId == null) {
+      throw new ApiException(400, "Missing the required parameter 'subscriptionId' when calling startSubscription");
+    }
+    
+    // create path and map variables
+    String localVarPath = "/subscriptions/{subscriptionId}/start"
+      .replaceAll("\\{" + "subscriptionId" + "\\}", apiClient.escapeString(subscriptionId.toString()));
+
+    // query params
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, String> localVarCookieParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+
+    
+    
+    
+    final String[] localVarAccepts = {
+      "application/json;charset=utf-8"
+    };
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {
+      
+    };
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] { "basicAuth" };
+
+    GenericType<SubscriptionDto> localVarReturnType = new GenericType<SubscriptionDto>() {};
+    return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
    * Update subscription

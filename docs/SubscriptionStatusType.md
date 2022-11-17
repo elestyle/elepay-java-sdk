@@ -5,15 +5,13 @@
 ## Enum
 
 
-* `TRIALING` (value: `"trialing"`)
+* `NEW` (value: `"new"`)
 
 * `ACTIVE` (value: `"active"`)
 
-* `PAUSED` (value: `"paused"`)
+* `PAST_DUE` (value: `"past_due"`)
 
 * `CANCELED` (value: `"canceled"`)
-
-* `ENDED` (value: `"ended"`)
 
 
 

@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.1.24
+- API version: 1.2.0
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.1.24</version>
+  <version>1.2.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.1.24"
+compile "io.elepay:elepay-java-sdk:1.2.0"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.1.24.jar`
+- `target/elepay-java-sdk-1.2.0.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -141,20 +141,16 @@ Class | Method | HTTP request | Description
 *InvoiceApi* | [**submitInvoice**](docs/InvoiceApi.md#submitInvoice) | **POST** /invoices/{invoiceId}/submit | submit invoice
 *InvoiceApi* | [**updateInvoice**](docs/InvoiceApi.md#updateInvoice) | **POST** /invoices/{invoiceId} | Update invoice
 *PaymentMethodApi* | [**listPaymentMethods**](docs/PaymentMethodApi.md#listPaymentMethods) | **GET** /payment-methods | List supported payment methods
-*PlanApi* | [**createPlan**](docs/PlanApi.md#createPlan) | **POST** /plans | Create plan
-*PlanApi* | [**listPlans**](docs/PlanApi.md#listPlans) | **GET** /plans | List plans
-*PlanApi* | [**retrievePlan**](docs/PlanApi.md#retrievePlan) | **GET** /plans/{planId} | Retrieve plan
-*PlanApi* | [**updatePlan**](docs/PlanApi.md#updatePlan) | **POST** /plans/{planId} | Update plan
 *RefundApi* | [**createRefund**](docs/RefundApi.md#createRefund) | **POST** /charges/{id}/refunds | Create refund
 *RefundApi* | [**listChargesRefunds**](docs/RefundApi.md#listChargesRefunds) | **GET** /charges/{id}/refunds | List refunds
 *RefundApi* | [**retrieveChargeRefund**](docs/RefundApi.md#retrieveChargeRefund) | **GET** /charges/{id}/refunds/{refundId} | Retrieve refund
 *SubscriptionApi* | [**cancelSubscription**](docs/SubscriptionApi.md#cancelSubscription) | **POST** /subscriptions/{subscriptionId}/cancel | Cancel subscription
 *SubscriptionApi* | [**createSubscription**](docs/SubscriptionApi.md#createSubscription) | **POST** /subscriptions | Create subscription
-*SubscriptionApi* | [**listSubscriptionScheduleCharges**](docs/SubscriptionApi.md#listSubscriptionScheduleCharges) | **GET** /subscriptions/{subscriptionId}/schedules/{scheduleId}/charges | List subscription schedule charges
-*SubscriptionApi* | [**listSubscriptionSchedules**](docs/SubscriptionApi.md#listSubscriptionSchedules) | **GET** /subscriptions/{subscriptionId}/schedules | List subscription schedules
+*SubscriptionApi* | [**listSubscriptionPeriods**](docs/SubscriptionApi.md#listSubscriptionPeriods) | **GET** /subscriptions/{subscriptionId}/periods | List subscription periods
 *SubscriptionApi* | [**listSubscriptions**](docs/SubscriptionApi.md#listSubscriptions) | **GET** /subscriptions | List subscriptions
 *SubscriptionApi* | [**resumeSubscription**](docs/SubscriptionApi.md#resumeSubscription) | **POST** /subscriptions/{subscriptionId}/resume | Resume subscription
 *SubscriptionApi* | [**retrieveSubscription**](docs/SubscriptionApi.md#retrieveSubscription) | **GET** /subscriptions/{subscriptionId} | Retrieve subscription
+*SubscriptionApi* | [**startSubscription**](docs/SubscriptionApi.md#startSubscription) | **POST** /subscriptions/{subscriptionId}/start | Start subscription
 *SubscriptionApi* | [**updateSubscription**](docs/SubscriptionApi.md#updateSubscription) | **POST** /subscriptions/{subscriptionId} | Update subscription
 *TerminalApi* | [**createReader**](docs/TerminalApi.md#createReader) | **POST** /terminal/readers | create terminal reader
 *TerminalApi* | [**deleteReader**](docs/TerminalApi.md#deleteReader) | **DELETE** /terminal/readers/{readerId} | delete reader
@@ -185,8 +181,6 @@ Class | Method | HTTP request | Description
  - [CustomerReq](docs/CustomerReq.md)
  - [CustomerResponse](docs/CustomerResponse.md)
  - [CustomerStatusType](docs/CustomerStatusType.md)
- - [DiscountDto](docs/DiscountDto.md)
- - [DiscountType](docs/DiscountType.md)
  - [DisputeDateTimeType](docs/DisputeDateTimeType.md)
  - [DisputeDto](docs/DisputeDto.md)
  - [DisputeStatusType](docs/DisputeStatusType.md)
@@ -201,12 +195,6 @@ Class | Method | HTTP request | Description
  - [PaymentMethodDto](docs/PaymentMethodDto.md)
  - [PaymentMethodResponse](docs/PaymentMethodResponse.md)
  - [PaymentMethodType](docs/PaymentMethodType.md)
- - [PlanDto](docs/PlanDto.md)
- - [PlanIntervalType](docs/PlanIntervalType.md)
- - [PlanReq](docs/PlanReq.md)
- - [PlanStatusType](docs/PlanStatusType.md)
- - [PlanUpdateReq](docs/PlanUpdateReq.md)
- - [PlansResponse](docs/PlansResponse.md)
  - [ReaderStatusType](docs/ReaderStatusType.md)
  - [RefundDto](docs/RefundDto.md)
  - [RefundReq](docs/RefundReq.md)
@@ -221,11 +209,11 @@ Class | Method | HTTP request | Description
  - [SourceStatusDto](docs/SourceStatusDto.md)
  - [SourceStatusType](docs/SourceStatusType.md)
  - [SubscriptionDto](docs/SubscriptionDto.md)
+ - [SubscriptionIntervalType](docs/SubscriptionIntervalType.md)
+ - [SubscriptionPeriodDto](docs/SubscriptionPeriodDto.md)
+ - [SubscriptionPeriodsResponse](docs/SubscriptionPeriodsResponse.md)
  - [SubscriptionReq](docs/SubscriptionReq.md)
  - [SubscriptionScheduleChargesResponse](docs/SubscriptionScheduleChargesResponse.md)
- - [SubscriptionScheduleDto](docs/SubscriptionScheduleDto.md)
- - [SubscriptionScheduleStatusType](docs/SubscriptionScheduleStatusType.md)
- - [SubscriptionSchedulesResponse](docs/SubscriptionSchedulesResponse.md)
  - [SubscriptionStatusType](docs/SubscriptionStatusType.md)
  - [SubscriptionUpdateReq](docs/SubscriptionUpdateReq.md)
  - [SubscriptionsResponse](docs/SubscriptionsResponse.md)

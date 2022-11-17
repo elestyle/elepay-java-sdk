@@ -23,6 +23,8 @@
 
 * `CREDITCARD` (value: `"creditcard"`)
 
+* `DANA` (value: `"dana"`)
+
 * `DOCOMOPAY` (value: `"docomopay"`)
 
 * `EZLINK` (value: `"ezlink"`)
@@ -60,6 +62,8 @@
 * `RAKUTENPAY` (value: `"rakutenpay"`)
 
 * `TNG` (value: `"tng"`)
+
+* `TRUEMONEY` (value: `"truemoney"`)
 
 * `UNIONPAY` (value: `"unionpay"`)
 

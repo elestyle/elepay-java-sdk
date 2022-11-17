@@ -7,11 +7,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**customerId** | **String** | Customer ID | 
-**planId** | **String** | Plan ID | 
-**discount** | [**DiscountDto**](DiscountDto.md) |  |  [optional]
-**trialPeriodDays** | **Integer** | トライアル日数 |  [optional]
-**prorate** | **Boolean** | 日割り課金設定、デフォルトはfalse billingDay設定した場合のみ有効。  |  [optional]
+**name** | **String** | 定期課金名 |  [optional]
+**customerId** | **String** | カスタマID | 
+**currency** | **String** | 通貨コード (ISO_4217) |  [optional]
+**amount** | **Integer** | 每期課金金額 |  [optional]
+**interval** | [**SubscriptionIntervalType**](SubscriptionIntervalType.md) |  |  [optional]
+**initialAmount** | **Integer** | 初回支払い前の固定支払額 |  [optional]
+**firstChargeTime** | **Long** | 初回支払いUTCタイムスタンプ |  [optional]
 **metadata** | **Map&lt;String, String&gt;** | メタデータ |  [optional]
 
 

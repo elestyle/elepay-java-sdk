@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.ChargeDto;
+import io.elepay.client.charge.pojo.SubscriptionPeriodDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
@@ -27,23 +27,23 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * 支払い情報リスト
+ * 定期課金周期情報リスト
  */
-@ApiModel(description = "支払い情報リスト")
+@ApiModel(description = "定期課金周期情報リスト")
 @JsonPropertyOrder({
-  ChargesResponse.JSON_PROPERTY_TOTAL,
-  ChargesResponse.JSON_PROPERTY_CHARGES
+  SubscriptionPeriodsResponse.JSON_PROPERTY_TOTAL,
+  SubscriptionPeriodsResponse.JSON_PROPERTY_PERIODS
 })
 
-public class ChargesResponse {
+public class SubscriptionPeriodsResponse {
   public static final String JSON_PROPERTY_TOTAL = "total";
   private Integer total;
 
-  public static final String JSON_PROPERTY_CHARGES = "charges";
-  private List<ChargeDto> charges = null;
+  public static final String JSON_PROPERTY_PERIODS = "periods";
+  private List<SubscriptionPeriodDto> periods = null;
 
 
-  public ChargesResponse total(Integer total) {
+  public SubscriptionPeriodsResponse total(Integer total) {
     
     this.total = total;
     return this;
@@ -68,36 +68,36 @@ public class ChargesResponse {
   }
 
 
-  public ChargesResponse charges(List<ChargeDto> charges) {
+  public SubscriptionPeriodsResponse periods(List<SubscriptionPeriodDto> periods) {
     
-    this.charges = charges;
+    this.periods = periods;
     return this;
   }
 
-  public ChargesResponse addChargesItem(ChargeDto chargesItem) {
-    if (this.charges == null) {
-      this.charges = new ArrayList<>();
+  public SubscriptionPeriodsResponse addPeriodsItem(SubscriptionPeriodDto periodsItem) {
+    if (this.periods == null) {
+      this.periods = new ArrayList<>();
     }
-    this.charges.add(chargesItem);
+    this.periods.add(periodsItem);
     return this;
   }
 
    /**
-   * 支払い詳細内容
-   * @return charges
+   * 定期課金周期詳細情報
+   * @return periods
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "支払い詳細内容")
-  @JsonProperty(JSON_PROPERTY_CHARGES)
+  @ApiModelProperty(value = "定期課金周期詳細情報")
+  @JsonProperty(JSON_PROPERTY_PERIODS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public List<ChargeDto> getCharges() {
-    return charges;
+  public List<SubscriptionPeriodDto> getPeriods() {
+    return periods;
   }
 
 
-  public void setCharges(List<ChargeDto> charges) {
-    this.charges = charges;
+  public void setPeriods(List<SubscriptionPeriodDto> periods) {
+    this.periods = periods;
   }
 
 
@@ -109,23 +109,23 @@ public class ChargesResponse {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ChargesResponse chargesResponse = (ChargesResponse) o;
-    return Objects.equals(this.total, chargesResponse.total) &&
-        Objects.equals(this.charges, chargesResponse.charges);
+    SubscriptionPeriodsResponse subscriptionPeriodsResponse = (SubscriptionPeriodsResponse) o;
+    return Objects.equals(this.total, subscriptionPeriodsResponse.total) &&
+        Objects.equals(this.periods, subscriptionPeriodsResponse.periods);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(total, charges);
+    return Objects.hash(total, periods);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ChargesResponse {\n");
+    sb.append("class SubscriptionPeriodsResponse {\n");
     sb.append("    total: ").append(toIndentedString(total)).append("\n");
-    sb.append("    charges: ").append(toIndentedString(charges)).append("\n");
+    sb.append("    periods: ").append(toIndentedString(periods)).append("\n");
     sb.append("}");
     return sb.toString();
   }

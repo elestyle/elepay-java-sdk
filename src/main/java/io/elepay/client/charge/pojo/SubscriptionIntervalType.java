@@ -22,25 +22,21 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * インボイス状態 
+ * 定期課金周期タイプ - day １日１回 - week 週１回 - month 月１回 - year 年１回 
  */
-public enum InvoiceStatusType {
+public enum SubscriptionIntervalType {
   
-  DRAFT("draft"),
+  DAY("day"),
   
-  SUBMIT("submit"),
+  WEEK("week"),
   
-  SENT("sent"),
+  MONTH("month"),
   
-  PAID("paid"),
-  
-  EXPIRED("expired"),
-  
-  CANCELED("canceled");
+  YEAR("year");
 
   private String value;
 
-  InvoiceStatusType(String value) {
+  SubscriptionIntervalType(String value) {
     this.value = value;
   }
 
@@ -55,8 +51,8 @@ public enum InvoiceStatusType {
   }
 
   @JsonCreator
-  public static InvoiceStatusType fromValue(String value) {
-    for (InvoiceStatusType b : InvoiceStatusType.values()) {
+  public static SubscriptionIntervalType fromValue(String value) {
+    for (SubscriptionIntervalType b : SubscriptionIntervalType.values()) {
       if (b.value.equals(value)) {
         return b;
       }
