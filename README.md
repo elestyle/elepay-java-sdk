@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.2.0
+- API version: 1.2.1
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.2.0"
+compile "io.elepay:elepay-java-sdk:1.2.1"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.2.0.jar`
+- `target/elepay-java-sdk-1.2.1.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -202,6 +202,7 @@ Class | Method | HTTP request | Description
  - [RefundsDto](docs/RefundsDto.md)
  - [RefundsResponse](docs/RefundsResponse.md)
  - [ResourceType](docs/ResourceType.md)
+ - [ResourceWebEnvType](docs/ResourceWebEnvType.md)
  - [SortOrderType](docs/SortOrderType.md)
  - [SourceDto](docs/SourceDto.md)
  - [SourceReq](docs/SourceReq.md)
@@ -226,6 +227,11 @@ Class | Method | HTTP request | Description
 
 Authentication schemes defined for the API:
 ### basicAuth
+
+
+- **Type**: HTTP basic authentication
+
+### bearerAuth
 
 
 - **Type**: HTTP basic authentication

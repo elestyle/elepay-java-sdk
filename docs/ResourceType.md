@@ -21,5 +21,7 @@
 
 * `READER` (value: `"reader"`)
 
+* `POSAPP` (value: `"posapp"`)
+
 
 

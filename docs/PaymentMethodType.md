@@ -29,6 +29,8 @@
 
 * `EZLINK` (value: `"ezlink"`)
 
+* `FELICA` (value: `"felica"`)
+
 * `FELICA_ID` (value: `"felica_id"`)
 
 * `FELICA_QUICKPAY` (value: `"felica_quickpay"`)
@@ -68,6 +70,16 @@
 * `UNIONPAY` (value: `"unionpay"`)
 
 * `WECHATPAY` (value: `"wechatpay"`)
+
+* `AEONPAY` (value: `"aeonpay"`)
+
+* `RABBITLINEPAY` (value: `"rabbitlinepay"`)
+
+* `BPI` (value: `"bpi"`)
+
+* `BOOST` (value: `"boost"`)
+
+* `HELLOMONEY` (value: `"hellomoney"`)
 
 * `AUTO` (value: `"auto"`)
 

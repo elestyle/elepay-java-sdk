@@ -5,7 +5,7 @@
     <artifactId>elepay-java-sdk</artifactId>
     <packaging>jar</packaging>
     <name>elepay-java-sdk</name>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <url>https://github.com/elestyle/elepay-java-sdk</url>
     <description>elepay Java SDK</description>
     <scm>
@@ -218,7 +218,7 @@
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
         </dependency>
-        
+
         <!-- HTTP client: jersey-client -->
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>

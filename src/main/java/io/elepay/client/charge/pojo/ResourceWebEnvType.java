@@ -22,17 +22,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * 時間項目
+ * リソースはWebの場合。利用可能環境 - all 全ての環境 - wallet_app ウォレットアプリ内の組み込みブラウザのみ可能 - web ウェブのみ, ウォレットアプリの中で利用不可 
  */
-public enum ChargeDateTimeType {
+public enum ResourceWebEnvType {
   
-  PAID_TIME("paid_time"),
+  ALL("all"),
   
-  CREATE_TIME("create_time");
+  WALLET_APP("wallet_app"),
+  
+  WEB("web");
 
   private String value;
 
-  ChargeDateTimeType(String value) {
+  ResourceWebEnvType(String value) {
     this.value = value;
   }
 
@@ -47,8 +49,8 @@ public enum ChargeDateTimeType {
   }
 
   @JsonCreator
-  public static ChargeDateTimeType fromValue(String value) {
-    for (ChargeDateTimeType b : ChargeDateTimeType.values()) {
+  public static ResourceWebEnvType fromValue(String value) {
+    for (ResourceWebEnvType b : ResourceWebEnvType.values()) {
       if (b.value.equals(value)) {
         return b;
       }
