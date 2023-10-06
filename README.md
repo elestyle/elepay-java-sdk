@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.2.1
+- API version: 1.2.2
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.2.1</version>
+  <version>1.2.2</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.2.1"
+compile "io.elepay:elepay-java-sdk:1.2.2"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.2.1.jar`
+- `target/elepay-java-sdk-1.2.2.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -84,11 +84,12 @@ public class ChargeApiExample {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
 
         // Configure HTTP basic authorization: basicAuth
-        HttpBasicAuth basicAuth = (HttpBasicAuth) defaultClient.getAuthentication("basicAuth");
-        basicAuth.setUsername("Your Elepay Secret Key");
+        HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+        bearerAuth.setBearerToken("Your elepay Secret Key");
 
         ChargeApi apiInstance = new ChargeApi(defaultClient);
         ChargeReq chargeReq = new ChargeReq(); // ChargeReq | 支払リクエスト
+        // Set required fields
         try {
             ChargeDto result = apiInstance.createCharge(chargeReq);
             System.out.println(result);
