@@ -81,6 +81,10 @@
 
 * `HELLOMONEY` (value: `"hellomoney"`)
 
+* `TOSSPAY` (value: `"tosspay"`)
+
+* `NAVERPAY` (value: `"naverpay"`)
+
 * `AUTO` (value: `"auto"`)
 
 
