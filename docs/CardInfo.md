@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **expYear** | **Integer** | 有効期限年 |  [optional]
 **name** | **String** | カード保有者名 |  [optional]
 **wallet** | **String** | ウォレット情報 |  [optional]
+**walletApp** | **String** | ウォレットアプリ情報(paymentMethodはAlipayplusの場合は、実際利用しているアプリ名) |  [optional]
 **threeDSecure** | **Boolean** | 3Dセキュア有無 |  [optional]
 **threeDSecureVersion** | **String** | 3Dセキュアバージョン |  [optional]
 
