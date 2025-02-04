@@ -17,6 +17,8 @@
 
 * `APPLEPAY_CN` (value: `"applepay_cn"`)
 
+* `ATOKARA` (value: `"atokara"`)
+
 * `ATONE` (value: `"atone"`)
 
 * `AUPAY` (value: `"aupay"`)
@@ -60,6 +62,8 @@
 * `PAYPAL` (value: `"paypal"`)
 
 * `PAYPAY` (value: `"paypay"`)
+
+* `PXPAYPLUS` (value: `"pxpayplus"`)
 
 * `RAKUTENPAY` (value: `"rakutenpay"`)
 

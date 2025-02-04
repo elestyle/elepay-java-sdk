@@ -1,0 +1,4821 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: support@elestyle.jp
+    name: "ELESTYLE, INC"
+    url: https://elepay.io
+  description: elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
+  title: elepay API リファレンス
+  version: 1.2.5
+servers:
+- url: https://api.elepay.io
+security:
+- bearerAuth: []
+- basicAuth: []
+tags:
+- name: Charge
+- name: Refund
+- name: Customer
+- name: Code
+- name: CodeSetting
+- name: PaymentMethod
+- name: Terminal
+- name: Invoice
+- name: Dispute
+- name: Subscription
+paths:
+  /charges:
+    get:
+      description: 決済に関する情報を一覧で取得します。
+      operationId: listCharges
+      parameters:
+      - description: 決済方法(複数の指定が可能です)
+        explode: true
+        in: query
+        name: paymentMethod
+        required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/PaymentMethodType'
+          type: array
+        style: form
+      - description: 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。
+        explode: true
+        in: query
+        name: from
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: 終了時間（UTC）。指定した時間以前に作成されたデータを取得します
+        explode: true
+        in: query
+        name: to
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: |
+          開始時間と終了時間の項目を指定します。
+          - paid_time 払う時間
+          - create_time 決済新規時間
+        explode: true
+        in: query
+        name: dateField
+        required: false
+        schema:
+          $ref: '#/components/schemas/ChargeDateTimeType'
+        style: form
+      - description: 支払状況
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          $ref: '#/components/schemas/ChargeStatusType'
+        style: form
+      - description: 最大件数
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          maximum: 100
+          type: integer
+        style: form
+      - description: 検索開始位置
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      - description: |
+          ソート項目
+          - paid_time 払う時間
+          - create_time 決済新規時間
+        explode: true
+        in: query
+        name: sort
+        required: false
+        schema:
+          $ref: '#/components/schemas/ChargeDateTimeType'
+        style: form
+      - description: |
+          ソート順
+          - desc 降順
+          - asc 昇順
+        explode: true
+        in: query
+        name: order
+        required: false
+        schema:
+          $ref: '#/components/schemas/SortOrderType'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargesResponse'
+          description: OK
+      summary: List charges
+      tags:
+      - Charge
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: 決済処理を行います。
+      operationId: createCharge
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeReq'
+        description: 支払リクエスト
+        required: true
+      responses:
+        "201":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+          description: Created
+      summary: Create charge
+      tags:
+      - Charge
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /charges/{id}:
+    get:
+      description: 決済に関する詳細情報を取得します。
+      operationId: retrieveCharge
+      parameters:
+      - description: Charge ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+          description: OK
+      summary: Retrieve charge
+      tags:
+      - Charge
+      x-accepts: application/json;charset=utf-8
+  /charges/{id}/revoke:
+    post:
+      description: 決済を取消します。
+      operationId: revokeCharge
+      parameters:
+      - description: Charge ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+          description: OK
+      summary: Revoke charge
+      tags:
+      - Charge
+      x-accepts: application/json;charset=utf-8
+  /charges/{id}/capture:
+    post:
+      description: 決済を確定します。
+      operationId: captureCharge
+      parameters:
+      - description: Charge ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeCaptureReq'
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+          description: OK
+      summary: Capture charge
+      tags:
+      - Charge
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /charges/{id}/status:
+    get:
+      description: 決済のステータスに関する詳細情報を取得します。
+      operationId: retrieveChargeStatus
+      parameters:
+      - description: Charge ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeStatusDto'
+          description: OK
+      summary: Retrieve charge's status
+      tags:
+      - Charge
+      x-accepts: application/json;charset=utf-8
+  /charges/{id}/refunds:
+    get:
+      description: 返金に関する情報を一覧で取得します。
+      operationId: listChargesRefunds
+      parameters:
+      - description: Charge ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/RefundsResponse'
+          description: OK
+      summary: List refunds
+      tags:
+      - Refund
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: 決済の全額あるいは一部の返金処理を行います。
+      operationId: createRefund
+      parameters:
+      - description: Charge ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/RefundReq'
+        description: 返金の詳細情報
+        required: true
+      responses:
+        "201":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/RefundDto'
+          description: Created
+      summary: Create refund
+      tags:
+      - Refund
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /charges/{id}/refunds/{refundId}:
+    get:
+      description: 返金に関する詳細情報を取得します。
+      operationId: retrieveChargeRefund
+      parameters:
+      - description: Charge ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Refund ID
+        explode: false
+        in: path
+        name: refundId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/RefundDto'
+          description: OK
+      summary: Retrieve refund
+      tags:
+      - Refund
+      x-accepts: application/json;charset=utf-8
+  /customers:
+    get:
+      description: カスタマ情報を一覧で取得します。
+      operationId: listCustomers
+      parameters:
+      - description: キーワード
+        explode: true
+        in: query
+        name: keyword
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: 最大件数
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          maximum: 100
+          type: integer
+        style: form
+      - description: 検索開始位置
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+          description: OK
+      summary: List customers
+      tags:
+      - Customer
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: カスタマを作成します。
+      operationId: createCustomer
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/CustomerReq'
+        description: カスタマリクエスト
+        required: true
+      responses:
+        "201":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+          description: Created
+      summary: Create customer
+      tags:
+      - Customer
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /customers/{customerId}:
+    delete:
+      description: カスタマを削除します
+      operationId: deleteCustomer
+      parameters:
+      - description: Customer ID
+        explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Deleted
+      summary: Delete customer
+      tags:
+      - Customer
+      x-accepts: application/json
+    get:
+      description: カスタマ情報を取得します。
+      operationId: retrieveCustomer
+      parameters:
+      - description: Customer ID
+        explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+          description: OK
+      summary: Retrieve customer
+      tags:
+      - Customer
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: カスタマを更新します。
+      operationId: updateCustomer
+      parameters:
+      - description: Customer ID
+        explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateReq'
+        description: カスタマリクエスト
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+          description: OK
+      summary: Update customer
+      tags:
+      - Customer
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /customers/{customerId}/sources:
+    get:
+      description: カスタマソース情報を一覧で取得します。
+      operationId: listSources
+      parameters:
+      - description: Customer ID
+        explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: 決済方法
+        explode: true
+        in: query
+        name: paymentMethod
+        required: false
+        schema:
+          $ref: '#/components/schemas/PaymentMethodType'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceResponse'
+          description: OK
+      summary: List sources by customer ID
+      tags:
+      - Customer
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: カスタマソースを作成します。
+      operationId: createSource
+      parameters:
+      - description: Customer ID
+        explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/SourceReq'
+        description: カスタマソースリクエスト
+        required: true
+      responses:
+        "201":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceDto'
+          description: OK
+      summary: Create source
+      tags:
+      - Customer
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /customers/{customerId}/sources/{sourceId}:
+    delete:
+      description: カスタマソースを削除します。
+      operationId: deleteSource
+      parameters:
+      - description: Customer ID
+        explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Source ID
+        explode: false
+        in: path
+        name: sourceId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Deleted
+      summary: Delete source
+      tags:
+      - Customer
+      x-accepts: application/json
+    get:
+      description: カスタマ情報を取得します。
+      operationId: retrieveSource
+      parameters:
+      - description: Customer ID
+        explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Source ID
+        explode: false
+        in: path
+        name: sourceId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceDto'
+          description: OK
+      summary: Retrieve source
+      tags:
+      - Customer
+      x-accepts: application/json;charset=utf-8
+  /sources/{sourceId}/status:
+    get:
+      description: カスタマソースのステータスに関する詳細情報を取得します。
+      operationId: retrieveSourceStatus
+      parameters:
+      - description: Source ID
+        explode: false
+        in: path
+        name: sourceId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceStatusDto'
+          description: OK
+      summary: Retrieve source's status
+      tags:
+      - Customer
+      x-accepts: application/json;charset=utf-8
+  /payment-methods:
+    get:
+      description: 利用できる決済方法を取得します。
+      operationId: listPaymentMethods
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PaymentMethodResponse'
+          description: OK
+      summary: List supported payment methods
+      tags:
+      - PaymentMethod
+      x-accepts: application/json;charset=utf-8
+  /codes:
+    post:
+      description: EasyQRコードを作成します。
+      operationId: createCode
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/CodeReq'
+        description: EasyQRコードリクエスト
+        required: true
+      responses:
+        "201":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CodeDto'
+          description: Created
+      summary: Create EasyQR code
+      tags:
+      - Code
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /codes/{codeId}:
+    delete:
+      description: EasyQRコードを削除します
+      operationId: closeCode
+      parameters:
+      - description: EasyQRコード
+        explode: false
+        in: path
+        name: codeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Closed
+      summary: Close EasyQR code
+      tags:
+      - Code
+      x-accepts: application/json
+    get:
+      description: EasyQRコードオブジェクトを取得する
+      operationId: retrieveCode
+      parameters:
+      - description: EasyQRコード
+        explode: false
+        in: path
+        name: codeId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CodeDto'
+          description: OK
+      summary: Retrieve EasyQR code
+      tags:
+      - Code
+      x-accepts: application/json;charset=utf-8
+  /code-setting/payment-methods:
+    get:
+      description: EasyQR利用できる決済方法を取得します。
+      operationId: listCodePaymentMethods
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CodePaymentMethodResponse'
+          description: EasyQR利用できる決済方法リスト
+      summary: List all enabled EasyQR payment methods
+      tags:
+      - CodeSetting
+      x-accepts: application/json;charset=utf-8
+  /invoices:
+    get:
+      description: インボイス情報を一覧で取得します。
+      operationId: listInvoices
+      parameters:
+      - description: キーワード
+        explode: true
+        in: query
+        name: keyword
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: dateRange from
+        explode: true
+        in: query
+        name: from
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: dateRange from
+        explode: true
+        in: query
+        name: to
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: status
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/InvoiceStatusType'
+          type: array
+        style: form
+      - description: 最大件数
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          maximum: 100
+          type: integer
+        style: form
+      - description: 検索開始位置
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoicesResponse'
+          description: OK
+      summary: List invoices
+      tags:
+      - Invoice
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: インボイスを作成します。
+      operationId: createInvoice
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/InvoiceReq'
+        description: インボイスリクエスト
+        required: true
+      responses:
+        "201":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+          description: Created
+      summary: Create invoice
+      tags:
+      - Invoice
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /invoices/{invoiceId}:
+    get:
+      description: インボイス情報を取得します。
+      operationId: retrieveInvoice
+      parameters:
+      - description: Invoice ID
+        explode: false
+        in: path
+        name: invoiceId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+          description: OK
+      summary: Retrieve invoice
+      tags:
+      - Invoice
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: インボイス情報を更新します。
+      operationId: updateInvoice
+      parameters:
+      - description: Invoice ID
+        explode: false
+        in: path
+        name: invoiceId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/InvoiceReq'
+        description: インボイスリクエスト
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+          description: OK
+      summary: Update invoice
+      tags:
+      - Invoice
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /invoices/{invoiceId}/cancel:
+    post:
+      description: インボイスを中止します。
+      operationId: cancelInvoice
+      parameters:
+      - description: Invoice ID
+        explode: false
+        in: path
+        name: invoiceId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+          description: OK
+      summary: Cancel invoice
+      tags:
+      - Invoice
+      x-accepts: application/json;charset=utf-8
+  /invoices/{invoiceId}/submit:
+    post:
+      description: インボイスを確定します。
+      operationId: submitInvoice
+      parameters:
+      - description: Invoice ID
+        explode: false
+        in: path
+        name: invoiceId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+          description: OK
+      summary: Submit invoice
+      tags:
+      - Invoice
+      x-accepts: application/json;charset=utf-8
+  /invoices/{invoiceId}/send:
+    post:
+      description: インボイスを送信します。
+      operationId: sendInvoice
+      parameters:
+      - description: invoice id
+        explode: false
+        in: path
+        name: invoiceId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "202":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+          description: Accept
+      summary: send invoice
+      tags:
+      - Invoice
+      x-accepts: application/json;charset=utf-8
+  /terminal/locations:
+    get:
+      operationId: listLocations
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/LocationsResponse'
+          description: OK
+      summary: list locations
+      tags:
+      - Terminal
+      x-accepts: application/json;charset=utf-8
+  /terminal/readers:
+    get:
+      operationId: listReaders
+      parameters:
+      - description: 最大件数
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          maximum: 100
+          type: integer
+        style: form
+      - description: 検索開始位置
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TerminalReadersResponse'
+          description: OK
+      summary: list readers
+      tags:
+      - Terminal
+      x-accepts: application/json;charset=utf-8
+    post:
+      operationId: createReader
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/TerminalReaderReq'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TerminalReaderDto'
+          description: OK
+      summary: create terminal reader
+      tags:
+      - Terminal
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /terminal/readers/{readerId}:
+    delete:
+      operationId: deleteReader
+      parameters:
+      - description: reader Id
+        explode: false
+        in: path
+        name: readerId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Deleted
+      summary: delete reader
+      tags:
+      - Terminal
+      x-accepts: application/json
+    get:
+      operationId: getReader
+      parameters:
+      - description: reader Id
+        explode: false
+        in: path
+        name: readerId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TerminalReaderDto'
+          description: OK
+      summary: get reader
+      tags:
+      - Terminal
+      x-accepts: application/json;charset=utf-8
+  /disputes:
+    get:
+      description: 不審請求情報を一覧で取得します
+      operationId: listDisputes
+      parameters:
+      - description: Charge ID
+        explode: true
+        in: query
+        name: chargeId
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。
+        explode: true
+        in: query
+        name: from
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: 終了時間（UTC）。指定した時間以前に作成されたデータを取得します
+        explode: true
+        in: query
+        name: to
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: |
+          開始時間と終了時間の項目を指定します。
+          - resolved_time 不審請求解決時間
+          - create_time 不審請求発生時間
+        explode: true
+        in: query
+        name: dateField
+        required: false
+        schema:
+          $ref: '#/components/schemas/DisputeDateTimeType'
+        style: form
+      - description: 不審請求ステータス
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          $ref: '#/components/schemas/DisputeStatusType'
+        style: form
+      - description: 最大件数
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          maximum: 100
+          type: integer
+        style: form
+      - description: 検索開始位置
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      - description: |
+          ソート項目
+          - resolved_time 不審請求解決時間
+          - create_time 決済新規時間
+        explode: true
+        in: query
+        name: sort
+        required: false
+        schema:
+          $ref: '#/components/schemas/DisputeDateTimeType'
+        style: form
+      - description: |
+          ソート順
+          - desc 降順
+          - asc 昇順
+        explode: true
+        in: query
+        name: order
+        required: false
+        schema:
+          $ref: '#/components/schemas/SortOrderType'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/DisputesResponse'
+          description: OK
+      summary: List disputes
+      tags:
+      - Dispute
+      x-accepts: application/json;charset=utf-8
+  /disputes/{id}:
+    get:
+      description: 不審請求に関する詳細情報を取得します。
+      operationId: retrieveDispute
+      parameters:
+      - description: Dispute ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/DisputeDto'
+          description: OK
+      summary: Retrieve dispute
+      tags:
+      - Dispute
+      x-accepts: application/json;charset=utf-8
+  /subscriptions:
+    get:
+      description: 定期課金を一覧で取得します。
+      operationId: listSubscriptions
+      parameters:
+      - description: Customer ID
+        explode: true
+        in: query
+        name: customerId
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。
+        explode: true
+        in: query
+        name: from
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: 終了時間（UTC）。指定した時間以前に作成されたデータを取得します
+        explode: true
+        in: query
+        name: to
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: 定期課金ステータス
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          $ref: '#/components/schemas/SubscriptionStatusType'
+        style: form
+      - description: 最大件数
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          maximum: 100
+          type: integer
+        style: form
+      - description: 検索開始位置
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionsResponse'
+          description: OK
+      summary: List subscriptions
+      tags:
+      - Subscription
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: 定期課金を作成します。
+      operationId: createSubscription
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/SubscriptionReq'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+          description: OK
+      summary: Create subscription
+      tags:
+      - Subscription
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /subscriptions/{subscriptionId}:
+    get:
+      description: 定期課金情報を取得します。
+      operationId: retrieveSubscription
+      parameters:
+      - description: Subscription ID
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+          description: OK
+      summary: Retrieve subscription
+      tags:
+      - Subscription
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: 定期課金を更新します。
+      operationId: updateSubscription
+      parameters:
+      - description: Subscription ID
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/SubscriptionUpdateReq'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+          description: OK
+      summary: Update subscription
+      tags:
+      - Subscription
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /subscriptions/{subscriptionId}/start:
+    post:
+      description: |
+        新規(status=new)の定期課金を開始させます。
+      operationId: startSubscription
+      parameters:
+      - description: Subscription ID
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+          description: OK
+      summary: Start subscription
+      tags:
+      - Subscription
+      x-accepts: application/json;charset=utf-8
+  /subscriptions/{subscriptionId}/resume:
+    post:
+      description: |
+        延滞中(status=past_due)の定期課金を再開させます。
+      operationId: resumeSubscription
+      parameters:
+      - description: Subscription ID
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+          description: OK
+      summary: Resume subscription
+      tags:
+      - Subscription
+      x-accepts: application/json;charset=utf-8
+  /subscriptions/{subscriptionId}/cancel:
+    post:
+      description: |
+        定期課金をキャンセルし、現在の周期の終了日をもって定期課金を終了させます。
+        キャンセルした定期課金は再スタートできません。
+        処理中の定期課金はキャンセルできません。
+      operationId: cancelSubscription
+      parameters:
+      - description: Subscription ID
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+          description: OK
+      summary: Cancel subscription
+      tags:
+      - Subscription
+      x-accepts: application/json;charset=utf-8
+  /subscriptions/{subscriptionId}/periods:
+    get:
+      description: 定期課金の周期情報をリストで取得します。
+      operationId: listSubscriptionPeriods
+      parameters:
+      - description: Subscription ID
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: 最大件数
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          maximum: 100
+          minimum: 0
+          type: integer
+        style: form
+      - description: 検索開始位置
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionPeriodsResponse'
+          description: OK
+      summary: List subscription periods
+      tags:
+      - Subscription
+      x-accepts: application/json;charset=utf-8
+  /locations:
+    get:
+      description: ロケーション情報を一覧で取得します。
+      operationId: listChargeLocations
+      parameters:
+      - description: 最大件数
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          maximum: 100
+          minimum: 0
+          type: integer
+        style: form
+      - description: 検索開始位置
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationsResponse'
+          description: OK
+      summary: List locations
+      tags:
+      - Location
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: ロケーション情報を作成します。
+      operationId: createChargeLocation
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeLocationReq'
+      responses:
+        "201":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationDto'
+          description: Created
+      summary: Create location
+      tags:
+      - Location
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+  /locations/{locationId}:
+    delete:
+      description: ロケーション情報を削除します
+      operationId: deleteChargeLocation
+      parameters:
+      - description: Location ID
+        explode: false
+        in: path
+        name: locationId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Deleted
+      summary: Delete location
+      tags:
+      - Location
+      x-accepts: application/json
+    get:
+      description: ロケーション情報を取得します。
+      operationId: retrieveChargeLocation
+      parameters:
+      - description: Location ID
+        explode: false
+        in: path
+        name: locationId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationDto'
+          description: OK
+      summary: Retrieve location
+      tags:
+      - Location
+      x-accepts: application/json;charset=utf-8
+    post:
+      description: ロケーション情報を更新します。
+      operationId: updateChargeLocation
+      parameters:
+      - description: Location ID
+        explode: false
+        in: path
+        name: locationId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeLocationUpdateReq'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationDto'
+          description: OK
+      summary: Update location
+      tags:
+      - Location
+      x-content-type: application/json;charset=utf-8
+      x-accepts: application/json;charset=utf-8
+components:
+  schemas:
+    PaymentMethodType:
+      description: |
+        決済方法
+        - auto 自動識別(CPM決済のみ利用可能)
+        - alipay アリペイ
+        - alipayhk アリペイHK
+        - alipayplus Alipay+
+        - amazonpay Amazon Pay
+        - applepay Apple Pay
+        - applepay_cn Apple Pay(中国)
+        - atokara アトカラ
+        - atone atone(コンビニで翌月払い)
+        - aupay au Pay
+        - creditcard クレジットカード
+        - dana DANA
+        - docomopay d払い
+        - ezlink EZ-Link
+        - felica 電子マネー
+        - felica_id iD
+        - felica_quickpay QUICPay
+        - felica_transport_ic 交通系ICカード
+        - gcash GCash
+        - ginkopay 銀行Pay
+        - googlepay Google Pay
+        - jcoinpay J-Coin Pay
+        - jkopay JKOPAY
+        - kakaopay Kakao Pay
+        - linepay LINE Pay
+        - merpay メルペイ
+        - origamipay Origami Pay
+        - paidy Paidy 翌月払い
+        - paypal PayPal
+        - paypay PayPay
+        - pxpayplus 全支付
+        - rakutenpay 楽天ペイ
+        - tng Touch 'n Go eWallet
+        - truemoney TrueMoney
+        - unionpay 雲閃付
+        - wechatpay Wechat Pay
+        - aeonpay AEON Pay
+        - rabbitlinepay Rabbit LINE Pay
+        - bpi BPI
+        - boost Boost
+        - hellomoney HelloMoney by AUB
+        - tosspay Toss Pay
+        - naverpay Naver Pay
+      enum:
+      - alipay
+      - alipayhk
+      - alipayplus
+      - amazonpay
+      - applepay
+      - applepay_cn
+      - atokara
+      - atone
+      - aupay
+      - creditcard
+      - dana
+      - docomopay
+      - ezlink
+      - felica
+      - felica_id
+      - felica_quickpay
+      - felica_transport_ic
+      - gcash
+      - ginkopay
+      - googlepay
+      - jcoinpay
+      - jkopay
+      - kakaopay
+      - linepay
+      - merpay
+      - origamipay
+      - paidy
+      - paypal
+      - paypay
+      - pxpayplus
+      - rakutenpay
+      - tng
+      - truemoney
+      - unionpay
+      - wechatpay
+      - aeonpay
+      - rabbitlinepay
+      - bpi
+      - boost
+      - hellomoney
+      - tosspay
+      - naverpay
+      - auto
+      type: string
+    ResourceType:
+      description: |
+        決済リソース
+        - web WEBブラウザ
+        - ios iOS Nativeアプリ
+        - android Android Nativeアプリ
+        - liff Line LIFFアプリ
+        - mini WeChatミニプログラム
+        - cpm CPM決済、利用者提示型QRコード
+        - mpm MPM決済、店舗側提示型QRコード
+        - reader カードリーダー決済(リーダー設備が必要)
+        - posapp POSアプリ決済(POSアプリが連携必要)
+      enum:
+      - web
+      - ios
+      - android
+      - liff
+      - mini
+      - cpm
+      - mpm
+      - reader
+      - posapp
+      type: string
+    CardBrandType:
+      description: カードブランド
+      enum:
+      - visa
+      - mastercard
+      - amex
+      - jcb
+      - diners
+      - unionpay
+      - discover
+      - felica
+      - unknown
+      type: string
+    ChargeDateTimeType:
+      default: create_time
+      description: 時間項目
+      enum:
+      - paid_time
+      - create_time
+      type: string
+    DisputeDateTimeType:
+      default: create_time
+      description: 時間項目
+      enum:
+      - resolved_time
+      - create_time
+      type: string
+    SortOrderType:
+      default: desc
+      description: ソート順
+      enum:
+      - desc
+      - asc
+      type: string
+    ChargeStatusType:
+      description: |
+        支払い状態
+        - pending 未支払
+        - uncaptured 承認済み(未確定)
+        - captured 支払済み
+        - partially_refunded 一部返金
+        - refunded 返金済み
+        - revoked キャンセル済み
+      enum:
+      - pending
+      - uncaptured
+      - captured
+      - partially_refunded
+      - refunded
+      - revoked
+      type: string
+    RefundStatusType:
+      description: |
+        返金状態
+        - pending 未返金
+        - refunded 返金済み
+      enum:
+      - pending
+      - refunded
+      type: string
+    CodeStatusType:
+      description: |
+        EasyQrコード状態
+        - pending 未支払
+        - captured 支払済み
+        - closed 有効期限切れ・削除された
+      enum:
+      - pending
+      - captured
+      - closed
+      type: string
+    ChargeReq:
+      description: 支払リクエスト
+      example:
+        sourceId: sourceId
+        amount: 0
+        metadata:
+          key: metadata
+        orderNo: orderNo
+        resource: null
+        capture: true
+        description: description
+        locationId: locationId
+        extra:
+          key: extra
+        clientIp: clientIp
+        customerId: customerId
+        paymentMethod: null
+        currency: JPY
+      properties:
+        amount:
+          description: 金額
+          type: integer
+        capture:
+          default: true
+          description: |
+            支払い処理を確定するかどうか
+            falseの場合、承認と支払い額の確保のみ行う。デフォルトはtrue
+          type: boolean
+        currency:
+          default: JPY
+          description: 通貨コード (ISO_4217)
+          type: string
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        orderNo:
+          description: |
+            お客様側のシステムオーダーNo（例：注文番号、決済IDなど）
+            最大桁数は50桁です。
+          type: string
+        description:
+          description: 決済に関する説明
+          type: string
+        extra:
+          additionalProperties:
+            type: string
+          description: 決済に関する追加情報がある場合に利用します。具体的設定情報は「開発ガイド->決済Extra情報設定」を参照してください。
+          type: object
+        metadata:
+          additionalProperties:
+            type: string
+          description: |
+            メタデータ
+            キーバリューの任意データ。
+            キーは20個まで、バリューは255バイト以内の文字列。
+            「route」、「__」で始まる文字列は予約キー。
+          type: object
+        clientIp:
+          description: Client IP アドレス
+          type: string
+        customerId:
+          description: カスタマID
+          type: string
+        sourceId:
+          description: カスタマソースID
+          type: string
+        locationId:
+          description: ロケーションID
+          type: string
+      required:
+      - amount
+      - orderNo
+      - paymentMethod
+      type: object
+    ChargeDto:
+      description: 支払いオブジェクト
+      example:
+        metadata:
+          key: metadata
+        codeContent: codeContent
+        description: description
+        refunds:
+          amount: 2
+          data:
+          - reason: reason
+            liveMode: true
+            amount: 9
+            metadata:
+              key: metadata
+            createTime: 2
+            chargeId: chargeId
+            refundedTime: 3
+            currency: currency
+            id: id
+            object: refund
+            status: null
+          - reason: reason
+            liveMode: true
+            amount: 9
+            metadata:
+              key: metadata
+            createTime: 2
+            chargeId: chargeId
+            refundedTime: 3
+            currency: currency
+            id: id
+            object: refund
+            status: null
+          totalCount: 7
+        liveMode: true
+        credential: credential
+        appId: appId
+        extra:
+          key: extra
+        currency: JPY
+        refunded: true
+        id: id
+        authorizeAmount: 1
+        authorize: true
+        amount: 6
+        disputed: true
+        orderNo: orderNo
+        cardInfo:
+          last4: last4
+          expMonth: 5
+          wallet: wallet
+          expYear: 5
+          threeDSecure: true
+          name: name
+          walletApp: walletApp
+          brand: null
+          threeDSecureVersion: threeDSecureVersion
+        settleTime: 1
+        resource: null
+        refundTime: 7
+        paidTime: 4
+        voucherNo: voucherNo
+        createTime: 1
+        clientIp: clientIp
+        paid: true
+        expiryTime: 1
+        paymentMethod: null
+        object: charge
+        status: null
+      properties:
+        id:
+          description: Charge ID
+          type: string
+        appId:
+          description: App ID
+          type: string
+        object:
+          default: charge
+          description: 対象種類の表記
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        amount:
+          description: 支払い金額
+          type: integer
+        authorizeAmount:
+          description: 事前承認金額
+          type: integer
+        currency:
+          default: JPY
+          description: 通貨コード (ISO_4217)
+          type: string
+        authorize:
+          description: 事前承認フラグ
+          type: boolean
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        orderNo:
+          description: お客様システム側のオーダーNo、例えば注文番号、決済IDなど
+          type: string
+        description:
+          description: 支払い説明文
+          type: string
+        extra:
+          additionalProperties:
+            type: string
+          description: 支払いエキストラデータ
+          type: object
+        metadata:
+          additionalProperties:
+            type: string
+          description: 支払いメタデータ
+          type: object
+        cardInfo:
+          $ref: '#/components/schemas/CardInfo'
+        voucherNo:
+          description: プロバイダー決済伝票番号
+          type: string
+        clientIp:
+          description: Client IP アドレス
+          type: string
+        paid:
+          description: 支払い済みフラグ
+          type: boolean
+        refunded:
+          description: 返金済みフラグ
+          type: boolean
+        disputed:
+          description: 不審請求フラグ
+          type: boolean
+        refunds:
+          $ref: '#/components/schemas/RefundsDto'
+        status:
+          $ref: '#/components/schemas/ChargeStatusType'
+        codeContent:
+          description: 店舗側提示型QRコード(リソースはmpm場合のみ)
+          type: string
+        credential:
+          description: Client SDKの認証情報
+          type: string
+        paidTime:
+          description: 支払い時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+        refundTime:
+          description: 返金時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+        expiryTime:
+          description: 支払い請求有効時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+        settleTime:
+          description: 支払い締め時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+        createTime:
+          description: 支払い新規時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+      type: object
+    ChargeStatusDto:
+      description: 支払いステータスオブジェクト
+      example:
+        liveMode: true
+        appId: appId
+        id: id
+        status: null
+      properties:
+        id:
+          description: Charge ID
+          type: string
+        appId:
+          description: App ID
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        status:
+          $ref: '#/components/schemas/ChargeStatusType'
+      type: object
+    RefundReq:
+      description: 返金リクエスト
+      example:
+        reason: reason
+        amount: 0
+        metadata:
+          key: metadata
+        currency: JPY
+      properties:
+        amount:
+          description: 返金額。全額返金、及び amount の指定で任意の金額で返金ができます。
+          type: integer
+        currency:
+          default: JPY
+          description: 通貨コード (ISO_4217)
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          description: 返金メタデータ
+          type: object
+        reason:
+          description: 返金理由
+          type: string
+      required:
+      - amount
+      type: object
+    RefundDto:
+      description: 返金オブジェクト
+      example:
+        reason: reason
+        liveMode: true
+        amount: 9
+        metadata:
+          key: metadata
+        createTime: 2
+        chargeId: chargeId
+        refundedTime: 3
+        currency: currency
+        id: id
+        object: refund
+        status: null
+      properties:
+        id:
+          description: Refund ID
+          type: string
+        object:
+          default: refund
+          description: 対象種類の表記
+          type: string
+        chargeId:
+          description: Charge ID
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        amount:
+          description: 返金金額。全額返金、及び amount を指定することで金額の部分返金を行うことができます。
+          type: integer
+        currency:
+          description: 通貨コード (ISO_4217)
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          description: 返金メタデータ
+          type: object
+        reason:
+          description: 返金理由
+          type: string
+        status:
+          $ref: '#/components/schemas/RefundStatusType'
+        refundedTime:
+          description: 返金を行う時間のUTCタイムスタンプ。
+          format: int64
+          type: integer
+        createTime:
+          description: 返金新規時間のUTCタイムスタンプ。
+          format: int64
+          type: integer
+      type: object
+    RefundsDto:
+      description: 返金のサマリー。複数回返金された場合、返金内容をサマリーして返します。
+      example:
+        amount: 2
+        data:
+        - reason: reason
+          liveMode: true
+          amount: 9
+          metadata:
+            key: metadata
+          createTime: 2
+          chargeId: chargeId
+          refundedTime: 3
+          currency: currency
+          id: id
+          object: refund
+          status: null
+        - reason: reason
+          liveMode: true
+          amount: 9
+          metadata:
+            key: metadata
+          createTime: 2
+          chargeId: chargeId
+          refundedTime: 3
+          currency: currency
+          id: id
+          object: refund
+          status: null
+        totalCount: 7
+      properties:
+        amount:
+          description: 返金総額
+          type: integer
+        totalCount:
+          description: 返金回数
+          type: integer
+        data:
+          description: 返金詳細情報
+          items:
+            $ref: '#/components/schemas/RefundDto'
+          type: array
+      type: object
+    ChargesResponse:
+      description: 支払い情報リスト
+      example:
+        total: 0
+        charges:
+        - metadata:
+            key: metadata
+          codeContent: codeContent
+          description: description
+          refunds:
+            amount: 2
+            data:
+            - reason: reason
+              liveMode: true
+              amount: 9
+              metadata:
+                key: metadata
+              createTime: 2
+              chargeId: chargeId
+              refundedTime: 3
+              currency: currency
+              id: id
+              object: refund
+              status: null
+            - reason: reason
+              liveMode: true
+              amount: 9
+              metadata:
+                key: metadata
+              createTime: 2
+              chargeId: chargeId
+              refundedTime: 3
+              currency: currency
+              id: id
+              object: refund
+              status: null
+            totalCount: 7
+          liveMode: true
+          credential: credential
+          appId: appId
+          extra:
+            key: extra
+          currency: JPY
+          refunded: true
+          id: id
+          authorizeAmount: 1
+          authorize: true
+          amount: 6
+          disputed: true
+          orderNo: orderNo
+          cardInfo:
+            last4: last4
+            expMonth: 5
+            wallet: wallet
+            expYear: 5
+            threeDSecure: true
+            name: name
+            walletApp: walletApp
+            brand: null
+            threeDSecureVersion: threeDSecureVersion
+          settleTime: 1
+          resource: null
+          refundTime: 7
+          paidTime: 4
+          voucherNo: voucherNo
+          createTime: 1
+          clientIp: clientIp
+          paid: true
+          expiryTime: 1
+          paymentMethod: null
+          object: charge
+          status: null
+        - metadata:
+            key: metadata
+          codeContent: codeContent
+          description: description
+          refunds:
+            amount: 2
+            data:
+            - reason: reason
+              liveMode: true
+              amount: 9
+              metadata:
+                key: metadata
+              createTime: 2
+              chargeId: chargeId
+              refundedTime: 3
+              currency: currency
+              id: id
+              object: refund
+              status: null
+            - reason: reason
+              liveMode: true
+              amount: 9
+              metadata:
+                key: metadata
+              createTime: 2
+              chargeId: chargeId
+              refundedTime: 3
+              currency: currency
+              id: id
+              object: refund
+              status: null
+            totalCount: 7
+          liveMode: true
+          credential: credential
+          appId: appId
+          extra:
+            key: extra
+          currency: JPY
+          refunded: true
+          id: id
+          authorizeAmount: 1
+          authorize: true
+          amount: 6
+          disputed: true
+          orderNo: orderNo
+          cardInfo:
+            last4: last4
+            expMonth: 5
+            wallet: wallet
+            expYear: 5
+            threeDSecure: true
+            name: name
+            walletApp: walletApp
+            brand: null
+            threeDSecureVersion: threeDSecureVersion
+          settleTime: 1
+          resource: null
+          refundTime: 7
+          paidTime: 4
+          voucherNo: voucherNo
+          createTime: 1
+          clientIp: clientIp
+          paid: true
+          expiryTime: 1
+          paymentMethod: null
+          object: charge
+          status: null
+      properties:
+        total:
+          description: 件数
+          type: integer
+        charges:
+          description: 支払い詳細内容
+          items:
+            $ref: '#/components/schemas/ChargeDto'
+          type: array
+      type: object
+    RefundsResponse:
+      description: 返金情報リスト
+      example:
+        total: 0
+        refunds:
+        - reason: reason
+          liveMode: true
+          amount: 9
+          metadata:
+            key: metadata
+          createTime: 2
+          chargeId: chargeId
+          refundedTime: 3
+          currency: currency
+          id: id
+          object: refund
+          status: null
+        - reason: reason
+          liveMode: true
+          amount: 9
+          metadata:
+            key: metadata
+          createTime: 2
+          chargeId: chargeId
+          refundedTime: 3
+          currency: currency
+          id: id
+          object: refund
+          status: null
+      properties:
+        total:
+          description: 件数
+          type: integer
+        refunds:
+          description: 返金詳細内容
+          items:
+            $ref: '#/components/schemas/RefundDto'
+          type: array
+      type: object
+    DisputesResponse:
+      description: 不審請求情報リスト
+      example:
+        total: 0
+        disputes:
+        - reason: reason
+          liveMode: true
+          amount: 6
+          metadata:
+            key: metadata
+          resolvedTime: 1
+          createTime: 5
+          chargeId: chargeId
+          currency: currency
+          id: id
+          object: dispute
+          status: null
+        - reason: reason
+          liveMode: true
+          amount: 6
+          metadata:
+            key: metadata
+          resolvedTime: 1
+          createTime: 5
+          chargeId: chargeId
+          currency: currency
+          id: id
+          object: dispute
+          status: null
+      properties:
+        total:
+          description: 件数
+          type: integer
+        disputes:
+          description: 不審請求詳細内容
+          items:
+            $ref: '#/components/schemas/DisputeDto'
+          type: array
+      type: object
+    DisputeDto:
+      description: 不審請求オブジェクト
+      example:
+        reason: reason
+        liveMode: true
+        amount: 6
+        metadata:
+          key: metadata
+        resolvedTime: 1
+        createTime: 5
+        chargeId: chargeId
+        currency: currency
+        id: id
+        object: dispute
+        status: null
+      properties:
+        id:
+          description: Dispute ID
+          type: string
+        object:
+          default: dispute
+          description: 対象種類の表記
+          type: string
+        chargeId:
+          description: Charge ID
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        amount:
+          description: 不審請求金額
+          type: integer
+        currency:
+          description: 通貨コード (ISO_4217)
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+        reason:
+          description: 不審請求理由
+          type: string
+        status:
+          $ref: '#/components/schemas/DisputeStatusType'
+        resolvedTime:
+          description: 対応時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+        createTime:
+          description: 発生時間のUTCタイムスタンプ。
+          format: int64
+          type: integer
+      type: object
+    CustomerStatusType:
+      description: |
+        状態
+      enum:
+      - active
+      - deleted
+      type: string
+    CustomerReq:
+      description: カスタマリクエスト
+      example:
+        metadata:
+          key: metadata
+        phone: phone
+        name: name
+        description: description
+        remark: remark
+        email: email
+      properties:
+        name:
+          description: 名前
+          type: string
+        description:
+          description: カスタマに関する説明
+          type: string
+        email:
+          description: メールアドレス
+          type: string
+        phone:
+          description: 電話番号
+          type: string
+        remark:
+          description: 備考
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+      type: object
+    CustomerUpdateReq:
+      description: カスタマ更新リクエスト
+      example:
+        metadata:
+          key: metadata
+        phone: phone
+        name: name
+        defaultSource: defaultSource
+        description: description
+        remark: remark
+        email: email
+      properties:
+        defaultSource:
+          description: デフォルトカスタマソースID
+          type: string
+        name:
+          description: 名前
+          type: string
+        description:
+          description: カスタマに関する説明
+          type: string
+        email:
+          description: メールアドレス
+          type: string
+        phone:
+          description: 電話番号
+          type: string
+        remark:
+          description: 備考
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+      type: object
+    CustomerDto:
+      description: カスタマオブジェクト
+      example:
+        metadata:
+          key: metadata
+        description: description
+        remark: remark
+        updateTime: 6
+        operator: operator
+        liveMode: true
+        phone: phone
+        name: name
+        defaultSource: defaultSource
+        id: id
+        email: email
+        object: customer
+        status: null
+      properties:
+        id:
+          description: Customer ID
+          type: string
+        object:
+          default: customer
+          description: 対象種類の表記
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        defaultSource:
+          description: デフォルトカスタマソースID
+          type: string
+        name:
+          description: 名前
+          type: string
+        description:
+          description: カスタマに関する説明
+          type: string
+        email:
+          description: メールアドレス
+          type: string
+        phone:
+          description: 電話番号
+          type: string
+        remark:
+          description: 備考
+          type: string
+        operator:
+          description: 操作者
+          type: string
+        status:
+          $ref: '#/components/schemas/CustomerStatusType'
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+        updateTime:
+          description: update time
+          format: int64
+          type: integer
+    CustomerResponse:
+      description: カスタマ情報リスト
+      example:
+        total: 0
+        customers:
+        - metadata:
+            key: metadata
+          description: description
+          remark: remark
+          updateTime: 6
+          operator: operator
+          liveMode: true
+          phone: phone
+          name: name
+          defaultSource: defaultSource
+          id: id
+          email: email
+          object: customer
+          status: null
+        - metadata:
+            key: metadata
+          description: description
+          remark: remark
+          updateTime: 6
+          operator: operator
+          liveMode: true
+          phone: phone
+          name: name
+          defaultSource: defaultSource
+          id: id
+          email: email
+          object: customer
+          status: null
+      properties:
+        total:
+          description: 件数
+          type: integer
+        customers:
+          description: カスタマ詳細内容
+          items:
+            $ref: '#/components/schemas/CustomerDto'
+          type: array
+      type: object
+    SourceStatusType:
+      description: |
+        カスタマソースステータス
+        - pending 未承認
+        - active 承認済み
+        - deleted 削除済みあるいは失効
+      enum:
+      - pending
+      - active
+      - deleted
+      type: string
+    SourceReq:
+      description: カスタマソースリクエスト
+      example:
+        metadata:
+          key: metadata
+        resource: null
+        extra:
+          key: extra
+        paymentMethod: null
+        description: description
+      properties:
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        description:
+          description: カスタマソースに関する説明
+          type: string
+        extra:
+          additionalProperties:
+            type: string
+          description: 決済に関する追加情報がある場合に利用します。具体的設定情報は「開発ガイド->ソースExtra情報設定」を参照してください。
+          type: object
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+      required:
+      - paymentMethod
+      - resource
+      type: object
+    SourceDto:
+      description: カスタマソースオブジェクト
+      example:
+        liveMode: true
+        metadata:
+          key: metadata
+        cardInfo:
+          last4: last4
+          expMonth: 5
+          wallet: wallet
+          expYear: 5
+          threeDSecure: true
+          name: name
+          walletApp: walletApp
+          brand: null
+          threeDSecureVersion: threeDSecureVersion
+        credential: credential
+        resource: null
+        extra:
+          key: extra
+        paymentMethod: null
+        description: description
+        id: id
+        object: source
+        info:
+          key: "{}"
+        status: null
+      properties:
+        id:
+          description: Source ID
+          type: string
+        object:
+          default: source
+          description: 対象種類の表記
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        description:
+          description: カスタマソースに関する説明
+          type: string
+        extra:
+          additionalProperties:
+            type: string
+          description: カスタマソースエキストラデータ
+          type: object
+        info:
+          additionalProperties:
+            type: object
+          description: カスタマソース情報
+          type: object
+        cardInfo:
+          $ref: '#/components/schemas/CardInfo'
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+        credential:
+          description: Client SDK の認証情報
+          type: string
+        status:
+          $ref: '#/components/schemas/SourceStatusType'
+    SourceStatusDto:
+      description: カスタマソースステータスオブジェクト
+      example:
+        liveMode: true
+        appId: appId
+        id: id
+        status: null
+      properties:
+        id:
+          description: Source ID
+          type: string
+        appId:
+          description: App ID
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        status:
+          $ref: '#/components/schemas/SourceStatusType'
+      type: object
+    SourceResponse:
+      description: カスタマソース情報リスト
+      example:
+        total: 0
+        sources:
+        - liveMode: true
+          metadata:
+            key: metadata
+          cardInfo:
+            last4: last4
+            expMonth: 5
+            wallet: wallet
+            expYear: 5
+            threeDSecure: true
+            name: name
+            walletApp: walletApp
+            brand: null
+            threeDSecureVersion: threeDSecureVersion
+          credential: credential
+          resource: null
+          extra:
+            key: extra
+          paymentMethod: null
+          description: description
+          id: id
+          object: source
+          info:
+            key: "{}"
+          status: null
+        - liveMode: true
+          metadata:
+            key: metadata
+          cardInfo:
+            last4: last4
+            expMonth: 5
+            wallet: wallet
+            expYear: 5
+            threeDSecure: true
+            name: name
+            walletApp: walletApp
+            brand: null
+            threeDSecureVersion: threeDSecureVersion
+          credential: credential
+          resource: null
+          extra:
+            key: extra
+          paymentMethod: null
+          description: description
+          id: id
+          object: source
+          info:
+            key: "{}"
+          status: null
+      properties:
+        total:
+          description: 件数
+          type: integer
+        sources:
+          description: カスタマソース詳細内容
+          items:
+            $ref: '#/components/schemas/SourceDto'
+          type: array
+      type: object
+    PaymentMethodResponse:
+      description: 利用できる決済方法リスト
+      example:
+        total: 0
+        paymentMethods:
+        - customerProperties:
+            isSupportMultipleSource: true
+            isSupportCustomer: true
+          channelProperties:
+            isSupportRefund: true
+            minAmount: 1
+            isSupportMultipleSource: true
+            isSupportPartialRefund: true
+            isSupportSource: true
+            resourceWebEnv: null
+            isSupportMultipleRefund: true
+            maxAmount: 6
+          paymentMethod: null
+          resources:
+          - null
+          - null
+          ua: ua
+          brand:
+          - brand
+          - brand
+        - customerProperties:
+            isSupportMultipleSource: true
+            isSupportCustomer: true
+          channelProperties:
+            isSupportRefund: true
+            minAmount: 1
+            isSupportMultipleSource: true
+            isSupportPartialRefund: true
+            isSupportSource: true
+            resourceWebEnv: null
+            isSupportMultipleRefund: true
+            maxAmount: 6
+          paymentMethod: null
+          resources:
+          - null
+          - null
+          ua: ua
+          brand:
+          - brand
+          - brand
+      properties:
+        total:
+          description: 件数
+          type: integer
+        paymentMethods:
+          description: 決済方法詳細情報
+          items:
+            $ref: '#/components/schemas/PaymentMethodDto'
+          type: array
+      type: object
+    PaymentMethodDto:
+      description: 決済方法詳細情報
+      example:
+        customerProperties:
+          isSupportMultipleSource: true
+          isSupportCustomer: true
+        channelProperties:
+          isSupportRefund: true
+          minAmount: 1
+          isSupportMultipleSource: true
+          isSupportPartialRefund: true
+          isSupportSource: true
+          resourceWebEnv: null
+          isSupportMultipleRefund: true
+          maxAmount: 6
+        paymentMethod: null
+        resources:
+        - null
+        - null
+        ua: ua
+        brand:
+        - brand
+        - brand
+      properties:
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resources:
+          items:
+            $ref: '#/components/schemas/ResourceType'
+          type: array
+        brand:
+          description: クレジットカードの場合、利用できるクレジットカードブランド
+          items:
+            description: クレジットカードブランド
+            type: string
+          type: array
+        ua:
+          description: 利用できるブラウザのUserAgent
+          type: string
+        channelProperties:
+          $ref: '#/components/schemas/ChannelPropertiesDto'
+        customerProperties:
+          $ref: '#/components/schemas/CustomerPropertiesDto'
+      type: object
+    ChannelPropertiesDto:
+      description: 決済方法関する情報
+      example:
+        isSupportRefund: true
+        minAmount: 1
+        isSupportMultipleSource: true
+        isSupportPartialRefund: true
+        isSupportSource: true
+        resourceWebEnv: null
+        isSupportMultipleRefund: true
+        maxAmount: 6
+      properties:
+        isSupportRefund:
+          description: 返金 true 利用可能 false 利用不可
+          type: boolean
+        isSupportPartialRefund:
+          description: 一部返金 true 利用可能 false 利用不可
+          type: boolean
+        isSupportMultipleRefund:
+          description: 複数回返金 true 利用可能 false 一回のみ
+          type: boolean
+        isSupportSource:
+          description: カスタマ機能とソース true 利用可能 false 利用不可
+          type: boolean
+        isSupportMultipleSource:
+          description: 複数ソース true バインディング可能 false バインディング不可
+          type: boolean
+        maxAmount:
+          description: 最大可能金額
+          type: integer
+        minAmount:
+          description: 最小可能金額
+          type: integer
+        resourceWebEnv:
+          $ref: '#/components/schemas/ResourceWebEnvType'
+      type: object
+    ResourceWebEnvType:
+      description: |
+        リソースはWebの場合。利用可能環境
+        - all 全ての環境
+        - wallet_app ウォレットアプリ内の組み込みブラウザのみ可能
+        - web ウェブのみ, ウォレットアプリの中で利用不可
+      enum:
+      - all
+      - wallet_app
+      - web
+      type: string
+    CustomerPropertiesDto:
+      deprecated: true
+      description: |
+        決済方法カスタマ関する情報。廃棄予定。ChannelPropertiesDtoを利用してください。
+      example:
+        isSupportMultipleSource: true
+        isSupportCustomer: true
+      properties:
+        isSupportCustomer:
+          description: |
+            廃棄予定。ChannelPropertiesDto.isSupportSourceを利用してください。
+            カスタマ機能 true 利用可能 false カスタマ利用不可。
+          type: boolean
+        isSupportMultipleSource:
+          description: |
+            廃棄予定。ChannelPropertiesDto.isSupportMultipleSourceを利用してください。
+            複数ソース true バインディング可能 false バインディング不可
+          type: boolean
+      type: object
+    CodeReq:
+      description: EasyQRコードリクエスト
+      example:
+        amount: 0
+        metadata:
+          key: metadata
+        orderNo: orderNo
+        locationId: locationId
+        extra:
+          key: extra
+        description: description
+        currency: JPY
+        frontUrl: frontUrl
+        expiryDuration: 6
+        items:
+        - image: image
+          price: 6
+          name: name
+          count: 1
+        - image: image
+          price: 6
+          name: name
+          count: 1
+      properties:
+        amount:
+          description: 金額
+          type: integer
+        currency:
+          default: JPY
+          description: 通貨コード (ISO_4217)
+          type: string
+        orderNo:
+          description: |
+            お客様側のシステムオーダーNo（例：注文番号、決済IDなど）
+            最大桁数は50桁です。
+          type: string
+        description:
+          description: 支払いオブジェクトの「決済に関する説明」
+          type: string
+        extra:
+          additionalProperties:
+            type: string
+          description: |
+            決済に関する追加情報がある場合に利用します。具体的設定情報は「開発ガイド->決済Extra情報設定」を参照してください。
+            決済オブジェクトを作成する時、こちら設定したextra情報を優先利用します。
+          type: object
+        metadata:
+          additionalProperties:
+            type: string
+          description: 支払いオブジェクトの「メタデータ」
+          type: object
+        expiryDuration:
+          description: |
+            EasyQRコード有効期限(分)
+            最小:3分、最大:30分、デフォルト:10分
+          type: integer
+        frontUrl:
+          description: EasyCheckout決済が完了したあとの、戻り先ページのURL
+          pattern: "https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"
+          type: string
+        items:
+          description: 商品に関する情報
+          items:
+            $ref: '#/components/schemas/CodeItem'
+          type: array
+        locationId:
+          description: ロケーションID
+          type: string
+      required:
+      - amount
+      - orderNo
+      type: object
+    CodeDto:
+      description: EasyQRコードオブジェクト
+      example:
+        codeUrl: codeUrl
+        amount: 0
+        metadata:
+          key: metadata
+        orderNo: orderNo
+        charge:
+          metadata:
+            key: metadata
+          codeContent: codeContent
+          description: description
+          refunds:
+            amount: 2
+            data:
+            - reason: reason
+              liveMode: true
+              amount: 9
+              metadata:
+                key: metadata
+              createTime: 2
+              chargeId: chargeId
+              refundedTime: 3
+              currency: currency
+              id: id
+              object: refund
+              status: null
+            - reason: reason
+              liveMode: true
+              amount: 9
+              metadata:
+                key: metadata
+              createTime: 2
+              chargeId: chargeId
+              refundedTime: 3
+              currency: currency
+              id: id
+              object: refund
+              status: null
+            totalCount: 7
+          liveMode: true
+          credential: credential
+          appId: appId
+          extra:
+            key: extra
+          currency: JPY
+          refunded: true
+          id: id
+          authorizeAmount: 1
+          authorize: true
+          amount: 6
+          disputed: true
+          orderNo: orderNo
+          cardInfo:
+            last4: last4
+            expMonth: 5
+            wallet: wallet
+            expYear: 5
+            threeDSecure: true
+            name: name
+            walletApp: walletApp
+            brand: null
+            threeDSecureVersion: threeDSecureVersion
+          settleTime: 1
+          resource: null
+          refundTime: 7
+          paidTime: 4
+          voucherNo: voucherNo
+          createTime: 1
+          clientIp: clientIp
+          paid: true
+          expiryTime: 1
+          paymentMethod: null
+          object: charge
+          status: null
+        description: description
+        expiryPeriod: 5
+        frontUrl: frontUrl
+        liveMode: true
+        expired: true
+        createTime: 2
+        locationId: locationId
+        extra:
+          key: extra
+        expiryTime: 5
+        currency: JPY
+        id: id
+        items:
+        - image: image
+          price: 6
+          name: name
+          count: 1
+        - image: image
+          price: 6
+          name: name
+          count: 1
+        object: code
+        status: null
+      properties:
+        id:
+          description: EasyQRコードID
+          type: string
+        object:
+          default: code
+          description: 対象種類の表記
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        codeUrl:
+          description: EasyQRコードURL
+          type: string
+        amount:
+          description: 支払い金額
+          type: integer
+        currency:
+          default: JPY
+          description: 通貨コード (ISO_4217)
+          type: string
+        orderNo:
+          description: お客様システム側のオーダーNo、例えば注文番号、決済IDなど
+          type: string
+        description:
+          description: 支払いオブジェクトの「決済に関する説明」
+          type: string
+        extra:
+          additionalProperties:
+            type: string
+          description: 支払いエキストラデータ
+          type: object
+        metadata:
+          additionalProperties:
+            type: string
+          description: 支払いオブジェクトの「メタデータ」
+          type: object
+        status:
+          $ref: '#/components/schemas/CodeStatusType'
+        charge:
+          $ref: '#/components/schemas/ChargeDto'
+        frontUrl:
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/CodeItem'
+          type: array
+        locationId:
+          description: ロケーションID
+          type: string
+        expired:
+          description: EasyQRコード有効有無
+          type: boolean
+        expiryTime:
+          description: EasyQRコード有効期限のUTCタイムスタンプ
+          format: int64
+          type: integer
+        expiryPeriod:
+          description: EasyQRコード有効期限までの残りミリ秒数
+          format: int64
+          type: integer
+        createTime:
+          description: コード新規時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+      type: object
+    CodePaymentMethodResponse:
+      description: EasyQR利用できる決済方法リスト
+      example:
+        total: 0
+        paymentMethods:
+        - customerProperties:
+            isSupportMultipleSource: true
+            isSupportCustomer: true
+          channelProperties:
+            isSupportRefund: true
+            minAmount: 1
+            isSupportMultipleSource: true
+            isSupportPartialRefund: true
+            isSupportSource: true
+            resourceWebEnv: null
+            isSupportMultipleRefund: true
+            maxAmount: 6
+          paymentMethod: null
+          resources:
+          - null
+          - null
+          ua: ua
+          brand:
+          - brand
+          - brand
+        - customerProperties:
+            isSupportMultipleSource: true
+            isSupportCustomer: true
+          channelProperties:
+            isSupportRefund: true
+            minAmount: 1
+            isSupportMultipleSource: true
+            isSupportPartialRefund: true
+            isSupportSource: true
+            resourceWebEnv: null
+            isSupportMultipleRefund: true
+            maxAmount: 6
+          paymentMethod: null
+          resources:
+          - null
+          - null
+          ua: ua
+          brand:
+          - brand
+          - brand
+      properties:
+        total:
+          description: 件数
+          type: integer
+        paymentMethods:
+          description: 決済方法詳細情報
+          items:
+            $ref: '#/components/schemas/PaymentMethodDto'
+          type: array
+      type: object
+    CardInfo:
+      description: カード情報やウォレット情報
+      example:
+        last4: last4
+        expMonth: 5
+        wallet: wallet
+        expYear: 5
+        threeDSecure: true
+        name: name
+        walletApp: walletApp
+        brand: null
+        threeDSecureVersion: threeDSecureVersion
+      properties:
+        brand:
+          $ref: '#/components/schemas/CardBrandType'
+        last4:
+          description: カード番号の下四桁
+          type: string
+        expMonth:
+          description: 有効期限月
+          type: integer
+        expYear:
+          description: 有効期限年
+          type: integer
+        name:
+          description: カード保有者名
+          type: string
+        wallet:
+          description: ウォレット情報
+          type: string
+        walletApp:
+          description: ウォレットアプリ情報(paymentMethodはAlipayplusの場合は、実際利用しているアプリ名)
+          type: string
+        threeDSecure:
+          description: 3Dセキュア有無
+          type: boolean
+        threeDSecureVersion:
+          description: 3Dセキュアバージョン
+          type: string
+      type: object
+    CodeItem:
+      description: 商品情報
+      example:
+        image: image
+        price: 6
+        name: name
+        count: 1
+      properties:
+        name:
+          description: 商品の名前
+          type: string
+        image:
+          description: 商品の画像URL
+          pattern: "https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"
+          type: string
+        price:
+          description: 各商品の決済金額
+          type: integer
+        count:
+          description: 商品数
+          type: integer
+      required:
+      - count
+      - name
+      - price
+      type: object
+    TaxType:
+      description: |
+        税区分
+        - included 内税
+        - excluded 外税
+      enum:
+      - included
+      - excluded
+      type: string
+    TaxCalcType:
+      description: |
+        税計算方法
+        - floor 切り捨て
+        - ceil 切り上げ
+        - round5 四捨五入
+      enum:
+      - floor
+      - ceil
+      - round5
+      type: string
+    TaxRateType:
+      description: |
+        税率区分
+        - standard 税率10%
+        - reduced 税率8%
+        - free 税率0%
+      enum:
+      - standard
+      - reduced
+      - free
+      type: string
+    InvoiceStatusType:
+      description: |
+        インボイス状態
+        - draft 下書き
+        - submit 確定済み
+        - sent 送信済み
+        - paid 支払い済み
+        - expired 期限切れ
+        - canceled キャンセル済み
+      enum:
+      - draft
+      - submit
+      - sent
+      - paid
+      - expired
+      - canceled
+      type: string
+    InvoiceReq:
+      description: インボイスリクエスト
+      example:
+        taxCalcType: null
+        amount: 0
+        metadata:
+          key: metadata
+        invoiceTime: 6
+        memo: memo
+        remark: remark
+        name: name
+        customerId: customerId
+        expiryTime: 1
+        currency: JPY
+        fields:
+        - fields
+        - fields
+        items:
+        - unitPrice: 9
+          unit: unit
+          quantity: 3
+          name: name
+          currency: JPY
+          taxRateType: null
+          id: id
+          transactionTime: 2
+          object: invoiceItem
+        - unitPrice: 9
+          unit: unit
+          quantity: 3
+          name: name
+          currency: JPY
+          taxRateType: null
+          id: id
+          transactionTime: 2
+          object: invoiceItem
+        taxType: null
+      properties:
+        name:
+          description: インバイス件名
+          type: string
+        memo:
+          description: インバイスメモ
+          type: string
+        customerId:
+          description: カスタマID
+          type: string
+        amount:
+          description: 支払い金額
+          type: integer
+        currency:
+          default: JPY
+          description: 通貨コード (ISO_4217)
+          type: string
+        taxType:
+          $ref: '#/components/schemas/TaxType'
+        taxCalcType:
+          $ref: '#/components/schemas/TaxCalcType'
+        invoiceTime:
+          description: 請求日のUTCタイムスタンプ
+          format: int64
+          type: integer
+        expiryTime:
+          description: 支払い請求有効時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+        fields:
+          description: インボイスフィールドリスト
+          items:
+            type: string
+          type: array
+        items:
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+          type: array
+        remark:
+          description: 追加説明
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+      required:
+      - amount
+      - customerId
+      type: object
+    InvoiceDto:
+      description: インボイスオブジェクト
+      example:
+        amount: 6
+        metadata:
+          key: metadata
+        invoiceTime: 1
+        memo: memo
+        remark: remark
+        paidTime: 5
+        operator: operator
+        sendTime: 5
+        liveMode: true
+        createTime: 7
+        name: name
+        expiryTime: 2
+        currency: JPY
+        id: id
+        invoiceNo: invoiceNo
+        fields:
+        - fields
+        - fields
+        items:
+        - unitPrice: 9
+          unit: unit
+          quantity: 3
+          name: name
+          currency: JPY
+          taxRateType: null
+          id: id
+          transactionTime: 2
+          object: invoiceItem
+        - unitPrice: 9
+          unit: unit
+          quantity: 3
+          name: name
+          currency: JPY
+          taxRateType: null
+          id: id
+          transactionTime: 2
+          object: invoiceItem
+        object: invoice
+        customer:
+          metadata:
+            key: metadata
+          description: description
+          remark: remark
+          updateTime: 6
+          operator: operator
+          liveMode: true
+          phone: phone
+          name: name
+          defaultSource: defaultSource
+          id: id
+          email: email
+          object: customer
+          status: null
+        status: null
+      properties:
+        id:
+          description: Invoice ID
+          type: string
+        object:
+          default: invoice
+          description: 対象種類の表記
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        customer:
+          $ref: '#/components/schemas/CustomerDto'
+        invoiceNo:
+          description: Invoice Number
+          type: string
+        name:
+          description: インバイス件名
+          type: string
+        memo:
+          description: インバイスメモ
+          type: string
+        amount:
+          description: 支払い金額
+          type: integer
+        currency:
+          default: JPY
+          description: 通貨コード (ISO_4217)
+          type: string
+        status:
+          $ref: '#/components/schemas/InvoiceStatusType'
+        operator:
+          description: 操作者
+          type: string
+        invoiceTime:
+          description: 請求日のUTCタイムスタンプ
+          format: int64
+          type: integer
+        sendTime:
+          description: 送信時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+        paidTime:
+          description: 支払い時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+        expiryTime:
+          description: 支払い請求有効時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+        createTime:
+          description: 作成UTCタイムスタンプ
+          format: int64
+          type: integer
+        fields:
+          description: インボイスフィールドリスト
+          items:
+            type: string
+          type: array
+        items:
+          description: インボイスアイテムリスト
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+          type: array
+        remark:
+          description: 追加説明
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+    InvoiceItem:
+      description: インボイスアイテムオブジェクト
+      example:
+        unitPrice: 9
+        unit: unit
+        quantity: 3
+        name: name
+        currency: JPY
+        taxRateType: null
+        id: id
+        transactionTime: 2
+        object: invoiceItem
+      properties:
+        id:
+          description: Invoice Item ID
+          type: string
+        object:
+          default: invoiceItem
+          description: 対象種類の表記
+          type: string
+        name:
+          description: 商品名
+          type: string
+        unitPrice:
+          description: 単価
+          type: integer
+        currency:
+          default: JPY
+          description: 通貨コード (ISO_4217)
+          type: string
+        quantity:
+          description: 件数
+          type: integer
+        unit:
+          description: 単位
+          type: string
+        taxRateType:
+          $ref: '#/components/schemas/TaxRateType'
+        transactionTime:
+          description: 取引時間のUTCタイムスタンプ
+          format: int64
+          type: integer
+    InvoicesResponse:
+      description: インボイス情報リスト
+      example:
+        total: 0
+        invoices:
+        - amount: 6
+          metadata:
+            key: metadata
+          invoiceTime: 1
+          memo: memo
+          remark: remark
+          paidTime: 5
+          operator: operator
+          sendTime: 5
+          liveMode: true
+          createTime: 7
+          name: name
+          expiryTime: 2
+          currency: JPY
+          id: id
+          invoiceNo: invoiceNo
+          fields:
+          - fields
+          - fields
+          items:
+          - unitPrice: 9
+            unit: unit
+            quantity: 3
+            name: name
+            currency: JPY
+            taxRateType: null
+            id: id
+            transactionTime: 2
+            object: invoiceItem
+          - unitPrice: 9
+            unit: unit
+            quantity: 3
+            name: name
+            currency: JPY
+            taxRateType: null
+            id: id
+            transactionTime: 2
+            object: invoiceItem
+          object: invoice
+          customer:
+            metadata:
+              key: metadata
+            description: description
+            remark: remark
+            updateTime: 6
+            operator: operator
+            liveMode: true
+            phone: phone
+            name: name
+            defaultSource: defaultSource
+            id: id
+            email: email
+            object: customer
+            status: null
+          status: null
+        - amount: 6
+          metadata:
+            key: metadata
+          invoiceTime: 1
+          memo: memo
+          remark: remark
+          paidTime: 5
+          operator: operator
+          sendTime: 5
+          liveMode: true
+          createTime: 7
+          name: name
+          expiryTime: 2
+          currency: JPY
+          id: id
+          invoiceNo: invoiceNo
+          fields:
+          - fields
+          - fields
+          items:
+          - unitPrice: 9
+            unit: unit
+            quantity: 3
+            name: name
+            currency: JPY
+            taxRateType: null
+            id: id
+            transactionTime: 2
+            object: invoiceItem
+          - unitPrice: 9
+            unit: unit
+            quantity: 3
+            name: name
+            currency: JPY
+            taxRateType: null
+            id: id
+            transactionTime: 2
+            object: invoiceItem
+          object: invoice
+          customer:
+            metadata:
+              key: metadata
+            description: description
+            remark: remark
+            updateTime: 6
+            operator: operator
+            liveMode: true
+            phone: phone
+            name: name
+            defaultSource: defaultSource
+            id: id
+            email: email
+            object: customer
+            status: null
+          status: null
+      properties:
+        total:
+          description: 件数
+          type: integer
+        invoices:
+          description: インボイス詳細内容
+          items:
+            $ref: '#/components/schemas/InvoiceDto'
+          type: array
+      type: object
+    InvoiceTaxSummaryItemDto:
+      description: インボイス税金サマリーアイテム
+      properties:
+        taxRateType:
+          $ref: '#/components/schemas/TaxRateType'
+        amount:
+          description: 対象金額
+          type: integer
+        tax:
+          description: 税金
+          type: integer
+      type: object
+    LocationsResponse:
+      description: ターミナルロケーション情報リスト
+      example:
+        locations:
+        - country: country
+          name: name
+          description: description
+          id: id
+          logoUrl: logoUrl
+        - country: country
+          name: name
+          description: description
+          id: id
+          logoUrl: logoUrl
+      properties:
+        locations:
+          description: ターミナルロケーション詳細内容
+          items:
+            $ref: '#/components/schemas/LocationDto'
+          type: array
+      type: object
+    LocationDto:
+      description: ターミナルロケーションオブジェクト
+      example:
+        country: country
+        name: name
+        description: description
+        id: id
+        logoUrl: logoUrl
+      properties:
+        id:
+          description: Location ID
+          type: string
+        name:
+          description: Location名
+          type: string
+        country:
+          description: Location国名
+          type: string
+        description:
+          description: Location詳細
+          type: string
+        logoUrl:
+          description: LocationロゴURL
+          type: string
+      type: object
+    ReaderStatusType:
+      description: |
+        リーダーステータス
+        - pending ペアリング待ち
+        - active ペアリング済み
+      enum:
+      - pending
+      - active
+      type: string
+    DisputeStatusType:
+      description: |
+        不審請求ステータス
+        - new 対応中
+        - won 主張が認められた
+        - lost 主張が認められなかった
+      enum:
+      - new
+      - won
+      - lost
+      type: string
+    TerminalReaderReq:
+      description: ターミナルリーダーリクエスト
+      example:
+        metadata:
+          key: metadata
+        locationId: locationId
+      properties:
+        locationId:
+          description: Location ID
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+      required:
+      - locationId
+      type: object
+    TerminalReaderDto:
+      description: ターミナルリーダーオブジェクト
+      example:
+        liveMode: true
+        metadata:
+          key: metadata
+        serialNumber: serialNumber
+        locationId: locationId
+        appId: appId
+        registrationCode: registrationCode
+        id: id
+        object: terminal.reader
+        status: null
+      properties:
+        id:
+          description: Reader ID
+          type: string
+        appId:
+          description: App ID
+          type: string
+        object:
+          default: terminal.reader
+          description: 対象種類の表記
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        locationId:
+          description: Location ID
+          type: string
+        serialNumber:
+          description: シリアルナンバー
+          type: string
+        registrationCode:
+          description: ペアリングコード
+          type: string
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+        status:
+          $ref: '#/components/schemas/ReaderStatusType'
+      type: object
+    ChargeCaptureReq:
+      description: 決済確定リクエスト
+      example:
+        amount: 0
+        extra:
+          key: extra
+      properties:
+        amount:
+          description: |
+            確定金額
+            これをセットすることで、支払い生成時の金額と異なる金額の支払い処理を行うことができます。 ただし支払い生成時の金額よりも少額である必要があるためご注意ください。
+          type: integer
+        extra:
+          additionalProperties:
+            type: string
+          type: object
+      type: object
+    TerminalReadersResponse:
+      description: リーダー情報リスト
+      example:
+        total: 0
+        readers:
+        - liveMode: true
+          metadata:
+            key: metadata
+          serialNumber: serialNumber
+          locationId: locationId
+          appId: appId
+          registrationCode: registrationCode
+          id: id
+          object: terminal.reader
+          status: null
+        - liveMode: true
+          metadata:
+            key: metadata
+          serialNumber: serialNumber
+          locationId: locationId
+          appId: appId
+          registrationCode: registrationCode
+          id: id
+          object: terminal.reader
+          status: null
+      properties:
+        total:
+          description: 件数
+          type: integer
+        readers:
+          description: リーダー詳細情報
+          items:
+            $ref: '#/components/schemas/TerminalReaderDto'
+          type: array
+      type: object
+    SubscriptionIntervalType:
+      description: |
+        定期課金周期タイプ
+        - day １日１回
+        - week 週１回
+        - month 月１回
+        - year 年１回
+      enum:
+      - day
+      - week
+      - month
+      - year
+      type: string
+    SubscriptionDto:
+      description: 定期課金オブジェクト
+      example:
+        metadata:
+          key: metadata
+        nextChargeTime: 6
+        isCharging: true
+        updateTime: 5
+        chargedPeriods: 1
+        liveMode: true
+        createTime: 5
+        appId: appId
+        customerId: customerId
+        id: id
+        object: subscription
+        customer:
+          metadata:
+            key: metadata
+          description: description
+          remark: remark
+          updateTime: 6
+          operator: operator
+          liveMode: true
+          phone: phone
+          name: name
+          defaultSource: defaultSource
+          id: id
+          email: email
+          object: customer
+          status: null
+        status: null
+      properties:
+        id:
+          description: Subscription ID
+          type: string
+        appId:
+          description: App ID
+          type: string
+        object:
+          default: subscription
+          description: 対象種類の表記
+          type: string
+        liveMode:
+          description: |
+            本番モードかどうか
+            - false テストモード
+            - true 本番モード
+          type: boolean
+        customerId:
+          description: Customer ID
+          type: string
+        customer:
+          $ref: '#/components/schemas/CustomerDto'
+        nextChargeTime:
+          description: 次定期課金周期開始UTCタイムスタンプ
+          format: int64
+          type: integer
+        isCharging:
+          description: 処理中かどうか
+          type: boolean
+        chargedPeriods:
+          description: 成功した定期課金回数
+          type: integer
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+        status:
+          $ref: '#/components/schemas/SubscriptionStatusType'
+        createTime:
+          description: 作成UTCタイムスタンプ
+          format: int64
+          type: integer
+        updateTime:
+          description: 更新UTCタイムスタンプ
+          format: int64
+          type: integer
+      type: object
+    SubscriptionPeriodDto:
+      description: 定期課金周期情報オブジェクト
+      example:
+        charge:
+          metadata:
+            key: metadata
+          codeContent: codeContent
+          description: description
+          refunds:
+            amount: 2
+            data:
+            - reason: reason
+              liveMode: true
+              amount: 9
+              metadata:
+                key: metadata
+              createTime: 2
+              chargeId: chargeId
+              refundedTime: 3
+              currency: currency
+              id: id
+              object: refund
+              status: null
+            - reason: reason
+              liveMode: true
+              amount: 9
+              metadata:
+                key: metadata
+              createTime: 2
+              chargeId: chargeId
+              refundedTime: 3
+              currency: currency
+              id: id
+              object: refund
+              status: null
+            totalCount: 7
+          liveMode: true
+          credential: credential
+          appId: appId
+          extra:
+            key: extra
+          currency: JPY
+          refunded: true
+          id: id
+          authorizeAmount: 1
+          authorize: true
+          amount: 6
+          disputed: true
+          orderNo: orderNo
+          cardInfo:
+            last4: last4
+            expMonth: 5
+            wallet: wallet
+            expYear: 5
+            threeDSecure: true
+            name: name
+            walletApp: walletApp
+            brand: null
+            threeDSecureVersion: threeDSecureVersion
+          settleTime: 1
+          resource: null
+          refundTime: 7
+          paidTime: 4
+          voucherNo: voucherNo
+          createTime: 1
+          clientIp: clientIp
+          paid: true
+          expiryTime: 1
+          paymentMethod: null
+          object: charge
+          status: null
+        startTime: 6
+        id: id
+        endTime: 1
+        object: subscription_period
+      properties:
+        id:
+          description: Subscription Period ID
+          type: string
+        object:
+          default: subscription_period
+          description: 対象種類の表記
+          type: string
+        startTime:
+          description: 周期開始UTCタイムスタンプ
+          format: int64
+          type: integer
+        endTime:
+          description: 周期終了UTCタイムスタンプ
+          format: int64
+          type: integer
+        charge:
+          $ref: '#/components/schemas/ChargeDto'
+      type: object
+    SubscriptionStatusType:
+      description: |
+        定期課金ステータス
+        - new 新規
+        - active 有効
+        - past_due 延滞中
+        - canceled 取消済み
+      enum:
+      - new
+      - active
+      - past_due
+      - canceled
+      type: string
+    SubscriptionReq:
+      description: 定期課金作成リクエスト
+      example:
+        amount: 0
+        intervalSpan: 6
+        firstChargeTime: 5
+        metadata:
+          key: metadata
+        initialAmount: 1
+        name: name
+        customerId: customerId
+        currency: JPY
+        interval: null
+      properties:
+        name:
+          description: 定期課金名
+          type: string
+        customerId:
+          description: カスタマID
+          type: string
+        currency:
+          default: JPY
+          description: 通貨コード (ISO_4217)
+          type: string
+        amount:
+          description: 每期課金金額
+          type: integer
+        interval:
+          $ref: '#/components/schemas/SubscriptionIntervalType'
+        intervalSpan:
+          default: 1
+          description: 定期課金周期間隔（何周期単位ごとに課金されます）
+          type: integer
+        initialAmount:
+          description: 初回支払い前の固定支払額
+          type: integer
+        firstChargeTime:
+          description: 初回支払いUTCタイムスタンプ
+          format: int64
+          type: integer
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+      required:
+      - customerId
+      type: object
+    SubscriptionUpdateReq:
+      description: 定期課金更新リクエスト
+      example:
+        metadata:
+          key: metadata
+      properties:
+        metadata:
+          additionalProperties:
+            type: string
+          description: メタデータ
+          type: object
+      type: object
+    SubscriptionsResponse:
+      description: 定期課金情報リスト
+      example:
+        total: 0
+        subscriptions:
+        - metadata:
+            key: metadata
+          nextChargeTime: 6
+          isCharging: true
+          updateTime: 5
+          chargedPeriods: 1
+          liveMode: true
+          createTime: 5
+          appId: appId
+          customerId: customerId
+          id: id
+          object: subscription
+          customer:
+            metadata:
+              key: metadata
+            description: description
+            remark: remark
+            updateTime: 6
+            operator: operator
+            liveMode: true
+            phone: phone
+            name: name
+            defaultSource: defaultSource
+            id: id
+            email: email
+            object: customer
+            status: null
+          status: null
+        - metadata:
+            key: metadata
+          nextChargeTime: 6
+          isCharging: true
+          updateTime: 5
+          chargedPeriods: 1
+          liveMode: true
+          createTime: 5
+          appId: appId
+          customerId: customerId
+          id: id
+          object: subscription
+          customer:
+            metadata:
+              key: metadata
+            description: description
+            remark: remark
+            updateTime: 6
+            operator: operator
+            liveMode: true
+            phone: phone
+            name: name
+            defaultSource: defaultSource
+            id: id
+            email: email
+            object: customer
+            status: null
+          status: null
+      properties:
+        total:
+          description: 件数
+          type: integer
+        subscriptions:
+          description: 定期課金詳細情報
+          items:
+            $ref: '#/components/schemas/SubscriptionDto'
+          type: array
+      type: object
+    SubscriptionPeriodsResponse:
+      description: 定期課金周期情報リスト
+      example:
+        total: 0
+        periods:
+        - charge:
+            metadata:
+              key: metadata
+            codeContent: codeContent
+            description: description
+            refunds:
+              amount: 2
+              data:
+              - reason: reason
+                liveMode: true
+                amount: 9
+                metadata:
+                  key: metadata
+                createTime: 2
+                chargeId: chargeId
+                refundedTime: 3
+                currency: currency
+                id: id
+                object: refund
+                status: null
+              - reason: reason
+                liveMode: true
+                amount: 9
+                metadata:
+                  key: metadata
+                createTime: 2
+                chargeId: chargeId
+                refundedTime: 3
+                currency: currency
+                id: id
+                object: refund
+                status: null
+              totalCount: 7
+            liveMode: true
+            credential: credential
+            appId: appId
+            extra:
+              key: extra
+            currency: JPY
+            refunded: true
+            id: id
+            authorizeAmount: 1
+            authorize: true
+            amount: 6
+            disputed: true
+            orderNo: orderNo
+            cardInfo:
+              last4: last4
+              expMonth: 5
+              wallet: wallet
+              expYear: 5
+              threeDSecure: true
+              name: name
+              walletApp: walletApp
+              brand: null
+              threeDSecureVersion: threeDSecureVersion
+            settleTime: 1
+            resource: null
+            refundTime: 7
+            paidTime: 4
+            voucherNo: voucherNo
+            createTime: 1
+            clientIp: clientIp
+            paid: true
+            expiryTime: 1
+            paymentMethod: null
+            object: charge
+            status: null
+          startTime: 6
+          id: id
+          endTime: 1
+          object: subscription_period
+        - charge:
+            metadata:
+              key: metadata
+            codeContent: codeContent
+            description: description
+            refunds:
+              amount: 2
+              data:
+              - reason: reason
+                liveMode: true
+                amount: 9
+                metadata:
+                  key: metadata
+                createTime: 2
+                chargeId: chargeId
+                refundedTime: 3
+                currency: currency
+                id: id
+                object: refund
+                status: null
+              - reason: reason
+                liveMode: true
+                amount: 9
+                metadata:
+                  key: metadata
+                createTime: 2
+                chargeId: chargeId
+                refundedTime: 3
+                currency: currency
+                id: id
+                object: refund
+                status: null
+              totalCount: 7
+            liveMode: true
+            credential: credential
+            appId: appId
+            extra:
+              key: extra
+            currency: JPY
+            refunded: true
+            id: id
+            authorizeAmount: 1
+            authorize: true
+            amount: 6
+            disputed: true
+            orderNo: orderNo
+            cardInfo:
+              last4: last4
+              expMonth: 5
+              wallet: wallet
+              expYear: 5
+              threeDSecure: true
+              name: name
+              walletApp: walletApp
+              brand: null
+              threeDSecureVersion: threeDSecureVersion
+            settleTime: 1
+            resource: null
+            refundTime: 7
+            paidTime: 4
+            voucherNo: voucherNo
+            createTime: 1
+            clientIp: clientIp
+            paid: true
+            expiryTime: 1
+            paymentMethod: null
+            object: charge
+            status: null
+          startTime: 6
+          id: id
+          endTime: 1
+          object: subscription_period
+      properties:
+        total:
+          description: 件数
+          type: integer
+        periods:
+          description: 定期課金周期詳細情報
+          items:
+            $ref: '#/components/schemas/SubscriptionPeriodDto'
+          type: array
+      type: object
+    SubscriptionScheduleChargesResponse:
+      description: 定期課金周期支払情報リスト
+      properties:
+        total:
+          description: 件数
+          type: integer
+        charges:
+          description: 定期課金周期支払詳細情報
+          items:
+            $ref: '#/components/schemas/ChargeDto'
+          type: array
+      type: object
+    ChargeLocationStatusType:
+      description: |
+        ロケーションステータス
+        - active 有効
+        - submitted 提出済み
+      enum:
+      - active
+      - submitted
+      type: string
+    ChargeLocationReq:
+      description: ロケーションリクエスト
+      example:
+        zip: zip
+        note: note
+        address:
+          kanji:
+            town: town
+            city: city
+            address2: address2
+            address1: address1
+            pref: pref
+          romaji:
+            town: town
+            city: city
+            address2: address2
+            address1: address1
+            pref: pref
+          kana:
+            town: town
+            city: city
+            address2: address2
+            address1: address1
+            pref: pref
+        latitude: 0.8008281904610115
+        name:
+          kanji: kanji
+          romaji: romaji
+          kana: kana
+        tel: tel
+        longitude: 6.027456183070403
+        status: null
+      properties:
+        name:
+          $ref: '#/components/schemas/StringTransliterationDto'
+        tel:
+          description: 電話番号
+          type: string
+        zip:
+          description: 郵便番号
+          type: string
+        address:
+          $ref: '#/components/schemas/AddressTransliterationDto'
+        latitude:
+          description: 緯度
+          format: double
+          type: number
+        longitude:
+          description: 経度
+          format: double
+          type: number
+        note:
+          description: 備考
+          type: string
+        status:
+          $ref: '#/components/schemas/ChargeLocationStatusType'
+      required:
+      - address
+      - name
+      - tel
+      - zip
+      type: object
+    ChargeLocationUpdateReq:
+      description: ロケーションリ更新クエスト
+      example:
+        zip: zip
+        note: note
+        address:
+          kanji:
+            town: town
+            city: city
+            address2: address2
+            address1: address1
+            pref: pref
+          romaji:
+            town: town
+            city: city
+            address2: address2
+            address1: address1
+            pref: pref
+          kana:
+            town: town
+            city: city
+            address2: address2
+            address1: address1
+            pref: pref
+        latitude: 0.8008281904610115
+        name:
+          kanji: kanji
+          romaji: romaji
+          kana: kana
+        tel: tel
+        longitude: 6.027456183070403
+        status: null
+      properties:
+        name:
+          $ref: '#/components/schemas/StringTransliterationDto'
+        tel:
+          description: 電話番号
+          type: string
+        zip:
+          description: 郵便番号
+          type: string
+        address:
+          $ref: '#/components/schemas/AddressTransliterationDto'
+        latitude:
+          description: 緯度
+          format: double
+          type: number
+        longitude:
+          description: 経度
+          format: double
+          type: number
+        note:
+          description: 備考
+          type: string
+        status:
+          $ref: '#/components/schemas/ChargeLocationStatusType'
+      type: object
+    ChargeLocationDto:
+      description: ロケーションオブジェクト
+      example:
+        zip: zip
+        note: note
+        address:
+          kanji:
+            town: town
+            city: city
+            address2: address2
+            address1: address1
+            pref: pref
+          romaji:
+            town: town
+            city: city
+            address2: address2
+            address1: address1
+            pref: pref
+          kana:
+            town: town
+            city: city
+            address2: address2
+            address1: address1
+            pref: pref
+        latitude: 6.027456183070403
+        name:
+          kanji: kanji
+          romaji: romaji
+          kana: kana
+        tel: tel
+        id: id
+        longitude: 1.4658129805029452
+        status: null
+      properties:
+        id:
+          description: Location ID
+          type: string
+        name:
+          $ref: '#/components/schemas/StringTransliterationDto'
+        tel:
+          description: 電話番号
+          type: string
+        zip:
+          description: 郵便番号
+          type: string
+        address:
+          $ref: '#/components/schemas/AddressTransliterationDto'
+        latitude:
+          description: 緯度
+          format: double
+          type: number
+        longitude:
+          description: 経度
+          format: double
+          type: number
+        note:
+          description: 備考
+          type: string
+        status:
+          $ref: '#/components/schemas/ChargeLocationStatusType'
+      type: object
+    ChargeLocationsResponse:
+      description: ロケーション情報リスト
+      example:
+        total: 0
+        locations:
+        - zip: zip
+          note: note
+          address:
+            kanji:
+              town: town
+              city: city
+              address2: address2
+              address1: address1
+              pref: pref
+            romaji:
+              town: town
+              city: city
+              address2: address2
+              address1: address1
+              pref: pref
+            kana:
+              town: town
+              city: city
+              address2: address2
+              address1: address1
+              pref: pref
+          latitude: 6.027456183070403
+          name:
+            kanji: kanji
+            romaji: romaji
+            kana: kana
+          tel: tel
+          id: id
+          longitude: 1.4658129805029452
+          status: null
+        - zip: zip
+          note: note
+          address:
+            kanji:
+              town: town
+              city: city
+              address2: address2
+              address1: address1
+              pref: pref
+            romaji:
+              town: town
+              city: city
+              address2: address2
+              address1: address1
+              pref: pref
+            kana:
+              town: town
+              city: city
+              address2: address2
+              address1: address1
+              pref: pref
+          latitude: 6.027456183070403
+          name:
+            kanji: kanji
+            romaji: romaji
+            kana: kana
+          tel: tel
+          id: id
+          longitude: 1.4658129805029452
+          status: null
+      properties:
+        total:
+          description: 件数
+          type: integer
+        locations:
+          description: ロケーション詳細内容
+          items:
+            $ref: '#/components/schemas/ChargeLocationDto'
+          type: array
+      type: object
+    AddressTransliterationDto:
+      description: 住所内容オブジェクト
+      example:
+        kanji:
+          town: town
+          city: city
+          address2: address2
+          address1: address1
+          pref: pref
+        romaji:
+          town: town
+          city: city
+          address2: address2
+          address1: address1
+          pref: pref
+        kana:
+          town: town
+          city: city
+          address2: address2
+          address1: address1
+          pref: pref
+      properties:
+        kanji:
+          $ref: '#/components/schemas/AddressDto'
+        kana:
+          $ref: '#/components/schemas/AddressDto'
+        romaji:
+          $ref: '#/components/schemas/AddressDto'
+      type: object
+    StringTransliterationDto:
+      description: 名前内容オブジェクト
+      example:
+        kanji: kanji
+        romaji: romaji
+        kana: kana
+      properties:
+        kanji:
+          description: 漢字
+          type: string
+        kana:
+          description: カナ
+          type: string
+        romaji:
+          description: ローマ字
+          type: string
+      type: object
+    AddressDto:
+      description: 住所オブジェクト
+      example:
+        town: town
+        city: city
+        address2: address2
+        address1: address1
+        pref: pref
+      properties:
+        pref:
+          description: 都道府県
+          type: string
+        city:
+          description: 市区町村
+          type: string
+        town:
+          description: 町域
+          type: string
+        address1:
+          description: 住所1
+          type: string
+        address2:
+          description: 住所2
+          type: string
+      type: object
+  securitySchemes:
+    basicAuth:
+      description: |
+        API呼出すの認証は、秘密鍵をユーザーネームとして扱い、パスワードは省略して、Basic 認証経由で行われます。
+        秘密鍵は、全ての API リクエスト操作が可能となる重要なキーなので、取扱いにご注意ください。
+      scheme: basic
+      type: http
+    bearerAuth:
+      description: |
+        API呼出すの認証は、秘密鍵を認証トークンとして扱い、Bearer 認証経由で行われます。
+        秘密鍵は、全ての API リクエスト操作が可能となる重要なキーなので、取扱いにご注意ください。
+      scheme: bearer
+      type: http
+

@@ -2,7 +2,7 @@
 
 elepay API リファレンス
 
-- API version: 1.2.4
+- API version: 1.2.5
 
 elepay APIはRESTをベースに構成された決済APIです。支払い処理、返金処理など、決済に関わる運用における様々なことができます。
 
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.2.4</version>
+  <version>1.2.5</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.elepay:elepay-java-sdk:1.2.4"
+compile "io.elepay:elepay-java-sdk:1.2.5"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/elepay-java-sdk-1.2.4.jar`
+- `target/elepay-java-sdk-1.2.5.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -82,8 +82,6 @@ public class ChargeApiExample {
 
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-
-        // Configure HTTP basic authorization: basicAuth
         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
         bearerAuth.setBearerToken("Your elepay Secret Key");
 
@@ -133,14 +131,18 @@ Class | Method | HTTP request | Description
 *CustomerApi* | [**updateCustomer**](docs/CustomerApi.md#updateCustomer) | **POST** /customers/{customerId} | Update customer
 *DisputeApi* | [**listDisputes**](docs/DisputeApi.md#listDisputes) | **GET** /disputes | List disputes
 *DisputeApi* | [**retrieveDispute**](docs/DisputeApi.md#retrieveDispute) | **GET** /disputes/{id} | Retrieve dispute
-*InvoiceApi* | [**cancelInvoice**](docs/InvoiceApi.md#cancelInvoice) | **POST** /invoices/{invoiceId}/cancel | cancel invoice
+*InvoiceApi* | [**cancelInvoice**](docs/InvoiceApi.md#cancelInvoice) | **POST** /invoices/{invoiceId}/cancel | Cancel invoice
 *InvoiceApi* | [**createInvoice**](docs/InvoiceApi.md#createInvoice) | **POST** /invoices | Create invoice
-*InvoiceApi* | [**deleteInvoice**](docs/InvoiceApi.md#deleteInvoice) | **DELETE** /invoices/{invoiceId} | Delete invoice
 *InvoiceApi* | [**listInvoices**](docs/InvoiceApi.md#listInvoices) | **GET** /invoices | List invoices
 *InvoiceApi* | [**retrieveInvoice**](docs/InvoiceApi.md#retrieveInvoice) | **GET** /invoices/{invoiceId} | Retrieve invoice
 *InvoiceApi* | [**sendInvoice**](docs/InvoiceApi.md#sendInvoice) | **POST** /invoices/{invoiceId}/send | send invoice
-*InvoiceApi* | [**submitInvoice**](docs/InvoiceApi.md#submitInvoice) | **POST** /invoices/{invoiceId}/submit | submit invoice
+*InvoiceApi* | [**submitInvoice**](docs/InvoiceApi.md#submitInvoice) | **POST** /invoices/{invoiceId}/submit | Submit invoice
 *InvoiceApi* | [**updateInvoice**](docs/InvoiceApi.md#updateInvoice) | **POST** /invoices/{invoiceId} | Update invoice
+*LocationApi* | [**createChargeLocation**](docs/LocationApi.md#createChargeLocation) | **POST** /locations | Create location
+*LocationApi* | [**deleteChargeLocation**](docs/LocationApi.md#deleteChargeLocation) | **DELETE** /locations/{locationId} | Delete location
+*LocationApi* | [**listChargeLocations**](docs/LocationApi.md#listChargeLocations) | **GET** /locations | List locations
+*LocationApi* | [**retrieveChargeLocation**](docs/LocationApi.md#retrieveChargeLocation) | **GET** /locations/{locationId} | Retrieve location
+*LocationApi* | [**updateChargeLocation**](docs/LocationApi.md#updateChargeLocation) | **POST** /locations/{locationId} | Update location
 *PaymentMethodApi* | [**listPaymentMethods**](docs/PaymentMethodApi.md#listPaymentMethods) | **GET** /payment-methods | List supported payment methods
 *RefundApi* | [**createRefund**](docs/RefundApi.md#createRefund) | **POST** /charges/{id}/refunds | Create refund
 *RefundApi* | [**listChargesRefunds**](docs/RefundApi.md#listChargesRefunds) | **GET** /charges/{id}/refunds | List refunds
@@ -162,12 +164,19 @@ Class | Method | HTTP request | Description
 
 ## Documentation for Models
 
+ - [AddressDto](docs/AddressDto.md)
+ - [AddressTransliterationDto](docs/AddressTransliterationDto.md)
  - [CardBrandType](docs/CardBrandType.md)
  - [CardInfo](docs/CardInfo.md)
  - [ChannelPropertiesDto](docs/ChannelPropertiesDto.md)
  - [ChargeCaptureReq](docs/ChargeCaptureReq.md)
  - [ChargeDateTimeType](docs/ChargeDateTimeType.md)
  - [ChargeDto](docs/ChargeDto.md)
+ - [ChargeLocationDto](docs/ChargeLocationDto.md)
+ - [ChargeLocationReq](docs/ChargeLocationReq.md)
+ - [ChargeLocationStatusType](docs/ChargeLocationStatusType.md)
+ - [ChargeLocationUpdateReq](docs/ChargeLocationUpdateReq.md)
+ - [ChargeLocationsResponse](docs/ChargeLocationsResponse.md)
  - [ChargeReq](docs/ChargeReq.md)
  - [ChargeStatusDto](docs/ChargeStatusDto.md)
  - [ChargeStatusType](docs/ChargeStatusType.md)
@@ -182,6 +191,7 @@ Class | Method | HTTP request | Description
  - [CustomerReq](docs/CustomerReq.md)
  - [CustomerResponse](docs/CustomerResponse.md)
  - [CustomerStatusType](docs/CustomerStatusType.md)
+ - [CustomerUpdateReq](docs/CustomerUpdateReq.md)
  - [DisputeDateTimeType](docs/DisputeDateTimeType.md)
  - [DisputeDto](docs/DisputeDto.md)
  - [DisputeStatusType](docs/DisputeStatusType.md)
@@ -190,6 +200,7 @@ Class | Method | HTTP request | Description
  - [InvoiceItem](docs/InvoiceItem.md)
  - [InvoiceReq](docs/InvoiceReq.md)
  - [InvoiceStatusType](docs/InvoiceStatusType.md)
+ - [InvoiceTaxSummaryItemDto](docs/InvoiceTaxSummaryItemDto.md)
  - [InvoicesResponse](docs/InvoicesResponse.md)
  - [LocationDto](docs/LocationDto.md)
  - [LocationsResponse](docs/LocationsResponse.md)
@@ -210,6 +221,7 @@ Class | Method | HTTP request | Description
  - [SourceResponse](docs/SourceResponse.md)
  - [SourceStatusDto](docs/SourceStatusDto.md)
  - [SourceStatusType](docs/SourceStatusType.md)
+ - [StringTransliterationDto](docs/StringTransliterationDto.md)
  - [SubscriptionDto](docs/SubscriptionDto.md)
  - [SubscriptionIntervalType](docs/SubscriptionIntervalType.md)
  - [SubscriptionPeriodDto](docs/SubscriptionPeriodDto.md)
@@ -219,19 +231,26 @@ Class | Method | HTTP request | Description
  - [SubscriptionStatusType](docs/SubscriptionStatusType.md)
  - [SubscriptionUpdateReq](docs/SubscriptionUpdateReq.md)
  - [SubscriptionsResponse](docs/SubscriptionsResponse.md)
+ - [TaxCalcType](docs/TaxCalcType.md)
+ - [TaxRateType](docs/TaxRateType.md)
+ - [TaxType](docs/TaxType.md)
  - [TerminalReaderDto](docs/TerminalReaderDto.md)
  - [TerminalReaderReq](docs/TerminalReaderReq.md)
  - [TerminalReadersResponse](docs/TerminalReadersResponse.md)
 
 
+<a id="documentation-for-authorization"></a>
 ## Documentation for Authorization
 
+
 Authentication schemes defined for the API:
+<a id="basicAuth"></a>
 ### basicAuth
 
 
 - **Type**: HTTP basic authentication
 
+<a id="bearerAuth"></a>
 ### bearerAuth
 
 
