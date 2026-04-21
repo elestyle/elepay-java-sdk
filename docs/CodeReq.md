@@ -18,6 +18,9 @@ EasyQRコードリクエスト
 |**frontUrl** | **String** | EasyCheckout決済が完了したあとの、戻り先ページのURL |  [optional] |
 |**items** | [**List&lt;CodeItem&gt;**](CodeItem.md) | 商品に関する情報 |  [optional] |
 |**locationId** | **String** | ロケーションID |  [optional] |
+|**customerId** | **String** | カスタマID |  [optional] |
+|**sourceId** | **String** | カスタマソースID |  [optional] |
+|**shouldCreateSource** | **Boolean** | このコードで新しいカスタマソースを作成する必要があるかどうか。  |  [optional] |
 
 
 

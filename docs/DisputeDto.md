@@ -17,8 +17,8 @@
 |**metadata** | **Map&lt;String, String&gt;** | メタデータ |  [optional] |
 |**reason** | **String** | 不審請求理由 |  [optional] |
 |**status** | **DisputeStatusType** |  |  [optional] |
-|**resolvedTime** | **Long** | 対応時間のUTCタイムスタンプ |  [optional] |
-|**createTime** | **Long** | 発生時間のUTCタイムスタンプ。 |  [optional] |
+|**resolvedTime** | **Long** | 対応時間（エポックミリ秒） |  [optional] |
+|**createTime** | **Long** | 発生時間（エポックミリ秒） |  [optional] |
 
 
 

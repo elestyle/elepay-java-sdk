@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="refresh" content="5"/>
+    <title>Webhook events — elepay Quickstart</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+               max-width: 960px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+        header { border-bottom: 1px solid #ddd; padding-bottom: 0.75rem; margin-bottom: 1rem; }
+        h1 { margin: 0 0 0.25rem; font-size: 1.4rem; }
+        .muted { color: #888; font-size: 0.85rem; }
+        nav a { margin-right: 1rem; }
+        table { border-collapse: collapse; width: 100%; margin-top: 1rem; font-size: 0.9rem; }
+        th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid #eee;
+                 vertical-align: top; }
+        th { background: #f6f6f6; font-weight: 600; }
+        .ok { color: #005f1a; font-weight: 600; }
+        .bad { color: #9a0000; font-weight: 600; }
+        details summary { cursor: pointer; color: #0969da; }
+        pre { background: #f6f6f6; border-radius: 4px; padding: 0.6rem; font-size: 0.75rem;
+              overflow: auto; max-height: 200px; margin: 0.3rem 0 0; }
+        .empty { color: #888; padding: 2rem; text-align: center; border: 1px dashed #ddd;
+                 border-radius: 6px; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Webhook events</h1>
+    <div class="muted">
+        Latest received at <code>POST /webhook</code>. Holds the last
+        <span th:text="${capacity}"></span> entries. Auto-refreshes every 5s.
+    </div>
+    <nav class="muted" style="margin-top:0.5rem">
+        <a href="/">Checkout</a>
+        <a href="/events">Webhook events</a>
+    </nav>
+</header>
+
+<div th:if="${events.isEmpty()}" class="empty">
+    No events yet. Register this host's <code>/webhook</code> URL in the elepay dashboard,
+    then trigger a test charge to see entries here.
+</div>
+
+<table th:unless="${events.isEmpty()}">
+    <thead>
+    <tr>
+        <th style="width: 20%">Received</th>
+        <th style="width: 10%">Verified</th>
+        <th>Summary</th>
+        <th style="width: 12%">Body</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="e : ${events}">
+        <td><code th:text="${e.receivedAt}"></code></td>
+        <td>
+            <span th:if="${e.verified}" class="ok">OK</span>
+            <span th:unless="${e.verified}" class="bad">REJECT</span>
+        </td>
+        <td th:text="${e.summary}"></td>
+        <td>
+            <details>
+                <summary>show</summary>
+                <pre th:text="${e.body}"></pre>
+            </details>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

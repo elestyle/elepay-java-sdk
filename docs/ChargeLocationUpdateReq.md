@@ -2,7 +2,7 @@
 
 # ChargeLocationUpdateReq
 
-ロケーションリ更新クエスト
+ロケーション更新リクエスト
 
 ## Properties
 

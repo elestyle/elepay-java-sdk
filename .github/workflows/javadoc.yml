@@ -1,0 +1,52 @@
+name: Publish Javadoc
+
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: javadoc-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Build and deploy to gh-pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+          cache: maven
+
+      - name: Generate Javadoc
+        run: mvn -B -ntp -DskipTests javadoc:javadoc
+
+      - name: Resolve deploy subdirectory
+        id: dest
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            echo "dir=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "dir=master" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/site/apidocs
+          publish_branch: gh-pages
+          destination_dir: ${{ steps.dest.outputs.dir }}
+          keep_files: true
+          commit_message: "docs: publish Javadoc for ${{ steps.dest.outputs.dir }}"
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com

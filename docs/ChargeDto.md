@@ -20,6 +20,7 @@
 |**resource** | **ResourceType** |  |  [optional] |
 |**orderNo** | **String** | お客様システム側のオーダーNo、例えば注文番号、決済IDなど |  [optional] |
 |**description** | **String** | 支払い説明文 |  [optional] |
+|**location** | [**ChargeLocationDto**](ChargeLocationDto.md) |  |  [optional] |
 |**extra** | **Map&lt;String, String&gt;** | 支払いエキストラデータ |  [optional] |
 |**metadata** | **Map&lt;String, String&gt;** | 支払いメタデータ |  [optional] |
 |**cardInfo** | [**CardInfo**](CardInfo.md) |  |  [optional] |
@@ -32,11 +33,11 @@
 |**status** | **ChargeStatusType** |  |  [optional] |
 |**codeContent** | **String** | 店舗側提示型QRコード(リソースはmpm場合のみ) |  [optional] |
 |**credential** | **String** | Client SDKの認証情報 |  [optional] |
-|**paidTime** | **Long** | 支払い時間のUTCタイムスタンプ |  [optional] |
-|**refundTime** | **Long** | 返金時間のUTCタイムスタンプ |  [optional] |
-|**expiryTime** | **Long** | 支払い請求有効時間のUTCタイムスタンプ |  [optional] |
-|**settleTime** | **Long** | 支払い締め時間のUTCタイムスタンプ |  [optional] |
-|**createTime** | **Long** | 支払い新規時間のUTCタイムスタンプ |  [optional] |
+|**paidTime** | **Long** | 支払い時間（エポックミリ秒） |  [optional] |
+|**refundTime** | **Long** | 返金時間（エポックミリ秒） |  [optional] |
+|**expiryTime** | **Long** | 支払い請求有効時間（エポックミリ秒） |  [optional] |
+|**settleTime** | **Long** | 支払い締め時間（エポックミリ秒） |  [optional] |
+|**createTime** | **Long** | 支払い新規時間（エポックミリ秒） |  [optional] |
 
 
 

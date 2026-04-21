@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: elepay-java-sdk-quickstart
+
+elepay:
+  # From elepay dashboard -> API keys -> test secret
+  secret-key: sk_test_your_test_secret_key_here
+  # From elepay dashboard -> Webhook endpoints -> signing secret
+  webhook-signing-secret: whsec_your_webhook_signing_secret_here

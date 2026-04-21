@@ -202,13 +202,13 @@ public class Example {
 
         ChargeApi apiInstance = new ChargeApi(defaultClient);
         List<PaymentMethodType> paymentMethod = Arrays.asList(); // List<PaymentMethodType> | 決済方法(複数の指定が可能です)
-        Long from = 56L; // Long | 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。
-        Long to = 56L; // Long | 終了時間（UTC）。指定した時間以前に作成されたデータを取得します
-        ChargeDateTimeType dateField = ChargeDateTimeType.fromValue("paid_time"); // ChargeDateTimeType | 開始時間と終了時間の項目を指定します。 - paid_time 払う時間 - create_time 決済新規時間 
+        Long from = 56L; // Long | 開始時間（エポックミリ秒）、指定した時間以降に作成されたデータを取得します
+        Long to = 56L; // Long | 終了時間（エポックミリ秒）、指定した時間以前に作成されたデータを取得します
+        ChargeDateTimeType dateField = ChargeDateTimeType.fromValue("paid_time"); // ChargeDateTimeType | 開始時間と終了時間の項目を指定します。 - paid_time 支払い時間 - create_time 決済新規時間 
         ChargeStatusType status = ChargeStatusType.fromValue("pending"); // ChargeStatusType | 支払状況
         Integer limit = 20; // Integer | 最大件数
         Integer offset = 0; // Integer | 検索開始位置
-        ChargeDateTimeType sort = ChargeDateTimeType.fromValue("paid_time"); // ChargeDateTimeType | ソート項目 - paid_time 払う時間 - create_time 決済新規時間 
+        ChargeDateTimeType sort = ChargeDateTimeType.fromValue("paid_time"); // ChargeDateTimeType | ソート項目 - paid_time 支払い時間 - create_time 決済新規時間 
         SortOrderType order = SortOrderType.fromValue("desc"); // SortOrderType | ソート順 - desc 降順 - asc 昇順 
         try {
             ChargesResponse result = apiInstance.listCharges(paymentMethod, from, to, dateField, status, limit, offset, sort, order);
@@ -230,13 +230,13 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **paymentMethod** | [**List&lt;PaymentMethodType&gt;**](PaymentMethodType.md)| 決済方法(複数の指定が可能です) | [optional] |
-| **from** | **Long**| 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。 | [optional] |
-| **to** | **Long**| 終了時間（UTC）。指定した時間以前に作成されたデータを取得します | [optional] |
-| **dateField** | [**ChargeDateTimeType**](.md)| 開始時間と終了時間の項目を指定します。 - paid_time 払う時間 - create_time 決済新規時間  | [optional] [default to create_time] [enum: paid_time, create_time] |
-| **status** | [**ChargeStatusType**](.md)| 支払状況 | [optional] [enum: pending, uncaptured, captured, partially_refunded, refunded, revoked] |
+| **from** | **Long**| 開始時間（エポックミリ秒）、指定した時間以降に作成されたデータを取得します | [optional] |
+| **to** | **Long**| 終了時間（エポックミリ秒）、指定した時間以前に作成されたデータを取得します | [optional] |
+| **dateField** | [**ChargeDateTimeType**](.md)| 開始時間と終了時間の項目を指定します。 - paid_time 支払い時間 - create_time 決済新規時間  | [optional] [default to create_time] [enum: paid_time, create_time] |
+| **status** | [**ChargeStatusType**](.md)| 支払状況 | [optional] [enum: pending, waiting, notified, uncaptured, captured, partially_refunded, refunded, amount_mismatch, revoked, failed] |
 | **limit** | **Integer**| 最大件数 | [optional] [default to 20] |
 | **offset** | **Integer**| 検索開始位置 | [optional] [default to 0] |
-| **sort** | [**ChargeDateTimeType**](.md)| ソート項目 - paid_time 払う時間 - create_time 決済新規時間  | [optional] [default to create_time] [enum: paid_time, create_time] |
+| **sort** | [**ChargeDateTimeType**](.md)| ソート項目 - paid_time 支払い時間 - create_time 決済新規時間  | [optional] [default to create_time] [enum: paid_time, create_time] |
 | **order** | [**SortOrderType**](.md)| ソート順 - desc 降順 - asc 昇順  | [optional] [default to desc] [enum: desc, asc] |
 
 ### Return type
