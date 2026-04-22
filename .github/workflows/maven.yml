@@ -45,13 +45,16 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-  release:
-    name: Build jar and publish release
-    if: startsWith(github.ref, 'refs/tags/v')
+  publish:
+    name: Publish to GitHub Packages
+    # Tag push -> release version. Master push -> -SNAPSHOT. PRs and
+    # manual dispatch do not publish.
+    if: github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master')
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write   # softprops/action-gh-release creates the Release on tag
+      packages: write   # push artifacts to GitHub Packages (Maven registry)
     steps:
       - uses: actions/checkout@v4
 
@@ -64,12 +67,40 @@ jobs:
           java-version: '17'
           distribution: temurin
           cache: maven
+          # Writes a settings.xml with a <server id="github"> whose
+          # username/password are read from the env vars named below.
+          server-id: github
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
 
-      - name: Build jars (main, sources, javadoc)
-        run: mvn -B -ntp -DskipTests package
+      # On master we publish a floating -SNAPSHOT based on the next patch
+      # of the current pom version. Skipped on tag builds so the tagged
+      # release version is deployed as-is.
+      - name: Bump pom to next -SNAPSHOT (master only)
+        if: github.ref == 'refs/heads/master'
+        run: |
+          set -euo pipefail
+          CURRENT=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)
+          BASE=${CURRENT%-SNAPSHOT}
+          IFS=. read -r MAJ MIN PATCH <<< "$BASE"
+          SNAP="${MAJ}.${MIN}.$((PATCH+1))-SNAPSHOT"
+          echo "Deploying snapshot version: $SNAP"
+          mvn -B -ntp versions:set -DnewVersion="$SNAP" -DgenerateBackupPoms=false
+
+      # `altDeploymentRepository=github::<url>` overrides the deploy target
+      # at the CLI so the pom stays free of org-specific URLs.
+      # ${GITHUB_REPOSITORY} is "owner/repo", injected by the runner.
+      - name: Deploy to GitHub Packages
+        run: |
+          mvn -B -ntp -DskipTests \
+            -DaltDeploymentRepository=github::https://maven.pkg.github.com/${GITHUB_REPOSITORY} \
+            deploy
+        env:
+          MAVEN_USERNAME: ${{ github.actor }}
+          MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Collect artifacts
-        id: collect
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
           set -euo pipefail
           mkdir -p dist
@@ -78,6 +109,7 @@ jobs:
           ls -la dist
 
       - name: Upload to workflow artifacts
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-artifact@v4
         with:
           name: elepay-java-sdk-${{ github.ref_name }}
@@ -86,6 +118,7 @@ jobs:
           retention-days: 90
 
       - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*
