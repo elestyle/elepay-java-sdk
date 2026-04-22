@@ -1,0 +1,88 @@
+name: API compatibility check
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  japicmp:
+    name: japicmp HEAD vs ${{ github.event.pull_request.base.ref }}
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-api-compat') }}
+    env:
+      JAPICMP_VERSION: '0.23.1'
+    steps:
+      - name: Checkout PR HEAD
+        uses: actions/checkout@v4
+        with:
+          path: head
+
+      - name: Checkout base (${{ github.event.pull_request.base.ref }})
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          path: base
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+          cache: maven
+
+      - name: Build HEAD jar
+        working-directory: head
+        run: mvn -B -ntp -DskipTests package
+
+      - name: Build base jar
+        id: build-base
+        working-directory: base
+        continue-on-error: true
+        run: mvn -B -ntp -DskipTests package
+
+      - name: Skip if base did not build
+        if: steps.build-base.outcome == 'failure'
+        run: |
+          echo "::warning::Base branch failed to build — skipping API compat check."
+          exit 0
+
+      - name: Download japicmp
+        if: steps.build-base.outcome == 'success'
+        run: |
+          curl -sSL -o japicmp.jar \
+            "https://repo1.maven.org/maven2/com/github/siom79/japicmp/japicmp/${JAPICMP_VERSION}/japicmp-${JAPICMP_VERSION}-jar-with-dependencies.jar"
+
+      - name: Compare binary compatibility
+        if: steps.build-base.outcome == 'success'
+        run: |
+          set -euo pipefail
+          OLD_JAR=$(ls base/target/elepay-java-sdk-*.jar | grep -v sources | grep -v javadoc | head -1)
+          NEW_JAR=$(ls head/target/elepay-java-sdk-*.jar | grep -v sources | grep -v javadoc | head -1)
+          echo "Comparing: $OLD_JAR -> $NEW_JAR"
+          java -jar japicmp.jar \
+            --old "$OLD_JAR" \
+            --new "$NEW_JAR" \
+            --html-file japicmp-report.html \
+            --include-synthetic \
+            --ignore-missing-classes \
+            --only-incompatible \
+            --error-on-binary-incompatibility \
+            --error-on-source-incompatibility
+
+      - name: Upload japicmp HTML report
+        if: always() && steps.build-base.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: japicmp-report
+          path: japicmp-report.html
+          if-no-files-found: ignore
+          retention-days: 30

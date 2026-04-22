@@ -44,8 +44,8 @@ public class Example {
 
         DisputeApi apiInstance = new DisputeApi(defaultClient);
         String chargeId = "chargeId_example"; // String | Charge ID
-        Long from = 56L; // Long | 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。
-        Long to = 56L; // Long | 終了時間（UTC）。指定した時間以前に作成されたデータを取得します
+        Long from = 56L; // Long | 開始時間（エポックミリ秒）、指定した時間以降に作成されたデータを取得します
+        Long to = 56L; // Long | 終了時間（エポックミリ秒）、指定した時間以前に作成されたデータを取得します
         DisputeDateTimeType dateField = DisputeDateTimeType.fromValue("resolved_time"); // DisputeDateTimeType | 開始時間と終了時間の項目を指定します。 - resolved_time 不審請求解決時間 - create_time 不審請求発生時間 
         DisputeStatusType status = DisputeStatusType.fromValue("new"); // DisputeStatusType | 不審請求ステータス
         Integer limit = 20; // Integer | 最大件数
@@ -72,8 +72,8 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **chargeId** | **String**| Charge ID | [optional] |
-| **from** | **Long**| 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。 | [optional] |
-| **to** | **Long**| 終了時間（UTC）。指定した時間以前に作成されたデータを取得します | [optional] |
+| **from** | **Long**| 開始時間（エポックミリ秒）、指定した時間以降に作成されたデータを取得します | [optional] |
+| **to** | **Long**| 終了時間（エポックミリ秒）、指定した時間以前に作成されたデータを取得します | [optional] |
 | **dateField** | [**DisputeDateTimeType**](.md)| 開始時間と終了時間の項目を指定します。 - resolved_time 不審請求解決時間 - create_time 不審請求発生時間  | [optional] [default to create_time] [enum: resolved_time, create_time] |
 | **status** | [**DisputeStatusType**](.md)| 不審請求ステータス | [optional] [enum: new, won, lost] |
 | **limit** | **Integer**| 最大件数 | [optional] [default to 20] |

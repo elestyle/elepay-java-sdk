@@ -20,13 +20,18 @@ EasyQRコードオブジェクト
 |**metadata** | **Map&lt;String, String&gt;** | 支払いオブジェクトの「メタデータ」 |  [optional] |
 |**status** | **CodeStatusType** |  |  [optional] |
 |**charge** | [**ChargeDto**](ChargeDto.md) |  |  [optional] |
+|**customer** | [**CustomerDto**](CustomerDto.md) |  |  [optional] |
+|**source** | [**SourceDto**](SourceDto.md) |  |  [optional] |
 |**frontUrl** | **String** |  |  [optional] |
 |**items** | [**List&lt;CodeItem&gt;**](CodeItem.md) |  |  [optional] |
 |**locationId** | **String** | ロケーションID |  [optional] |
 |**expired** | **Boolean** | EasyQRコード有効有無 |  [optional] |
-|**expiryTime** | **Long** | EasyQRコード有効期限のUTCタイムスタンプ |  [optional] |
+|**expiryTime** | **Long** | EasyQRコード有効期限（エポックミリ秒） |  [optional] |
 |**expiryPeriod** | **Long** | EasyQRコード有効期限までの残りミリ秒数 |  [optional] |
-|**createTime** | **Long** | コード新規時間のUTCタイムスタンプ |  [optional] |
+|**createTime** | **Long** | コード新規時間（エポックミリ秒） |  [optional] |
+|**shouldCreateSource** | **Boolean** | このコードで新しいカスタマソースを作成する必要があるかどうか。  |  [optional] |
+|**activeSources** | [**List&lt;SourceDto&gt;**](SourceDto.md) | 有効なカスタマソースリスト |  [optional] |
+|**invoice** | [**InvoiceDto**](InvoiceDto.md) |  |  [optional] |
 
 
 

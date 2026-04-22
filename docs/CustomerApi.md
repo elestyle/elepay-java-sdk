@@ -459,7 +459,7 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **customerId** | **String**| Customer ID | |
-| **paymentMethod** | [**PaymentMethodType**](.md)| 決済方法 | [optional] [enum: alipay, alipayhk, alipayplus, amazonpay, applepay, applepay_cn, atokara, atone, aupay, creditcard, dana, docomopay, ezlink, felica, felica_id, felica_quickpay, felica_transport_ic, gcash, ginkopay, googlepay, jcoinpay, jkopay, kakaopay, linepay, merpay, origamipay, paidy, paypal, paypay, pxpayplus, rakutenpay, tng, truemoney, unionpay, wechatpay, aeonpay, rabbitlinepay, bpi, boost, hellomoney, tosspay, naverpay, auto] |
+| **paymentMethod** | [**PaymentMethodType**](.md)| 決済方法 | [optional] [enum: alipay, alipayhk, alipayplus, amazonpay, applepay, applepay_cn, atokara, atone, aupay, clicktopay, banktransfer, creditcard, dana, docomopay, ezlink, felica, felica_id, felica_quickpay, felica_transport_ic, gcash, ginkopay, googlepay, jcoinpay, jkopay, kakaopay, konbini, linepay, merpay, origamipay, paidy, paypal, paypay, pxpayplus, rakutenpay, smartcode, tng, truemoney, unionpay, wechatpay, aeonpay, rabbitlinepay, bpi, boost, hellomoney, tosspay, naverpay, wellwa, grabpay, momopay, promptpay, wovenpay, ezopay, auto] |
 
 ### Return type
 

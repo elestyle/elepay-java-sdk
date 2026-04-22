@@ -4,11 +4,11 @@ All URIs are relative to *https://api.elepay.io*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**createReader**](TerminalApi.md#createReader) | **POST** /terminal/readers | create terminal reader |
-| [**deleteReader**](TerminalApi.md#deleteReader) | **DELETE** /terminal/readers/{readerId} | delete reader |
-| [**getReader**](TerminalApi.md#getReader) | **GET** /terminal/readers/{readerId} | get reader |
-| [**listLocations**](TerminalApi.md#listLocations) | **GET** /terminal/locations | list locations |
-| [**listReaders**](TerminalApi.md#listReaders) | **GET** /terminal/readers | list readers |
+| [**createReader**](TerminalApi.md#createReader) | **POST** /terminal/readers | Create terminal reader |
+| [**deleteReader**](TerminalApi.md#deleteReader) | **DELETE** /terminal/readers/{readerId} | Delete reader |
+| [**getReader**](TerminalApi.md#getReader) | **GET** /terminal/readers/{readerId} | Get reader |
+| [**listLocations**](TerminalApi.md#listLocations) | **GET** /terminal/locations | List locations |
+| [**listReaders**](TerminalApi.md#listReaders) | **GET** /terminal/readers | List readers |
 
 
 
@@ -16,7 +16,7 @@ All URIs are relative to *https://api.elepay.io*
 
 > TerminalReaderDto createReader(terminalReaderReq)
 
-create terminal reader
+Create terminal reader
 
 ### Example
 
@@ -90,7 +90,7 @@ public class Example {
 
 > deleteReader(readerId)
 
-delete reader
+Delete reader
 
 ### Example
 
@@ -118,7 +118,7 @@ public class Example {
         bearerAuth.setBearerToken("BEARER TOKEN");
 
         TerminalApi apiInstance = new TerminalApi(defaultClient);
-        String readerId = "readerId_example"; // String | reader Id
+        String readerId = "readerId_example"; // String | Reader ID
         try {
             apiInstance.deleteReader(readerId);
         } catch (ApiException e) {
@@ -137,7 +137,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **readerId** | **String**| reader Id | |
+| **readerId** | **String**| Reader ID | |
 
 ### Return type
 
@@ -163,7 +163,7 @@ null (empty response body)
 
 > TerminalReaderDto getReader(readerId)
 
-get reader
+Get reader
 
 ### Example
 
@@ -191,7 +191,7 @@ public class Example {
         bearerAuth.setBearerToken("BEARER TOKEN");
 
         TerminalApi apiInstance = new TerminalApi(defaultClient);
-        String readerId = "readerId_example"; // String | reader Id
+        String readerId = "readerId_example"; // String | Reader ID
         try {
             TerminalReaderDto result = apiInstance.getReader(readerId);
             System.out.println(result);
@@ -211,7 +211,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **readerId** | **String**| reader Id | |
+| **readerId** | **String**| Reader ID | |
 
 ### Return type
 
@@ -237,7 +237,7 @@ public class Example {
 
 > LocationsResponse listLocations()
 
-list locations
+List locations
 
 ### Example
 
@@ -307,7 +307,7 @@ This endpoint does not need any parameter.
 
 > TerminalReadersResponse listReaders(limit, offset)
 
-list readers
+List readers
 
 ### Example
 

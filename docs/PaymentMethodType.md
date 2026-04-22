@@ -23,6 +23,10 @@
 
 * `AUPAY` (value: `"aupay"`)
 
+* `CLICKTOPAY` (value: `"clicktopay"`)
+
+* `BANKTRANSFER` (value: `"banktransfer"`)
+
 * `CREDITCARD` (value: `"creditcard"`)
 
 * `DANA` (value: `"dana"`)
@@ -51,6 +55,8 @@
 
 * `KAKAOPAY` (value: `"kakaopay"`)
 
+* `KONBINI` (value: `"konbini"`)
+
 * `LINEPAY` (value: `"linepay"`)
 
 * `MERPAY` (value: `"merpay"`)
@@ -66,6 +72,8 @@
 * `PXPAYPLUS` (value: `"pxpayplus"`)
 
 * `RAKUTENPAY` (value: `"rakutenpay"`)
+
+* `SMARTCODE` (value: `"smartcode"`)
 
 * `TNG` (value: `"tng"`)
 
@@ -88,6 +96,18 @@
 * `TOSSPAY` (value: `"tosspay"`)
 
 * `NAVERPAY` (value: `"naverpay"`)
+
+* `WELLWA` (value: `"wellwa"`)
+
+* `GRABPAY` (value: `"grabpay"`)
+
+* `MOMOPAY` (value: `"momopay"`)
+
+* `PROMPTPAY` (value: `"promptpay"`)
+
+* `WOVENPAY` (value: `"wovenpay"`)
+
+* `EZOPAY` (value: `"ezopay"`)
 
 * `AUTO` (value: `"auto"`)
 

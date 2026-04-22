@@ -282,8 +282,8 @@ public class Example {
 
         SubscriptionApi apiInstance = new SubscriptionApi(defaultClient);
         String customerId = "customerId_example"; // String | Customer ID
-        Long from = 56L; // Long | 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。
-        Long to = 56L; // Long | 終了時間（UTC）。指定した時間以前に作成されたデータを取得します
+        Long from = 56L; // Long | 開始時間（エポックミリ秒）、指定した時間以降に作成されたデータを取得します
+        Long to = 56L; // Long | 終了時間（エポックミリ秒）、指定した時間以前に作成されたデータを取得します
         SubscriptionStatusType status = SubscriptionStatusType.fromValue("new"); // SubscriptionStatusType | 定期課金ステータス
         Integer limit = 20; // Integer | 最大件数
         Integer offset = 0; // Integer | 検索開始位置
@@ -307,8 +307,8 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **customerId** | **String**| Customer ID | [optional] |
-| **from** | **Long**| 開始時間（UTC）。指定した時間以降に作成されたデータを取得します。 | [optional] |
-| **to** | **Long**| 終了時間（UTC）。指定した時間以前に作成されたデータを取得します | [optional] |
+| **from** | **Long**| 開始時間（エポックミリ秒）、指定した時間以降に作成されたデータを取得します | [optional] |
+| **to** | **Long**| 終了時間（エポックミリ秒）、指定した時間以前に作成されたデータを取得します | [optional] |
 | **status** | [**SubscriptionStatusType**](.md)| 定期課金ステータス | [optional] [enum: new, active, past_due, canceled] |
 | **limit** | **Integer**| 最大件数 | [optional] [default to 20] |
 | **offset** | **Integer**| 検索開始位置 | [optional] [default to 0] |

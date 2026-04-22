@@ -1,0 +1,3 @@
+# Local-only — contains the real secret key.
+src/main/resources/application.yaml
+src/main/resources/application.properties

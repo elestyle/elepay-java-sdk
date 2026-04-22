@@ -17,8 +17,8 @@
 |**metadata** | **Map&lt;String, String&gt;** | 返金メタデータ |  [optional] |
 |**reason** | **String** | 返金理由 |  [optional] |
 |**status** | **RefundStatusType** |  |  [optional] |
-|**refundedTime** | **Long** | 返金を行う時間のUTCタイムスタンプ。 |  [optional] |
-|**createTime** | **Long** | 返金新規時間のUTCタイムスタンプ。 |  [optional] |
+|**refundedTime** | **Long** | 返金を行う時間（エポックミリ秒） |  [optional] |
+|**createTime** | **Long** | 返金新規時間（エポックミリ秒） |  [optional] |
 
 
 

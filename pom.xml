@@ -5,7 +5,7 @@
     <artifactId>elepay-java-sdk</artifactId>
     <packaging>jar</packaging>
     <name>elepay-java-sdk</name>
-    <version>1.2.5</version>
+    <version>2.0.0</version>
     <url>https://github.com/elestyle/elepay-java-sdk</url>
     <description>Elepay Java SDK</description>
     <scm>
@@ -32,6 +32,22 @@
     </developers>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>elepay-java-sdk.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>elepay-java-sdk.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -183,6 +199,32 @@
     </build>
 
     <profiles>
+        <!--
+          The javac 'release' flag (JEP 247, JDK 9+) locks the compiler to
+          the target version's historical API surface, preventing e.g.
+          Optional.isEmpty() (Java 11+) or HashMap.newHashMap() (Java 19+)
+          from silently leaking into a jar tagged as Java 8 bytecode. JDK 8
+          itself has no such flag, so this profile only activates on JDK 9+.
+          The default source/target configuration above is what JDK 8 builds
+          continue to use.
+        -->
+        <profile>
+            <id>compiler-release-flag</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <release>8</release>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>sign-artifacts</id>
             <build>

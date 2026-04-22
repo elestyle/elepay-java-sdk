@@ -16,7 +16,7 @@
 |**quantity** | **Integer** | 件数 |  [optional] |
 |**unit** | **String** | 単位 |  [optional] |
 |**taxRateType** | **TaxRateType** |  |  [optional] |
-|**transactionTime** | **Long** | 取引時間のUTCタイムスタンプ |  [optional] |
+|**transactionTime** | **Long** | 取引時間（エポックミリ秒） |  [optional] |
 
 
 

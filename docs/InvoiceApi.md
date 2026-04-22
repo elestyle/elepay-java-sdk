@@ -8,7 +8,7 @@ All URIs are relative to *https://api.elepay.io*
 | [**createInvoice**](InvoiceApi.md#createInvoice) | **POST** /invoices | Create invoice |
 | [**listInvoices**](InvoiceApi.md#listInvoices) | **GET** /invoices | List invoices |
 | [**retrieveInvoice**](InvoiceApi.md#retrieveInvoice) | **GET** /invoices/{invoiceId} | Retrieve invoice |
-| [**sendInvoice**](InvoiceApi.md#sendInvoice) | **POST** /invoices/{invoiceId}/send | send invoice |
+| [**sendInvoice**](InvoiceApi.md#sendInvoice) | **POST** /invoices/{invoiceId}/send | Send invoice |
 | [**submitInvoice**](InvoiceApi.md#submitInvoice) | **POST** /invoices/{invoiceId}/submit | Submit invoice |
 | [**updateInvoice**](InvoiceApi.md#updateInvoice) | **POST** /invoices/{invoiceId} | Update invoice |
 
@@ -201,8 +201,8 @@ public class Example {
 
         InvoiceApi apiInstance = new InvoiceApi(defaultClient);
         String keyword = "keyword_example"; // String | キーワード
-        Long from = 56L; // Long | dateRange from
-        Long to = 56L; // Long | dateRange from
+        Long from = 56L; // Long | 開始時間（エポックミリ秒）、指定した時間以降に作成されたデータを取得します
+        Long to = 56L; // Long | 終了時間（エポックミリ秒）、指定した時間以前に作成されたデータを取得します
         List<InvoiceStatusType> status = Arrays.asList(); // List<InvoiceStatusType> | status
         Integer limit = 20; // Integer | 最大件数
         Integer offset = 0; // Integer | 検索開始位置
@@ -226,8 +226,8 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **keyword** | **String**| キーワード | [optional] |
-| **from** | **Long**| dateRange from | [optional] |
-| **to** | **Long**| dateRange from | [optional] |
+| **from** | **Long**| 開始時間（エポックミリ秒）、指定した時間以降に作成されたデータを取得します | [optional] |
+| **to** | **Long**| 終了時間（エポックミリ秒）、指定した時間以前に作成されたデータを取得します | [optional] |
 | **status** | [**List&lt;InvoiceStatusType&gt;**](InvoiceStatusType.md)| status | [optional] |
 | **limit** | **Integer**| 最大件数 | [optional] [default to 20] |
 | **offset** | **Integer**| 検索開始位置 | [optional] [default to 0] |
@@ -332,7 +332,7 @@ public class Example {
 
 > InvoiceDto sendInvoice(invoiceId)
 
-send invoice
+Send invoice
 
 インボイスを送信します。
 
@@ -362,7 +362,7 @@ public class Example {
         bearerAuth.setBearerToken("BEARER TOKEN");
 
         InvoiceApi apiInstance = new InvoiceApi(defaultClient);
-        String invoiceId = "invoiceId_example"; // String | invoice id
+        String invoiceId = "invoiceId_example"; // String | Invoice ID
         try {
             InvoiceDto result = apiInstance.sendInvoice(invoiceId);
             System.out.println(result);
@@ -382,7 +382,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **invoiceId** | **String**| invoice id | |
+| **invoiceId** | **String**| Invoice ID | |
 
 ### Return type
 
