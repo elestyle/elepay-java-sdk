@@ -15,7 +15,6 @@ would.
 | `CodeApi`           | `/codes` · `/orders/{no}` | EasyQR / EasyCheckout createCode/retrieveCode/closeCode, with optional source reuse and `shouldCreateSource` |
 | `CodeSettingApi`    | `/diagnostics` | listCodePaymentMethods |
 | `SubscriptionApi`   | `/subscriptions` · `/orders/{no}` · `/subscriptions/{no}/periods` | full 8-method flow |
-| `InvoiceApi`        | `/invoices` · `/orders/{no}` | draft → update → submit → send → paid → cancel |
 | `LocationApi`       | `/locations` | charge-location CRUD (transliteration DTOs) |
 | `DisputeApi`        | `/diagnostics` | listDisputes + retrieveDispute (read-only panel) |
 | `PaymentMethodApi`  | `/diagnostics` | listPaymentMethods |
@@ -56,8 +55,8 @@ Customer (== elepay CustomerDto)
  └─ orderNos[]     // merchant orders owned by this customer
 
 Order (the unit of merchant-side business that gets paid)
- ├─ type                 // CHARGE | CODE | SUBSCRIPTION | INVOICE
- ├─ elepayResourceId     // id of the underlying charge/code/subscription/invoice
+ ├─ type                 // CHARGE | CODE | SUBSCRIPTION
+ ├─ elepayResourceId     // id of the underlying charge/code/subscription
  ├─ customerId           // local Customer.id (also the elepay customer id)
  ├─ businessStatus       // merchant rollup: PENDING/AUTHORIZED/PAID/REFUNDED/CANCELED/FAILED
  ├─ rawStatus            // the verbatim elepay status string (for debugging)
@@ -159,7 +158,6 @@ Walk these in order to confirm the SDK is working end-to-end:
 - [ ] `/customers/{id}` → click **charge** on an active source row → completes without re-entering credentials
 - [ ] `/codes` → create code → pay via QR → `closeCode` closes any unpaid
 - [ ] `/subscriptions` → create → **startSubscription** → status `active` → `/subscriptions/{no}/periods` returns (likely empty)
-- [ ] `/invoices` → draft → submit → send → pay via email link → webhook flips to `paid`
 - [ ] `/locations` → CRUD
 - [ ] `/charges` → remote `listCharges` paginates
 - [ ] `/diagnostics` → all panels open without errors (empty is fine for disputes / readers)

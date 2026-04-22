@@ -21,8 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Demonstrates {@link RefundApi}. Refunds always belong to a charge order —
- * other order types (code / subscription / invoice) map to their own
- * refund-like flows via their APIs.
+ * other order types (code / subscription) map to their own refund-like
+ * flows via their APIs.
  */
 @Controller
 public class RefundController {

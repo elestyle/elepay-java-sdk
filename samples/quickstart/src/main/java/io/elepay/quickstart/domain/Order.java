@@ -9,14 +9,12 @@ import io.elepay.client.charge.pojo.RefundDto;
 
 /**
  * Merchant-level order. A single aggregate over any of Charge / Code /
- * Subscription / Invoice so the UI and webhook router can treat them
- * uniformly.
+ * Subscription so the UI and webhook router can treat them uniformly.
  *
  * <p>Identity is {@link #getOrderNo()}, a merchant-generated string. The
- * elepay-side resource id (chargeId / codeId / subscriptionId / invoiceId)
- * lives in {@link #getElepayResourceId()} and is how inbound webhooks
- * locate this order — events reference the resource id, not the merchant
- * orderNo.
+ * elepay-side resource id (chargeId / codeId / subscriptionId) lives in
+ * {@link #getElepayResourceId()} and is how inbound webhooks locate this
+ * order — events reference the resource id, not the merchant orderNo.
  */
 public class Order {
 

@@ -8,7 +8,6 @@
  *   <li>{@link io.elepay.quickstart.web.CustomerController}     — {@code CustomerApi} (customers + their sources)</li>
  *   <li>{@link io.elepay.quickstart.web.CodeController}         — {@code CodeApi} (EasyQR / EasyCheckout)</li>
  *   <li>{@link io.elepay.quickstart.web.SubscriptionController} — {@code SubscriptionApi}</li>
- *   <li>{@link io.elepay.quickstart.web.InvoiceController}      — {@code InvoiceApi}</li>
  *   <li>{@link io.elepay.quickstart.web.LocationController}     — {@code LocationApi}</li>
  *   <li>{@link io.elepay.quickstart.web.DiagnosticsController}  — {@code PaymentMethodApi}, {@code CodeSettingApi}, {@code DisputeApi}, {@code TerminalApi} (read-only)</li>
  *   <li>{@link io.elepay.quickstart.web.WebhookController}      — {@code Webhook.verifyHeader} and event routing to {@link io.elepay.quickstart.repository.OrderRepository}</li>

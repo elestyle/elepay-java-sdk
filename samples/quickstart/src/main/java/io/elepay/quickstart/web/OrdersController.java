@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * Read-only views of the merchant {@link OrderRepository}. Contains no SDK
  * calls — all state is local. Each action that mutates an order lives on
  * the controller for that order's underlying SDK API (Charge / Code /
- * Subscription / Invoice).
+ * Subscription).
  */
 @Controller
 public class OrdersController {
