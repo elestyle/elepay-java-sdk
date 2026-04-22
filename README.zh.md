@@ -15,7 +15,6 @@
 - **Customers 与 Sources** — 按顾客绑定支付方式
 - **Invoices** — `draft` / `submit` / `send` / `cancel`
 - **Subscriptions** — 周期性持续计费
-- **Locations** — 门店维度的交易与对账
 - **Terminal** — 物理刷卡终端管理
 - **Disputes** — 拒付信息查询
 - **Payment methods** — 动态查询支持的支付方式
@@ -120,7 +119,6 @@ basic.setUsername("sk_live_xxxxxxxx"); // password 留空
 | [`SubscriptionApi`](docs/SubscriptionApi.md) | `/subscriptions` — 持续计费 |
 | [`CodeApi`](docs/CodeApi.md) | `/codes` — EasyQR |
 | [`CodeSettingApi`](docs/CodeSettingApi.md) | `/code-setting/payment-methods` |
-| [`LocationApi`](docs/LocationApi.md) | `/locations` |
 | [`TerminalApi`](docs/TerminalApi.md) | `/terminal/readers`、`/terminal/locations` |
 | [`PaymentMethodApi`](docs/PaymentMethodApi.md) | `/payment-methods` |
 | [`DisputeApi`](docs/DisputeApi.md) | `/disputes` |

@@ -15,7 +15,6 @@ Official Java SDK for the [elepay](https://elepay.io) payment platform. A typed,
 - **Customers & Sources** — stored payment methods per customer
 - **Invoices** — `draft` / `submit` / `send` / `cancel`
 - **Subscriptions** — recurring billing with periods
-- **Locations** — per-location charges and reporting
 - **Terminal** — physical card reader management
 - **Disputes** — chargeback retrieval
 - **Payment methods** — query supported methods dynamically
@@ -120,7 +119,6 @@ Per-endpoint request and response schemas are in [`docs/`](docs/).
 | [`SubscriptionApi`](docs/SubscriptionApi.md) | `/subscriptions` — recurring billing |
 | [`CodeApi`](docs/CodeApi.md) | `/codes` — EasyQR |
 | [`CodeSettingApi`](docs/CodeSettingApi.md) | `/code-setting/payment-methods` |
-| [`LocationApi`](docs/LocationApi.md) | `/locations` |
 | [`TerminalApi`](docs/TerminalApi.md) | `/terminal/readers`, `/terminal/locations` |
 | [`PaymentMethodApi`](docs/PaymentMethodApi.md) | `/payment-methods` |
 | [`DisputeApi`](docs/DisputeApi.md) | `/disputes` |

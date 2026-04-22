@@ -15,7 +15,6 @@
 - **Customers と Sources** — 顧客ごとの支払い手段の保存
 - **Invoices** — `draft` / `submit` / `send` / `cancel`
 - **Subscriptions** — 期間ごとの継続課金
-- **Locations** — ロケーションごとの決済とレポート
 - **Terminal** — 物理カードリーダーの管理
 - **Disputes** — チャージバック情報の取得
 - **Payment methods** — 利用可能な決済手段の動的取得
@@ -120,7 +119,6 @@ basic.setUsername("sk_live_xxxxxxxx"); // password は空のまま
 | [`SubscriptionApi`](docs/SubscriptionApi.md) | `/subscriptions` — 継続課金 |
 | [`CodeApi`](docs/CodeApi.md) | `/codes` — EasyQR |
 | [`CodeSettingApi`](docs/CodeSettingApi.md) | `/code-setting/payment-methods` |
-| [`LocationApi`](docs/LocationApi.md) | `/locations` |
 | [`TerminalApi`](docs/TerminalApi.md) | `/terminal/readers`, `/terminal/locations` |
 | [`PaymentMethodApi`](docs/PaymentMethodApi.md) | `/payment-methods` |
 | [`DisputeApi`](docs/DisputeApi.md) | `/disputes` |
