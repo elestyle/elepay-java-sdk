@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.elepay.client.charge.pojo.CustomerDto;
 import io.elepay.client.charge.pojo.InvoiceItem;
-import io.elepay.client.charge.pojo.InvoiceStatusType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,7 +88,7 @@ public class InvoiceDto {
   private String currency = "JPY";
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private InvoiceStatusType status;
+  private String status;
 
   public static final String JSON_PROPERTY_OPERATOR = "operator";
   private String operator;
@@ -361,7 +360,7 @@ public class InvoiceDto {
   }
 
 
-  public InvoiceDto status(InvoiceStatusType status) {
+  public InvoiceDto status(String status) {
     
     this.status = status;
     return this;
@@ -375,14 +374,14 @@ public class InvoiceDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public InvoiceStatusType getStatus() {
+  public String getStatus() {
     return status;
   }
 
 
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setStatus(InvoiceStatusType status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

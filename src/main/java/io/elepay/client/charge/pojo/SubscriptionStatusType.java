@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.StringJoiner;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
@@ -53,14 +52,13 @@ public enum SubscriptionStatusType {
     return String.valueOf(value);
   }
 
-  @JsonCreator
   public static SubscriptionStatusType fromValue(String value) {
     for (SubscriptionStatusType b : SubscriptionStatusType.values()) {
       if (b.value.equals(value)) {
         return b;
       }
     }
-    throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    return null;
   }
 
   /**

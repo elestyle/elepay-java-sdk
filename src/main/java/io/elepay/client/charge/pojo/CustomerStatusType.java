@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.StringJoiner;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
@@ -49,14 +48,13 @@ public enum CustomerStatusType {
     return String.valueOf(value);
   }
 
-  @JsonCreator
   public static CustomerStatusType fromValue(String value) {
     for (CustomerStatusType b : CustomerStatusType.values()) {
       if (b.value.equals(value)) {
         return b;
       }
     }
-    throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    return null;
   }
 
   /**

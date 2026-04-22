@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.CustomerStatusType;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -80,7 +79,7 @@ public class CustomerDto {
   private String operator;
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private CustomerStatusType status;
+  private String status;
 
   public static final String JSON_PROPERTY_METADATA = "metadata";
   private Map<String, String> metadata = new HashMap<>();
@@ -351,7 +350,7 @@ public class CustomerDto {
   }
 
 
-  public CustomerDto status(CustomerStatusType status) {
+  public CustomerDto status(String status) {
     
     this.status = status;
     return this;
@@ -365,14 +364,14 @@ public class CustomerDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public CustomerStatusType getStatus() {
+  public String getStatus() {
     return status;
   }
 
 
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setStatus(CustomerStatusType status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

@@ -17,7 +17,7 @@ public final class ClientVersion {
 
     private static final String UNKNOWN = "unknown";
 
-    /** Semantic version of the SDK, e.g. {@code "1.3.0"}, or {@code "unknown"} when unresolvable. */
+    /** Semantic version of the SDK, e.g. {@code "2.0.0"}, or {@code "unknown"} when unresolvable. */
     public static final String VERSION = readVersion();
 
     private ClientVersion() {}
@@ -25,7 +25,7 @@ public final class ClientVersion {
     /**
      * Build the default {@code User-Agent} header value:
      *
-     * <pre>elepay-java/1.3.0 (Java/17.0.2; Mac OS X)</pre>
+     * <pre>elepay-java/2.0.0 (Java/17.0.2; Mac OS X)</pre>
      */
     public static String userAgent() {
         return "elepay-java/" + VERSION

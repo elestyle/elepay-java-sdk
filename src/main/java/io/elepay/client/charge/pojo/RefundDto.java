@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.RefundStatusType;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -72,7 +71,7 @@ public class RefundDto {
   private String reason;
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private RefundStatusType status;
+  private String status;
 
   public static final String JSON_PROPERTY_REFUNDED_TIME = "refundedTime";
   private Long refundedTime;
@@ -299,7 +298,7 @@ public class RefundDto {
   }
 
 
-  public RefundDto status(RefundStatusType status) {
+  public RefundDto status(String status) {
     
     this.status = status;
     return this;
@@ -313,14 +312,14 @@ public class RefundDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public RefundStatusType getStatus() {
+  public String getStatus() {
     return status;
   }
 
 
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setStatus(RefundStatusType status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

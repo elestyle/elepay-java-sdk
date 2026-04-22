@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.StringJoiner;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
@@ -65,14 +64,13 @@ public enum ChargeStatusType {
     return String.valueOf(value);
   }
 
-  @JsonCreator
   public static ChargeStatusType fromValue(String value) {
     for (ChargeStatusType b : ChargeStatusType.values()) {
       if (b.value.equals(value)) {
         return b;
       }
     }
-    throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    return null;
   }
 
   /**

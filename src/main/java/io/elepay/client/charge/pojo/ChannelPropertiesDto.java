@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.ResourceWebEnvType;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import java.io.UnsupportedEncodingException;
@@ -64,7 +63,7 @@ public class ChannelPropertiesDto {
   private Integer minAmount;
 
   public static final String JSON_PROPERTY_RESOURCE_WEB_ENV = "resourceWebEnv";
-  private ResourceWebEnvType resourceWebEnv;
+  private String resourceWebEnv;
 
   public ChannelPropertiesDto() {
   }
@@ -251,7 +250,7 @@ public class ChannelPropertiesDto {
   }
 
 
-  public ChannelPropertiesDto resourceWebEnv(ResourceWebEnvType resourceWebEnv) {
+  public ChannelPropertiesDto resourceWebEnv(String resourceWebEnv) {
     
     this.resourceWebEnv = resourceWebEnv;
     return this;
@@ -265,14 +264,14 @@ public class ChannelPropertiesDto {
   @JsonProperty(JSON_PROPERTY_RESOURCE_WEB_ENV)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public ResourceWebEnvType getResourceWebEnv() {
+  public String getResourceWebEnv() {
     return resourceWebEnv;
   }
 
 
   @JsonProperty(JSON_PROPERTY_RESOURCE_WEB_ENV)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setResourceWebEnv(ResourceWebEnvType resourceWebEnv) {
+  public void setResourceWebEnv(String resourceWebEnv) {
     this.resourceWebEnv = resourceWebEnv;
   }
 

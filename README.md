@@ -4,7 +4,7 @@
 
 Official Java SDK for the [elepay](https://elepay.io) payment platform. A typed, documented client for Charges, Refunds, Customers, Subscriptions, Invoices, Terminal, and more.
 
-- **Latest version**: `1.3.0`
+- **Latest version**: `2.0.0`
 - **Base URL**: `https://api.elepay.io`
 - **Developer portal**: https://developer.elepay.io
 
@@ -33,14 +33,14 @@ Official Java SDK for the [elepay](https://elepay.io) payment platform. A typed,
 <dependency>
   <groupId>io.elepay</groupId>
   <artifactId>elepay-java-sdk</artifactId>
-  <version>1.3.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-implementation 'io.elepay:elepay-java-sdk:1.3.0'
+implementation 'io.elepay:elepay-java-sdk:2.0.0'
 ```
 
 ### Build from source
@@ -51,7 +51,7 @@ cd elepay-java-sdk
 mvn clean install
 ```
 
-This installs the artifact to your local Maven repository. To package a standalone JAR, run `mvn clean package` and grab `target/elepay-java-sdk-1.3.0.jar` plus the runtime dependencies under `target/lib/`.
+This installs the artifact to your local Maven repository. To package a standalone JAR, run `mvn clean package` and grab `target/elepay-java-sdk-2.0.0.jar` plus the runtime dependencies under `target/lib/`.
 
 ## Quick Start
 

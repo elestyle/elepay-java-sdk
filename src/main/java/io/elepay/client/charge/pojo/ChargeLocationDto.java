@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.elepay.client.charge.pojo.AddressTransliterationDto;
-import io.elepay.client.charge.pojo.ChargeLocationStatusType;
 import io.elepay.client.charge.pojo.StringTransliterationDto;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -70,7 +69,7 @@ public class ChargeLocationDto {
   private String note;
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private ChargeLocationStatusType status;
+  private String status;
 
   public ChargeLocationDto() {
   }
@@ -283,7 +282,7 @@ public class ChargeLocationDto {
   }
 
 
-  public ChargeLocationDto status(ChargeLocationStatusType status) {
+  public ChargeLocationDto status(String status) {
     
     this.status = status;
     return this;
@@ -297,14 +296,14 @@ public class ChargeLocationDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public ChargeLocationStatusType getStatus() {
+  public String getStatus() {
     return status;
   }
 
 
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setStatus(ChargeLocationStatusType status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

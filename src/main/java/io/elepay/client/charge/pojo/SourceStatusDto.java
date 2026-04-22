@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.SourceStatusType;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import java.io.UnsupportedEncodingException;
@@ -48,7 +47,7 @@ public class SourceStatusDto {
   private Boolean liveMode;
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private SourceStatusType status;
+  private String status;
 
   public SourceStatusDto() {
   }
@@ -131,7 +130,7 @@ public class SourceStatusDto {
   }
 
 
-  public SourceStatusDto status(SourceStatusType status) {
+  public SourceStatusDto status(String status) {
     
     this.status = status;
     return this;
@@ -145,14 +144,14 @@ public class SourceStatusDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public SourceStatusType getStatus() {
+  public String getStatus() {
     return status;
   }
 
 
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setStatus(SourceStatusType status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

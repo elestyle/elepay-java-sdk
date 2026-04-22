@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.DisputeStatusType;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -72,7 +71,7 @@ public class DisputeDto {
   private String reason;
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private DisputeStatusType status;
+  private String status;
 
   public static final String JSON_PROPERTY_RESOLVED_TIME = "resolvedTime";
   private Long resolvedTime;
@@ -299,7 +298,7 @@ public class DisputeDto {
   }
 
 
-  public DisputeDto status(DisputeStatusType status) {
+  public DisputeDto status(String status) {
     
     this.status = status;
     return this;
@@ -313,14 +312,14 @@ public class DisputeDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public DisputeStatusType getStatus() {
+  public String getStatus() {
     return status;
   }
 
 
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setStatus(DisputeStatusType status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

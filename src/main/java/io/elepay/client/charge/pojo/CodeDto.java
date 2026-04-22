@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.elepay.client.charge.pojo.ChargeDto;
 import io.elepay.client.charge.pojo.CodeItem;
-import io.elepay.client.charge.pojo.CodeStatusType;
 import io.elepay.client.charge.pojo.CustomerDto;
 import io.elepay.client.charge.pojo.InvoiceDto;
 import io.elepay.client.charge.pojo.SourceDto;
@@ -98,7 +97,7 @@ public class CodeDto {
   private Map<String, String> metadata = new HashMap<>();
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private CodeStatusType status;
+  private String status;
 
   public static final String JSON_PROPERTY_CHARGE = "charge";
   private ChargeDto charge;
@@ -418,7 +417,7 @@ public class CodeDto {
   }
 
 
-  public CodeDto status(CodeStatusType status) {
+  public CodeDto status(String status) {
     
     this.status = status;
     return this;
@@ -432,14 +431,14 @@ public class CodeDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public CodeStatusType getStatus() {
+  public String getStatus() {
     return status;
   }
 
 
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setStatus(CodeStatusType status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

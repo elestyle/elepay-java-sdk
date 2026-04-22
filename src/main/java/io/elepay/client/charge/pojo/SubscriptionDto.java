@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.elepay.client.charge.pojo.CustomerDto;
-import io.elepay.client.charge.pojo.SubscriptionStatusType;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -81,7 +80,7 @@ public class SubscriptionDto {
   private Map<String, String> metadata = new HashMap<>();
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private SubscriptionStatusType status;
+  private String status;
 
   public static final String JSON_PROPERTY_CREATE_TIME = "createTime";
   private Long createTime;
@@ -360,7 +359,7 @@ public class SubscriptionDto {
   }
 
 
-  public SubscriptionDto status(SubscriptionStatusType status) {
+  public SubscriptionDto status(String status) {
     
     this.status = status;
     return this;
@@ -374,14 +373,14 @@ public class SubscriptionDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public SubscriptionStatusType getStatus() {
+  public String getStatus() {
     return status;
   }
 
 
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setStatus(SubscriptionStatusType status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

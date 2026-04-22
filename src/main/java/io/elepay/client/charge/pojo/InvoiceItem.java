@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.TaxRateType;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import java.io.UnsupportedEncodingException;
@@ -65,7 +64,7 @@ public class InvoiceItem {
   private String unit;
 
   public static final String JSON_PROPERTY_TAX_RATE_TYPE = "taxRateType";
-  private TaxRateType taxRateType;
+  private String taxRateType;
 
   public static final String JSON_PROPERTY_TRANSACTION_TIME = "transactionTime";
   private Long transactionTime;
@@ -255,7 +254,7 @@ public class InvoiceItem {
   }
 
 
-  public InvoiceItem taxRateType(TaxRateType taxRateType) {
+  public InvoiceItem taxRateType(String taxRateType) {
     
     this.taxRateType = taxRateType;
     return this;
@@ -269,14 +268,14 @@ public class InvoiceItem {
   @JsonProperty(JSON_PROPERTY_TAX_RATE_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public TaxRateType getTaxRateType() {
+  public String getTaxRateType() {
     return taxRateType;
   }
 
 
   @JsonProperty(JSON_PROPERTY_TAX_RATE_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setTaxRateType(TaxRateType taxRateType) {
+  public void setTaxRateType(String taxRateType) {
     this.taxRateType = taxRateType;
   }
 

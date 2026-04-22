@@ -22,8 +22,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.elepay.client.charge.pojo.ChannelPropertiesDto;
 import io.elepay.client.charge.pojo.CustomerPropertiesDto;
-import io.elepay.client.charge.pojo.PaymentMethodType;
-import io.elepay.client.charge.pojo.ResourceType;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -46,10 +44,10 @@ import java.util.StringJoiner;
 @jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class PaymentMethodDto {
   public static final String JSON_PROPERTY_PAYMENT_METHOD = "paymentMethod";
-  private PaymentMethodType paymentMethod;
+  private String paymentMethod;
 
   public static final String JSON_PROPERTY_RESOURCES = "resources";
-  private List<ResourceType> resources;
+  private List<String> resources;
 
   public static final String JSON_PROPERTY_BRAND = "brand";
   private List<String> brand;
@@ -66,7 +64,7 @@ public class PaymentMethodDto {
   public PaymentMethodDto() {
   }
 
-  public PaymentMethodDto paymentMethod(PaymentMethodType paymentMethod) {
+  public PaymentMethodDto paymentMethod(String paymentMethod) {
     
     this.paymentMethod = paymentMethod;
     return this;
@@ -80,25 +78,25 @@ public class PaymentMethodDto {
   @JsonProperty(JSON_PROPERTY_PAYMENT_METHOD)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public PaymentMethodType getPaymentMethod() {
+  public String getPaymentMethod() {
     return paymentMethod;
   }
 
 
   @JsonProperty(JSON_PROPERTY_PAYMENT_METHOD)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setPaymentMethod(PaymentMethodType paymentMethod) {
+  public void setPaymentMethod(String paymentMethod) {
     this.paymentMethod = paymentMethod;
   }
 
 
-  public PaymentMethodDto resources(List<ResourceType> resources) {
+  public PaymentMethodDto resources(List<String> resources) {
     
     this.resources = resources;
     return this;
   }
 
-  public PaymentMethodDto addResourcesItem(ResourceType resourcesItem) {
+  public PaymentMethodDto addResourcesItem(String resourcesItem) {
     if (this.resources == null) {
       this.resources = new ArrayList<>();
     }
@@ -114,14 +112,14 @@ public class PaymentMethodDto {
   @JsonProperty(JSON_PROPERTY_RESOURCES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public List<ResourceType> getResources() {
+  public List<String> getResources() {
     return resources;
   }
 
 
   @JsonProperty(JSON_PROPERTY_RESOURCES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setResources(List<ResourceType> resources) {
+  public void setResources(List<String> resources) {
     this.resources = resources;
   }
 

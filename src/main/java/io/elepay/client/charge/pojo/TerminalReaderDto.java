@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.elepay.client.charge.pojo.ReaderStatusType;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -70,7 +69,7 @@ public class TerminalReaderDto {
   private Map<String, String> metadata = new HashMap<>();
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private ReaderStatusType status;
+  private String status;
 
   public TerminalReaderDto() {
   }
@@ -291,7 +290,7 @@ public class TerminalReaderDto {
   }
 
 
-  public TerminalReaderDto status(ReaderStatusType status) {
+  public TerminalReaderDto status(String status) {
     
     this.status = status;
     return this;
@@ -305,14 +304,14 @@ public class TerminalReaderDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public ReaderStatusType getStatus() {
+  public String getStatus() {
     return status;
   }
 
 
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setStatus(ReaderStatusType status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

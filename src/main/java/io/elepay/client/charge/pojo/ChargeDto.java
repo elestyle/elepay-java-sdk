@@ -22,10 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.elepay.client.charge.pojo.CardInfo;
 import io.elepay.client.charge.pojo.ChargeLocationDto;
-import io.elepay.client.charge.pojo.ChargeStatusType;
-import io.elepay.client.charge.pojo.PaymentMethodType;
 import io.elepay.client.charge.pojo.RefundsDto;
-import io.elepay.client.charge.pojo.ResourceType;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -96,10 +93,10 @@ public class ChargeDto {
   private Boolean authorize;
 
   public static final String JSON_PROPERTY_PAYMENT_METHOD = "paymentMethod";
-  private PaymentMethodType paymentMethod;
+  private String paymentMethod;
 
   public static final String JSON_PROPERTY_RESOURCE = "resource";
-  private ResourceType resource;
+  private String resource;
 
   public static final String JSON_PROPERTY_ORDER_NO = "orderNo";
   private String orderNo;
@@ -138,7 +135,7 @@ public class ChargeDto {
   private RefundsDto refunds;
 
   public static final String JSON_PROPERTY_STATUS = "status";
-  private ChargeStatusType status;
+  private String status;
 
   public static final String JSON_PROPERTY_CODE_CONTENT = "codeContent";
   private String codeContent;
@@ -372,7 +369,7 @@ public class ChargeDto {
   }
 
 
-  public ChargeDto paymentMethod(PaymentMethodType paymentMethod) {
+  public ChargeDto paymentMethod(String paymentMethod) {
     
     this.paymentMethod = paymentMethod;
     return this;
@@ -386,19 +383,19 @@ public class ChargeDto {
   @JsonProperty(JSON_PROPERTY_PAYMENT_METHOD)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public PaymentMethodType getPaymentMethod() {
+  public String getPaymentMethod() {
     return paymentMethod;
   }
 
 
   @JsonProperty(JSON_PROPERTY_PAYMENT_METHOD)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setPaymentMethod(PaymentMethodType paymentMethod) {
+  public void setPaymentMethod(String paymentMethod) {
     this.paymentMethod = paymentMethod;
   }
 
 
-  public ChargeDto resource(ResourceType resource) {
+  public ChargeDto resource(String resource) {
     
     this.resource = resource;
     return this;
@@ -412,14 +409,14 @@ public class ChargeDto {
   @JsonProperty(JSON_PROPERTY_RESOURCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public ResourceType getResource() {
+  public String getResource() {
     return resource;
   }
 
 
   @JsonProperty(JSON_PROPERTY_RESOURCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setResource(ResourceType resource) {
+  public void setResource(String resource) {
     this.resource = resource;
   }
 
@@ -752,7 +749,7 @@ public class ChargeDto {
   }
 
 
-  public ChargeDto status(ChargeStatusType status) {
+  public ChargeDto status(String status) {
     
     this.status = status;
     return this;
@@ -766,14 +763,14 @@ public class ChargeDto {
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
-  public ChargeStatusType getStatus() {
+  public String getStatus() {
     return status;
   }
 
 
   @JsonProperty(JSON_PROPERTY_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setStatus(ChargeStatusType status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 

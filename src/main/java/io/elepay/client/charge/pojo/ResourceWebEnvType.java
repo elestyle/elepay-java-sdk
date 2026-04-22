@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.StringJoiner;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
@@ -51,14 +50,13 @@ public enum ResourceWebEnvType {
     return String.valueOf(value);
   }
 
-  @JsonCreator
   public static ResourceWebEnvType fromValue(String value) {
     for (ResourceWebEnvType b : ResourceWebEnvType.values()) {
       if (b.value.equals(value)) {
         return b;
       }
     }
-    throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    return null;
   }
 
   /**
