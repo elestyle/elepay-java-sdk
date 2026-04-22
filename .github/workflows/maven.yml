@@ -55,10 +55,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      # Target bytecode is Java 8 (pom.xml source/target = 1.8). Building on
+      # JDK 8 makes the compile bootclasspath match the runtime, so no JDK 9+
+      # API can leak into the released jar.
+      - name: Set up JDK 8
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '8'
           distribution: temurin
           cache: maven
 
