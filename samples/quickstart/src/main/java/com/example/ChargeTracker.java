@@ -1,79 +1,86 @@
 package com.example;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.elepay.client.charge.ApiException;
 import io.elepay.client.charge.api.ChargeApi;
 import io.elepay.client.charge.pojo.ChargeDto;
-import io.elepay.client.charge.pojo.ChargeStatusType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * Periodically calls {@code retrieveCharge} on every charge created through this
- * demo, records any status transition to the {@link EventStore}, and stops
- * polling once the charge reaches a terminal state.
+ * In-memory registry of charges created through this demo app. Holds the
+ * last-known status so the index page has something to render.
  *
- * <p>Meant as the "no webhook required" alternative so the sample app can be
- * driven end-to-end without punching a public URL through to {@code /webhook}.
+ * <p>State advances by two mechanisms, mirroring a real integration:
+ * <ul>
+ *   <li><b>Webhook (primary).</b> {@code WebhookController} decodes signed
+ *       {@code charge.*} events and calls {@link #applyWebhook(String, String)}.</li>
+ *   <li><b>On-demand reconciliation.</b> The merchant can hit "Refresh" on a
+ *       row, which triggers {@link #refresh(String)} — a one-shot
+ *       {@code retrieveCharge} against the REST API. This is what a real
+ *       backend would do on a user-initiated "check my payment" action or
+ *       from a batch reconciliation job, <em>not</em> in a per-charge polling
+ *       loop.</li>
+ * </ul>
+ *
+ * Deliberately <em>not</em> a {@code @Scheduled} poller: that pattern doesn't
+ * generalize past a toy app and would obscure the webhook-is-primary lesson.
  */
 @Component
 public class ChargeTracker {
 
     private static final Logger log = LoggerFactory.getLogger(ChargeTracker.class);
-
-    /** Stop polling once we observe one of these. */
-    private static final Set<ChargeStatusType> TERMINAL = EnumSet.of(
-            ChargeStatusType.CAPTURED,
-            ChargeStatusType.REFUNDED,
-            ChargeStatusType.REVOKED,
-            ChargeStatusType.FAILED);
-
-    /** Give up on a charge we never see resolve. */
-    private static final Duration MAX_LIFETIME = Duration.ofMinutes(15);
+    private static final int MAX_ENTRIES = 50;
 
     public static class Tracked {
         public final String id;
+        public final String orderNo;
         public final Instant createdAt;
         public final String amountCurrency;
         public final String paymentMethod;
-        public volatile ChargeStatusType status;
-        public volatile Instant lastPolledAt;
-        public volatile boolean done;
+        public volatile String status;
+        public volatile Instant lastUpdatedAt;
+        public volatile String lastUpdatedBy; // "webhook" | "refresh" | "create" | "return"
 
         Tracked(ChargeDto charge) {
             this.id = charge.getId();
+            this.orderNo = charge.getOrderNo();
             this.createdAt = Instant.now();
             this.amountCurrency = charge.getAmount() + " " + charge.getCurrency();
-            this.paymentMethod = String.valueOf(charge.getPaymentMethod());
+            this.paymentMethod = charge.getPaymentMethod();
             this.status = charge.getStatus();
+            this.lastUpdatedAt = this.createdAt;
+            this.lastUpdatedBy = "create";
         }
 
         // Thymeleaf accessors
         public String getId() { return id; }
+        public String getOrderNo() { return orderNo; }
         public String getCreatedAt() { return createdAt.toString(); }
         public String getAmountCurrency() { return amountCurrency; }
         public String getPaymentMethod() { return paymentMethod; }
-        public String getStatus() { return status == null ? "" : status.getValue(); }
-        public String getLastPolledAt() { return lastPolledAt == null ? "never" : lastPolledAt.toString(); }
-        public boolean isDone() { return done; }
+        public String getStatus() { return status == null ? "" : status; }
+        public String getLastUpdatedAt() { return lastUpdatedAt == null ? "" : lastUpdatedAt.toString(); }
+        public String getLastUpdatedBy() { return lastUpdatedBy == null ? "" : lastUpdatedBy; }
     }
 
     private final ChargeApi chargeApi;
     private final EventStore events;
     private final Map<String, Tracked> byId = Collections.synchronizedMap(new LinkedHashMap<>());
+    private final ObjectMapper mapper = new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT);
 
     public ChargeTracker(ChargeApi chargeApi, EventStore events) {
         this.chargeApi = chargeApi;
@@ -82,8 +89,32 @@ public class ChargeTracker {
 
     public void track(ChargeDto charge) {
         Tracked t = new Tracked(charge);
-        byId.put(t.id, t);
-        log.info("[tracker] now tracking {} (initial status={})", t.id, t.getStatus());
+        synchronized (byId) {
+            byId.put(t.id, t);
+            while (byId.size() > MAX_ENTRIES) {
+                Iterator<String> it = byId.keySet().iterator();
+                it.next();
+                it.remove();
+            }
+        }
+        events.record(new EventStore.Entry(Instant.now(), true,
+                "create: " + t.id + " orderNo=" + t.orderNo + " status=" + t.getStatus(),
+                toJson(charge)));
+        log.info("[tracker] registered {} (initial status={})", t.id, t.getStatus());
+    }
+
+    public Tracked get(String id) {
+        return byId.get(id);
+    }
+
+    public Tracked findByOrderNo(String orderNo) {
+        if (orderNo == null) return null;
+        synchronized (byId) {
+            for (Tracked t : byId.values()) {
+                if (orderNo.equals(t.orderNo)) return t;
+            }
+        }
+        return null;
     }
 
     /** Newest-first snapshot for rendering. */
@@ -95,70 +126,60 @@ public class ChargeTracker {
         }
     }
 
-    @Scheduled(fixedDelayString = "${tracker.poll-interval-ms:5000}",
-               initialDelayString = "${tracker.poll-interval-ms:5000}")
-    public void poll() {
-        Collection<Tracked> snapshot;
-        synchronized (byId) {
-            snapshot = new ArrayList<>(byId.values());
-        }
-        int active = 0;
-        for (Tracked t : snapshot) if (!t.done) active++;
-        if (active == 0) return;
-        log.info("[tracker] polling {} charge(s)", active);
-        for (Tracked t : snapshot) {
-            if (t.done) continue;
+    /**
+     * Apply a status update decoded from an inbound {@code charge.*} webhook.
+     * {@code rawPayload} is the full verified webhook body, surfaced in the
+     * events timeline so the reader can inspect the exact event envelope.
+     */
+    public void applyWebhook(String chargeId, String newStatus, String rawPayload) {
+        update(chargeId, newStatus, "webhook", rawPayload);
+    }
 
-            if (Duration.between(t.createdAt, Instant.now()).compareTo(MAX_LIFETIME) > 0) {
-                t.done = true;
-                events.record(new EventStore.Entry(Instant.now(), true,
-                        "polling gave up on " + t.id + " after " + MAX_LIFETIME,
-                        "status=" + t.getStatus()));
-                continue;
-            }
+    /**
+     * On-demand reconciliation: re-fetch the charge from the REST API.
+     * Returns the updated record, or {@code null} if the ID is unknown locally.
+     * The refreshed {@link ChargeDto} is recorded into the events timeline.
+     */
+    public Tracked refresh(String chargeId) throws ApiException {
+        return refreshAs(chargeId, "refresh");
+    }
 
-            try {
-                ChargeDto fresh = chargeApi.retrieveCharge(t.id);
-                t.lastPolledAt = Instant.now();
-                if (fresh.getStatus() != t.status) {
-                    ChargeStatusType oldStatus = t.status;
-                    t.status = fresh.getStatus();
-                    events.record(new EventStore.Entry(Instant.now(), true,
-                            "poll: " + t.id + " " + statusName(oldStatus) + " -> " + statusName(t.status),
-                            toJsonish(fresh)));
-                    log.info("[tracker] {} status {} -> {}", t.id, oldStatus, t.status);
-                }
-                if (TERMINAL.contains(t.status)) {
-                    t.done = true;
-                    log.info("[tracker] {} reached terminal status {}", t.id, t.status);
-                }
-            } catch (ApiException e) {
-                log.warn("[tracker] retrieveCharge({}) failed: HTTP {} {}", t.id, e.getCode(), e.getMessage());
-            } catch (Exception e) {
-                log.warn("[tracker] retrieveCharge({}) failed: {}", t.id, e.toString());
-            }
-        }
+    public Tracked refreshOnReturn(String chargeId) throws ApiException {
+        return refreshAs(chargeId, "return");
+    }
 
-        // Bound memory: keep the most recent 50.
-        synchronized (byId) {
-            while (byId.size() > 50) {
-                Iterator<String> it = byId.keySet().iterator();
-                if (!it.hasNext()) break;
-                it.next();
-                it.remove();
-            }
+    private Tracked refreshAs(String chargeId, String source) throws ApiException {
+        Tracked t = byId.get(chargeId);
+        if (t == null) return null;
+        ChargeDto fresh = chargeApi.retrieveCharge(chargeId);
+        update(chargeId, fresh.getStatus(), source, toJson(fresh));
+        return byId.get(chargeId);
+    }
+
+    private void update(String chargeId, String newStatus, String source, String body) {
+        Tracked t = byId.get(chargeId);
+        if (t == null) return;
+        String oldStatus = t.status;
+        t.lastUpdatedAt = Instant.now();
+        t.lastUpdatedBy = source;
+        t.status = newStatus;
+        events.record(new EventStore.Entry(Instant.now(), true,
+                source + ": " + chargeId + " " + nz(oldStatus) + " -> " + nz(newStatus),
+                body == null ? "source=" + source : body));
+        if (!Objects.equals(oldStatus, newStatus)) {
+            log.info("[tracker] {} {} -> {} (via {})", chargeId, oldStatus, newStatus, source);
+        } else {
+            log.info("[tracker] {} unchanged status={} (via {})", chargeId, newStatus, source);
         }
     }
 
-    private static String statusName(ChargeStatusType s) {
-        return s == null ? "(null)" : s.getValue();
+    private String toJson(ChargeDto c) {
+        try {
+            return mapper.writeValueAsString(c);
+        } catch (JsonProcessingException e) {
+            return "<failed to serialize ChargeDto: " + e.getMessage() + ">";
+        }
     }
 
-    private static String toJsonish(ChargeDto c) {
-        return "{id=" + c.getId()
-                + ", status=" + c.getStatus()
-                + ", amount=" + c.getAmount() + " " + c.getCurrency()
-                + ", paymentMethod=" + c.getPaymentMethod()
-                + "}";
-    }
+    private static String nz(String s) { return s == null ? "(null)" : s; }
 }

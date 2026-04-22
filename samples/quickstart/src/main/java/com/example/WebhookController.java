@@ -3,6 +3,9 @@ package com.example;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.elepay.client.charge.webhook.SignatureVerificationException;
 import io.elepay.client.charge.webhook.Webhook;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,13 +24,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class WebhookController {
 
     private static final Logger log = LoggerFactory.getLogger(WebhookController.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper PRETTY = new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT);
 
     private final EventStore events;
     private final ElepayProperties props;
+    private final ChargeTracker tracker;
 
-    public WebhookController(EventStore events, ElepayProperties props) {
+    public WebhookController(EventStore events, ElepayProperties props, ChargeTracker tracker) {
         this.events = events;
         this.props = props;
+        this.tracker = tracker;
     }
 
     /**
@@ -62,11 +70,54 @@ public class WebhookController {
 
         events.record(new EventStore.Entry(Instant.now(), verified,
                 summary + (verified ? "" : " — REJECTED: " + reason),
-                payload));
+                prettify(payload)));
         log.info("[webhook] from {} verified={} summary={}", request.getRemoteAddr(), verified, summary);
 
-        if (verified) return ResponseEntity.ok("ok");
+        if (verified) {
+            applyToTracker(payload);
+            return ResponseEntity.ok("ok");
+        }
         return ResponseEntity.status(400).body("signature verification failed: " + reason);
+    }
+
+    /**
+     * Best-effort extraction of {@code (chargeId, status)} from an elepay event
+     * payload so the in-memory charge registry reflects the push immediately.
+     * Unknown shapes are silently ignored — webhook is still acknowledged.
+     */
+    private void applyToTracker(String payload) {
+        try {
+            JsonNode root = MAPPER.readTree(payload);
+            String type = root.path("type").asText("");
+            if (!type.startsWith("charge.")) return;
+            // try common shapes: data.object.{id,status} → data.{id,status} → root.{id,status}
+            JsonNode chargeNode = firstPresent(
+                    root.path("data").path("object"),
+                    root.path("data"),
+                    root);
+            String id = chargeNode.path("id").asText(null);
+            String status = chargeNode.path("status").asText(null);
+            if (id == null || id.isEmpty()) return;
+            tracker.applyWebhook(id, status, prettify(payload));
+        } catch (Exception e) {
+            log.warn("[webhook] failed to apply event to tracker: {}", e.toString());
+        }
+    }
+
+    private static String prettify(String json) {
+        if (json == null || json.isEmpty()) return "";
+        try {
+            return PRETTY.writeValueAsString(MAPPER.readTree(json));
+        } catch (Exception e) {
+            return json; // non-JSON body; store verbatim
+        }
+    }
+
+    private static JsonNode firstPresent(JsonNode... candidates) {
+        for (JsonNode n : candidates) {
+            if (n != null && !n.isMissingNode() && n.has("id")) return n;
+        }
+        return candidates[candidates.length - 1];
     }
 
     @GetMapping("/events")

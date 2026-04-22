@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>elepay Java SDK — Quickstart</title>
+    <script src="https://js.elepay.io/v1/elepay.js"></script>
     <style>
         :root { color-scheme: light dark; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -46,28 +47,68 @@
     <div class="row"><span>SDK version</span><span th:text="${sdkVersion}">1.3.0</span></div>
     <div class="row"><span>User-Agent</span><span th:text="${userAgent}"></span></div>
     <div class="row"><span>Secret key</span><span th:text="${maskedKey}"></span></div>
+    <div class="row"><span>Publishable key</span>
+        <span th:text="${hasPublishableKey} ? 'configured — elepay.js enabled' : 'NOT set — set elepay.publishable-key in application.yaml'"></span>
+    </div>
     <div class="row"><span>Webhook secret</span>
         <span th:text="${hasWebhookSecret} ? 'configured' : 'NOT set — /webhook will reject all'"></span>
     </div>
 </section>
 
 <div th:if="${error}" class="alert error">
-    <strong>Error creating charge</strong>
+    <strong>Error</strong>
     <pre th:text="${error}"></pre>
+</div>
+
+<div th:if="${info}" class="alert success">
+    <pre th:text="${info}"></pre>
 </div>
 
 <div th:if="${charge}" class="alert success">
     <strong>Charge created</strong>
     <div>id: <code th:text="${charge.id}"></code> · status: <code th:text="${charge.status}"></code></div>
-    <div th:if="${charge.extra != null and charge.extra['url'] != null}" style="margin-top:0.5rem">
-        Hosted checkout URL:
-        <a th:href="${charge.extra['url']}" th:text="${charge.extra['url']}" target="_blank"></a>
+    <div id="payment-status" style="margin-top:0.5rem" class="muted">
+        Handing off to <code>elepay.handleCharge(...)</code>…
     </div>
     <details style="margin-top:0.5rem">
         <summary>Raw response</summary>
         <pre th:text="${charge}"></pre>
     </details>
 </div>
+
+<!--
+  Once the server has created a charge, hand the JSON off to elepay.js.
+  The JS SDK opens the hosted payment UI (QR, redirect, modal) for the chosen
+  method. Success / cancel come back as a promise result; the background poller
+  is the authoritative status source.
+-->
+<script th:if="${chargeJson}" th:inline="javascript">
+    (function() {
+        var publishableKey = /*[[${publishableKey}]]*/ "";
+        var charge = JSON.parse(/*[[${chargeJson}]]*/ "{}");
+        var out = document.getElementById("payment-status");
+        if (!publishableKey || publishableKey.indexOf("pk_test_your_") === 0) {
+            out.textContent = "publishableKey not configured — skipping elepay.handleCharge()";
+            return;
+        }
+        if (typeof Elepay !== "function") {
+            out.textContent = "elepay.js failed to load";
+            return;
+        }
+        var elepay = new Elepay(publishableKey);
+        elepay.handleCharge(charge).then(function(result) {
+            if (result && result.type === "success") {
+                out.textContent = "elepay.handleCharge → success (webhook / poller will confirm)";
+            } else if (result && result.type === "cancel") {
+                out.textContent = "elepay.handleCharge → cancelled";
+            } else {
+                out.textContent = "elepay.handleCharge → " + JSON.stringify(result);
+            }
+        }).catch(function(err) {
+            out.textContent = "elepay.handleCharge error: " + (err && err.message ? err.message : err);
+        });
+    })();
+</script>
 
 <form method="post" action="/checkout">
     <label>
@@ -92,11 +133,11 @@
 </form>
 
 <section th:unless="${trackedCharges.isEmpty()}" style="margin-top:2rem">
-    <h2 style="font-size:1.05rem;margin:0 0 0.5rem">Polled charges</h2>
+    <h2 style="font-size:1.05rem;margin:0 0 0.5rem">Recent charges</h2>
     <p class="muted" style="margin:0 0 0.5rem">
-        Every charge created from this page is polled in the background via
-        <code>retrieveCharge</code>; transitions land in
-        <a href="/events">events</a>. Works even without a webhook endpoint.
+        Status is pushed by verified webhooks (see <a href="/events">events</a>)
+        and auto-reconciled when the buyer returns via <code>frontUrl</code>.
+        Hit <strong>Refresh</strong> to call <code>retrieveCharge</code> on demand.
     </p>
     <table style="border-collapse:collapse; width:100%; font-size:0.85rem">
         <thead>
@@ -105,7 +146,8 @@
             <th style="text-align:left;padding:0.4rem 0.6rem">Amount</th>
             <th style="text-align:left;padding:0.4rem 0.6rem">Method</th>
             <th style="text-align:left;padding:0.4rem 0.6rem">Status</th>
-            <th style="text-align:left;padding:0.4rem 0.6rem">Last poll</th>
+            <th style="text-align:left;padding:0.4rem 0.6rem">Updated</th>
+            <th style="padding:0.4rem 0.6rem"></th>
         </tr>
         </thead>
         <tbody>
@@ -113,12 +155,18 @@
             <td style="padding:0.4rem 0.6rem;font-family:monospace" th:text="${t.id}"></td>
             <td style="padding:0.4rem 0.6rem" th:text="${t.amountCurrency}"></td>
             <td style="padding:0.4rem 0.6rem" th:text="${t.paymentMethod}"></td>
-            <td style="padding:0.4rem 0.6rem">
-                <code th:text="${t.status}"></code>
-                <span th:if="${t.done}" class="muted">(done)</span>
+            <td style="padding:0.4rem 0.6rem"><code th:text="${t.status}"></code></td>
+            <td style="padding:0.4rem 0.6rem;font-family:monospace;font-size:0.75rem">
+                <span th:text="${t.lastUpdatedAt}"></span>
+                <span class="muted" th:text="'(' + ${t.lastUpdatedBy} + ')'"></span>
             </td>
-            <td style="padding:0.4rem 0.6rem;font-family:monospace;font-size:0.75rem"
-                th:text="${t.lastPolledAt}"></td>
+            <td style="padding:0.4rem 0.6rem">
+                <form th:action="@{'/refresh/' + ${t.id}}" method="post" style="margin:0">
+                    <button type="submit" style="padding:0.25rem 0.6rem;font-size:0.8rem">
+                        Refresh
+                    </button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>

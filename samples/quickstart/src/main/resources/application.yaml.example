@@ -8,5 +8,8 @@ spring:
 elepay:
   # From elepay dashboard -> API keys -> test secret
   secret-key: sk_test_your_test_secret_key_here
+  # From elepay dashboard -> API keys -> test publishable key.
+  # Sent to the browser; elepay.js uses it to call handleCharge().
+  publishable-key: pk_test_your_test_publishable_key_here
   # From elepay dashboard -> Webhook endpoints -> signing secret
   webhook-signing-secret: whsec_your_webhook_signing_secret_here
