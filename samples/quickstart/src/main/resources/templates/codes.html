@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Codes — elepay Quickstart</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Codes (EasyCheckout / EasyQR)</h1>
+    <div class="muted">Drives <code>CodeApi.createCode / retrieveCode / closeCode</code>. Optionally attaches a user + stored source.</div>
+    <nav class="muted topnav">
+        <a href="/">Checkout</a>
+        <a href="/orders">Orders</a>
+        <a href="/customers">Customers</a>
+        <a href="/codes">Codes</a>
+        <a href="/subscriptions">Subscriptions</a>
+        <a href="/events">Events</a>
+    </nav>
+</header>
+
+<div th:if="${error}" class="alert error"><pre th:text="${error}"></pre></div>
+<div th:if="${info}"  class="alert success"><pre th:text="${info}"></pre></div>
+
+<h2>Create code</h2>
+<form method="post" action="/codes/new" class="grid">
+    <label>Amount<input type="number" name="amount" value="1000" min="1" required/></label>
+    <label>Currency
+        <select name="currency">
+            <option value="JPY" selected>JPY</option>
+            <option value="USD">USD</option>
+            <option value="CNY">CNY</option>
+        </select>
+    </label>
+    <label>Expiry seconds<input type="number" name="expiryDuration" placeholder="e.g. 900"/></label>
+    <label>Attach customer (optional)
+        <select name="customerId">
+            <option value="">—</option>
+            <option th:each="c : ${customers}" th:value="${c.id}" th:text="${c.label}"></option>
+        </select>
+    </label>
+    <label>Reuse source id<input type="text" name="sourceId" placeholder="src_..."/></label>
+    <label class="inline">
+        <input type="checkbox" name="shouldCreateSource" value="true"/>
+        shouldCreateSource
+    </label>
+    <label>&nbsp;<button type="submit">createCode</button></label>
+</form>
+
+<h2>Recent codes</h2>
+<div th:if="${orders.isEmpty()}" class="empty">No codes yet.</div>
+<table th:unless="${orders.isEmpty()}">
+    <thead><tr><th>orderNo</th><th>codeId</th><th>amount</th><th>status</th><th>updated</th></tr></thead>
+    <tbody>
+    <tr th:each="o : ${orders}">
+        <td><a th:href="@{'/orders/' + ${o.orderNo}}" th:text="${o.orderNo}"></a></td>
+        <td class="mono small" th:text="${o.elepayResourceId}"></td>
+        <td th:text="${o.amountCurrency}"></td>
+        <td><span class="chip" th:classappend="${'status-' + o.businessStatusLabel}"
+                 th:text="${o.businessStatusLabel + ' · ' + o.rawStatus}"></span></td>
+        <td class="mono small" th:text="${o.lastUpdatedAt}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

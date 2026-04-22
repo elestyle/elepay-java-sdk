@@ -4,42 +4,23 @@
     <meta charset="UTF-8"/>
     <title>elepay Java SDK — Quickstart</title>
     <script src="https://js.elepay.io/v1/elepay.js"></script>
-    <style>
-        :root { color-scheme: light dark; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-               max-width: 720px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
-        header { border-bottom: 1px solid #ddd; padding-bottom: 0.75rem; margin-bottom: 1.5rem; }
-        h1 { margin: 0 0 0.25rem; font-size: 1.4rem; }
-        .muted { color: #888; font-size: 0.85rem; }
-        .meta { background: #f6f6f6; border-radius: 6px; padding: 0.75rem 1rem;
-                font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.8rem; }
-        .meta .row { display: flex; justify-content: space-between; gap: 1rem; }
-        .meta .row > span:first-child { color: #888; }
-        form { display: grid; gap: 0.75rem; margin: 1.5rem 0; }
-        label { display: grid; gap: 0.25rem; font-size: 0.9rem; }
-        input, select, button {
-            font: inherit; padding: 0.5rem 0.6rem; border: 1px solid #ccc; border-radius: 4px;
-        }
-        button { background: #0969da; color: white; border-color: #0969da; cursor: pointer;
-                 padding: 0.6rem 1rem; font-weight: 600; }
-        button:hover { background: #0550ae; }
-        .alert { padding: 0.75rem 1rem; border-radius: 6px; margin: 1rem 0;
-                 font-family: ui-monospace, monospace; font-size: 0.85rem; overflow-x: auto; }
-        .alert.error { background: #ffe5e5; color: #9a0000; }
-        .alert.success { background: #e5fbe5; color: #005f1a; }
-        .alert pre { margin: 0.5rem 0 0; white-space: pre-wrap; word-break: break-all; }
-        .alert a { color: inherit; font-weight: 600; }
-        nav a { margin-right: 1rem; }
-        .warn { color: #a55500; font-size: 0.85rem; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
 </head>
 <body>
 <header>
     <h1>elepay Java SDK — Quickstart</h1>
-    <div class="muted">Drives ChargeApi and the Webhook verifier against the real elepay test environment.</div>
-    <nav class="muted" style="margin-top:0.5rem">
+    <div class="muted">Runnable sandbox driver for the SDK — customers + sources, charges, codes, subscriptions, locations, disputes, terminals.</div>
+    <nav class="muted topnav">
         <a href="/">Checkout</a>
-        <a href="/events">Webhook events</a>
+        <a href="/orders">Orders</a>
+        <a href="/customers">Customers</a>
+        <a href="/codes">Codes</a>
+        <a href="/subscriptions">Subscriptions</a>
+        <a href="/locations">Locations</a>
+        <a href="/charges">Remote charges</a>
+        <a href="/diagnostics">Diagnostics</a>
+        <a href="/events">Events</a>
     </nav>
 </header>
 
@@ -59,7 +40,6 @@
     <strong>Error</strong>
     <pre th:text="${error}"></pre>
 </div>
-
 <div th:if="${info}" class="alert success">
     <pre th:text="${info}"></pre>
 </div>
@@ -76,12 +56,6 @@
     </details>
 </div>
 
-<!--
-  Once the server has created a charge, hand the JSON off to elepay.js.
-  The JS SDK opens the hosted payment UI (QR, redirect, modal) for the chosen
-  method. Success / cancel come back as a promise result; the background poller
-  is the authoritative status source.
--->
 <script th:if="${chargeJson}" th:inline="javascript">
     (function() {
         var publishableKey = /*[[${publishableKey}]]*/ "";
@@ -98,7 +72,7 @@
         var elepay = new Elepay(publishableKey);
         elepay.handleCharge(charge).then(function(result) {
             if (result && result.type === "success") {
-                out.textContent = "elepay.handleCharge → success (webhook / poller will confirm)";
+                out.textContent = "elepay.handleCharge → success (webhook will confirm final status)";
             } else if (result && result.type === "cancel") {
                 out.textContent = "elepay.handleCharge → cancelled";
             } else {
@@ -110,7 +84,8 @@
     })();
 </script>
 
-<form method="post" action="/checkout">
+<h2>Create charge</h2>
+<form method="post" action="/checkout" class="stack">
     <label>
         Amount (minor unit, e.g. JPY ¥1 = 1)
         <input type="number" name="amount" value="1000" min="1" required/>
@@ -129,51 +104,51 @@
             <option th:each="m : ${paymentMethods}" th:value="${m.value}" th:text="${m.value}"></option>
         </select>
     </label>
+    <label class="inline">
+        <input type="checkbox" name="capture" value="true" checked/>
+        Capture immediately (uncheck for authorize → later capture / revoke)
+    </label>
     <button type="submit">Create charge</button>
+    <div class="muted small">
+        This form creates an <em>anonymous</em> charge (no customer / source).
+        To charge against a saved source, open the source's detail page from
+        <a href="/customers">/customers</a>.
+    </div>
 </form>
 
-<section th:unless="${trackedCharges.isEmpty()}" style="margin-top:2rem">
-    <h2 style="font-size:1.05rem;margin:0 0 0.5rem">Recent charges</h2>
-    <p class="muted" style="margin:0 0 0.5rem">
-        Status is pushed by verified webhooks (see <a href="/events">events</a>)
-        and auto-reconciled when the buyer returns via <code>frontUrl</code>.
-        Hit <strong>Refresh</strong> to call <code>retrieveCharge</code> on demand.
-    </p>
-    <table style="border-collapse:collapse; width:100%; font-size:0.85rem">
+<section th:unless="${recentOrders.isEmpty()}" class="mt">
+    <h2>Recent orders</h2>
+    <p class="muted">All merchant-side orders — charges, codes, subscriptions. Webhooks push status updates; click into an order for actions (capture, revoke, refund, refresh).</p>
+    <table>
         <thead>
-        <tr style="background:#f6f6f6">
-            <th style="text-align:left;padding:0.4rem 0.6rem">ID</th>
-            <th style="text-align:left;padding:0.4rem 0.6rem">Amount</th>
-            <th style="text-align:left;padding:0.4rem 0.6rem">Method</th>
-            <th style="text-align:left;padding:0.4rem 0.6rem">Status</th>
-            <th style="text-align:left;padding:0.4rem 0.6rem">Updated</th>
-            <th style="padding:0.4rem 0.6rem"></th>
+        <tr>
+            <th>OrderNo</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Customer</th>
+            <th>Status</th>
+            <th>Updated</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="t : ${trackedCharges}" style="border-top:1px solid #eee">
-            <td style="padding:0.4rem 0.6rem;font-family:monospace" th:text="${t.id}"></td>
-            <td style="padding:0.4rem 0.6rem" th:text="${t.amountCurrency}"></td>
-            <td style="padding:0.4rem 0.6rem" th:text="${t.paymentMethod}"></td>
-            <td style="padding:0.4rem 0.6rem"><code th:text="${t.status}"></code></td>
-            <td style="padding:0.4rem 0.6rem;font-family:monospace;font-size:0.75rem">
-                <span th:text="${t.lastUpdatedAt}"></span>
-                <span class="muted" th:text="'(' + ${t.lastUpdatedBy} + ')'"></span>
-            </td>
-            <td style="padding:0.4rem 0.6rem">
-                <form th:action="@{'/refresh/' + ${t.id}}" method="post" style="margin:0">
-                    <button type="submit" style="padding:0.25rem 0.6rem;font-size:0.8rem">
-                        Refresh
-                    </button>
-                </form>
+        <tr th:each="o : ${recentOrders}">
+            <td><a th:href="@{'/orders/' + ${o.orderNo}}" th:text="${o.orderNo}"></a></td>
+            <td><span class="chip" th:classappend="${o.typeLabel}" th:text="${o.typeLabel}"></span></td>
+            <td th:text="${o.amountCurrency}"></td>
+            <td th:text="${o.paymentMethod}"></td>
+            <td th:text="${o.customerId}"></td>
+            <td><span class="chip" th:classappend="${'status-' + o.businessStatusLabel}"
+                     th:text="${o.businessStatusLabel + ' · ' + o.rawStatus}"></span></td>
+            <td class="mono small">
+                <span th:text="${o.lastUpdatedAt}"></span>
+                <span class="muted" th:text="'(' + ${o.lastUpdatedBy} + ')'"></span>
             </td>
         </tr>
         </tbody>
     </table>
 </section>
 
-<p class="warn">
-    Test mode only. Do not put a live key in <code>application.yaml</code>.
-</p>
+<p class="warn">Test mode only. Do not put a live key in <code>application.yaml</code>.</p>
 </body>
 </html>

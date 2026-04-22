@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Locations — elepay Quickstart</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Locations</h1>
+    <div class="muted">Drives <code>LocationApi</code>. <code>name</code> and <code>address</code> are transliteration DTOs — the form shows just the Japanese (<code>kanji</code>) slot; the SDK populates it.</div>
+    <nav class="muted topnav">
+        <a href="/">Checkout</a>
+        <a href="/orders">Orders</a>
+        <a href="/customers">Customers</a>
+        <a href="/codes">Codes</a>
+        <a href="/locations">Locations</a>
+        <a href="/events">Events</a>
+    </nav>
+</header>
+
+<div th:if="${error}" class="alert error"><pre th:text="${error}"></pre></div>
+<div th:if="${info}"  class="alert success"><pre th:text="${info}"></pre></div>
+
+<h2>Create location</h2>
+<form method="post" action="/locations/new" class="grid">
+    <label>Name (kanji)<input type="text" name="name" required/></label>
+    <label>Tel<input type="text" name="tel"/></label>
+    <label>Zip<input type="text" name="zip"/></label>
+    <label>Address line<input type="text" name="address"/></label>
+    <label>Note<input type="text" name="note"/></label>
+    <label>&nbsp;<button type="submit">Create</button></label>
+</form>
+
+<h2>Existing (listChargeLocations)</h2>
+<div class="muted small" th:if="${total != null}">total: <span th:text="${total}"></span></div>
+<div th:if="${locations == null or locations.isEmpty()}" class="empty">No locations.</div>
+<table th:unless="${locations == null or locations.isEmpty()}">
+    <thead><tr><th>id</th><th>name</th><th>tel</th><th>status</th><th>actions</th></tr></thead>
+    <tbody>
+    <tr th:each="l : ${locations}">
+        <td class="mono small" th:text="${l.id}"></td>
+        <td th:text="${l.name != null ? l.name.kanji : ''}">
+        </td>
+        <td th:text="${l.tel}"></td>
+        <td><span class="chip" th:text="${l.status}"></span></td>
+        <td>
+            <form class="inline-form" method="post" th:action="@{'/locations/' + ${l.id} + '/delete'}">
+                <button class="small danger" type="submit">delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

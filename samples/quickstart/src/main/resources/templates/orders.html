@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Orders — elepay Quickstart</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Orders</h1>
+    <div class="muted">Every merchant-side order the demo has created. Click an orderNo for actions.</div>
+    <nav class="muted topnav">
+        <a href="/">Checkout</a>
+        <a href="/orders">Orders</a>
+        <a href="/customers">Customers</a>
+        <a href="/codes">Codes</a>
+        <a href="/subscriptions">Subscriptions</a>
+        <a href="/locations">Locations</a>
+        <a href="/charges">Remote charges</a>
+        <a href="/diagnostics">Diagnostics</a>
+        <a href="/events">Events</a>
+    </nav>
+</header>
+
+<div th:if="${orders.isEmpty()}" class="empty">
+    No orders yet. Create one from <a href="/">/</a>, <a href="/codes">/codes</a>,
+    <a href="/subscriptions">/subscriptions</a>, or <a href="/invoices">/invoices</a>.
+</div>
+
+<table th:unless="${orders.isEmpty()}">
+    <thead>
+    <tr>
+        <th>OrderNo</th>
+        <th>Type</th>
+        <th>Resource id</th>
+        <th>Amount</th>
+        <th>Customer</th>
+        <th>Status</th>
+        <th>Updated</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="o : ${orders}">
+        <td><a th:href="@{'/orders/' + ${o.orderNo}}" th:text="${o.orderNo}"></a></td>
+        <td><span class="chip" th:classappend="${o.typeLabel}" th:text="${o.typeLabel}"></span></td>
+        <td class="mono small" th:text="${o.elepayResourceId}"></td>
+        <td th:text="${o.amountCurrency}"></td>
+        <td th:text="${o.customerId}"></td>
+        <td><span class="chip" th:classappend="${'status-' + o.businessStatusLabel}"
+                  th:text="${o.businessStatusLabel + ' · ' + o.rawStatus}"></span></td>
+        <td class="mono small">
+            <span th:text="${o.lastUpdatedAt}"></span>
+            <span class="muted" th:text="'(' + ${o.lastUpdatedBy} + ')'"></span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

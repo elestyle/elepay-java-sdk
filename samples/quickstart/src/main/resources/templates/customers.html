@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Customers — elepay Quickstart</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Customers</h1>
+    <div class="muted">Each local customer maps 1:1 to an elepay <code>CustomerDto</code>. Sources are attached via <code>CustomerApi.createSource</code>.</div>
+    <nav class="muted topnav">
+        <a href="/">Checkout</a>
+        <a href="/orders">Orders</a>
+        <a href="/customers">Customers</a>
+        <a href="/codes">Codes</a>
+        <a href="/subscriptions">Subscriptions</a>
+        <a href="/locations">Locations</a>
+        <a href="/events">Events</a>
+    </nav>
+</header>
+
+<div th:if="${error}" class="alert error"><pre th:text="${error}"></pre></div>
+<div th:if="${info}"  class="alert success"><pre th:text="${info}"></pre></div>
+
+<h2>Create customer (createCustomer)</h2>
+<form method="post" action="/customers/new" class="stack">
+    <label>Name<input type="text" name="name" required/></label>
+    <label>Email<input type="email" name="email"/></label>
+    <label>Phone<input type="text" name="phone"/></label>
+    <label>Description<input type="text" name="description"/></label>
+    <button type="submit">Create</button>
+</form>
+
+<h2>Local customers</h2>
+<div th:if="${localCustomers.isEmpty()}" class="empty">No local customers yet.</div>
+<table th:unless="${localCustomers.isEmpty()}">
+    <thead><tr><th>id</th><th>name</th><th>email</th><th>sources</th><th>orders</th><th>created</th></tr></thead>
+    <tbody>
+    <tr th:each="c : ${localCustomers}">
+        <td><a th:href="@{'/customers/' + ${c.id}}" th:text="${c.id}"></a></td>
+        <td th:text="${c.name}"></td>
+        <td th:text="${c.email}"></td>
+        <td th:text="${c.sourceIds.size()}"></td>
+        <td th:text="${c.orderNos.size()}"></td>
+        <td class="mono small" th:text="${c.createdAt}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Remote <code>listCustomers</code></h2>
+<form method="get" action="/customers" class="grid">
+    <label>Keyword<input type="text" name="keyword" th:value="${keyword}"/></label>
+    <label>Limit<input type="number" name="limit" th:value="${limit}"/></label>
+    <label>&nbsp;<button type="submit">Search</button></label>
+</form>
+<div th:if="${remoteCustomers == null}" class="empty">Run the search to call <code>listCustomers</code>.</div>
+<div th:if="${remoteCustomers != null}">
+    <div class="muted small">remote total: <span th:text="${remoteTotal}"></span></div>
+    <table th:unless="${remoteCustomers.isEmpty()}">
+        <thead><tr><th>id</th><th>name</th><th>email</th><th>status</th></tr></thead>
+        <tbody>
+        <tr th:each="c : ${remoteCustomers}">
+            <td><a th:href="@{'/customers/' + ${c.id}}" th:text="${c.id}"></a></td>
+            <td th:text="${c.name}"></td>
+            <td th:text="${c.email}"></td>
+            <td><span class="chip" th:text="${c.status}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

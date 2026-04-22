@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Order — elepay Quickstart</title>
+    <script src="https://js.elepay.io/v1/elepay.js"></script>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Order</h1>
+    <nav class="muted topnav">
+        <a href="/">Checkout</a>
+        <a href="/orders">Orders</a>
+        <a href="/customers">Customers</a>
+        <a href="/codes">Codes</a>
+        <a href="/subscriptions">Subscriptions</a>
+        <a href="/events">Events</a>
+    </nav>
+</header>
+
+<div th:if="${notFound}" class="alert error">
+    <strong>Not found</strong>: <code th:text="${notFound}"></code>
+    <div class="muted">The orderNo may have aged out of the in-memory ring buffer.</div>
+</div>
+
+<div th:if="${error}" class="alert error"><pre th:text="${error}"></pre></div>
+<div th:if="${info}"  class="alert success"><pre th:text="${info}"></pre></div>
+
+<div th:if="${codeId}" class="alert success">
+    <strong>EasyCheckout code created</strong>
+    <div>codeId: <code th:text="${codeId}"></code></div>
+    <div th:if="${codeUrl}">codeUrl: <a th:href="${codeUrl}" th:text="${codeUrl}" target="_blank"></a>
+        (open on a phone to scan the QR directly)</div>
+    <div id="code-status" class="muted" style="margin-top:0.3rem">
+        Handing off to <code>elepay.checkout(...)</code>…
+    </div>
+</div>
+<!--
+  Code creation returns a CodeDto. The browser flow uses elepay.checkout(codeId)
+  to open the hosted EasyCheckout page (iframe / popup depending on environment).
+  It does NOT resolve on success — the webhook is still the authoritative
+  completion signal. We surface rejection / error only.
+-->
+<script th:if="${codeId}" th:inline="javascript">
+    (function() {
+        var publishableKey = /*[[${publishableKey}]]*/ "";
+        var codeId = /*[[${codeId}]]*/ "";
+        var out = document.getElementById("code-status");
+        if (!publishableKey || publishableKey.indexOf("pk_test_your_") === 0) {
+            out.textContent = "publishableKey not configured — skipping elepay.checkout()";
+            return;
+        }
+        if (typeof Elepay !== "function") {
+            out.textContent = "elepay.js failed to load";
+            return;
+        }
+        var elepay = new Elepay(publishableKey);
+        elepay.checkout(codeId).then(function() {
+            out.textContent = "elepay.checkout resolved (watch /events for the real completion webhook)";
+        }).catch(function(err) {
+            out.textContent = "elepay.checkout error: " + (err && err.message ? err.message : err);
+        });
+    })();
+</script>
+
+<div th:if="${order}" class="panel">
+    <div class="muted small">
+        <span th:text="${order.typeLabel}"></span> · created <span th:text="${order.createdAt}"></span>
+    </div>
+    <h2 style="margin:0.2rem 0">
+        <code th:text="${order.orderNo}"></code>
+        <span class="chip" th:classappend="${'status-' + order.businessStatusLabel}"
+              th:text="${order.businessStatusLabel + ' · ' + order.rawStatus}"></span>
+    </h2>
+    <dl class="mono small">
+        <div>resource id: <code th:text="${order.elepayResourceId}"></code></div>
+        <div>amount: <span th:text="${order.amountCurrency}"></span></div>
+        <div>method: <span th:text="${order.paymentMethod}"></span></div>
+        <div>customer: <code th:text="${order.customerId}"></code></div>
+        <div>last updated: <span th:text="${order.lastUpdatedAt}"></span>
+             (<span th:text="${order.lastUpdatedBy}"></span>)</div>
+    </dl>
+
+    <div class="actions" th:if="${order.typeLabel == 'charge'}">
+        <form class="inline-form" th:action="@{'/charges/' + ${order.orderNo} + '/refresh'}" method="post">
+            <button class="small secondary" type="submit">retrieveCharge</button>
+        </form>
+        <form class="inline-form" th:action="@{'/charges/' + ${order.orderNo} + '/capture'}" method="post">
+            <button class="small" type="submit">captureCharge</button>
+        </form>
+        <form class="inline-form" th:action="@{'/charges/' + ${order.orderNo} + '/revoke'}" method="post">
+            <button class="small danger" type="submit">revokeCharge</button>
+        </form>
+        <form class="inline-form" th:action="@{'/refunds/create'}" method="post">
+            <input type="hidden" name="orderNo" th:value="${order.orderNo}"/>
+            <input type="number" name="amount" placeholder="refund amount (optional)" style="width:11rem"/>
+            <input type="text"   name="reason" placeholder="reason (optional)" style="width:12rem"/>
+            <button class="small" type="submit">createRefund</button>
+        </form>
+    </div>
+
+    <div class="actions" th:if="${order.typeLabel == 'code'}">
+        <form class="inline-form" th:action="@{'/codes/' + ${order.orderNo} + '/refresh'}" method="post">
+            <button class="small secondary" type="submit">retrieveCode</button>
+        </form>
+        <form class="inline-form" th:action="@{'/codes/' + ${order.orderNo} + '/close'}" method="post">
+            <button class="small danger" type="submit">closeCode</button>
+        </form>
+    </div>
+
+    <div class="actions" th:if="${order.typeLabel == 'subscription'}">
+        <form class="inline-form" th:action="@{'/subscriptions/' + ${order.orderNo} + '/refresh'}" method="post">
+            <button class="small secondary" type="submit">retrieveSubscription</button>
+        </form>
+        <form class="inline-form" th:action="@{'/subscriptions/' + ${order.orderNo} + '/start'}" method="post">
+            <button class="small" type="submit">startSubscription</button>
+        </form>
+        <form class="inline-form" th:action="@{'/subscriptions/' + ${order.orderNo} + '/resume'}" method="post">
+            <button class="small" type="submit">resumeSubscription</button>
+        </form>
+        <form class="inline-form" th:action="@{'/subscriptions/' + ${order.orderNo} + '/cancel'}" method="post">
+            <button class="small danger" type="submit">cancelSubscription</button>
+        </form>
+        <form class="inline-form" th:action="@{'/subscriptions/' + ${order.orderNo} + '/periods'}" method="get">
+            <button class="small secondary" type="submit">listPeriods</button>
+        </form>
+    </div>
+
+    <section th:unless="${order.refunds.isEmpty()}" class="mt">
+        <h3>Refunds</h3>
+        <table>
+            <thead><tr><th>id</th><th>amount</th><th>reason</th><th>status</th><th>refunded</th></tr></thead>
+            <tbody>
+            <tr th:each="r : ${order.refunds}">
+                <td class="mono small" th:text="${r.id}"></td>
+                <td th:text="${r.amount + ' ' + r.currency}"></td>
+                <td th:text="${r.reason}"></td>
+                <td><span class="chip" th:text="${r.status}"></span></td>
+                <td class="mono small" th:text="${r.refundedTime}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <details class="mt">
+        <summary>Last raw JSON from elepay</summary>
+        <pre class="json" th:text="${order.lastRawJson}"></pre>
+    </details>
+</div>
+
+<section th:if="${order}" class="mt">
+    <h3>Events for this order</h3>
+    <div th:if="${events.isEmpty()}" class="empty small">No events yet for this order.</div>
+    <table th:unless="${events.isEmpty()}">
+        <thead><tr><th>When</th><th>Origin</th><th>Summary</th><th>Body</th></tr></thead>
+        <tbody>
+        <tr th:each="e : ${events}">
+            <td class="mono small" th:text="${e.receivedAt}"></td>
+            <td><span class="chip" th:classappend="${e.origin}" th:text="${e.origin}"></span></td>
+            <td th:text="${e.summary}"></td>
+            <td>
+                <details><summary>show</summary>
+                    <pre class="json" th:text="${e.body}"></pre>
+                </details>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Diagnostics — elepay Quickstart</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Diagnostics</h1>
+    <div class="muted">Read-only API panels: payment-method config, code settings, disputes, terminal readers. Some are typically empty in sandbox.</div>
+    <nav class="muted topnav">
+        <a href="/">Checkout</a>
+        <a href="/orders">Orders</a>
+        <a href="/customers">Customers</a>
+        <a href="/codes">Codes</a>
+        <a href="/subscriptions">Subscriptions</a>
+        <a href="/locations">Locations</a>
+        <a href="/events">Events</a>
+    </nav>
+</header>
+
+<section class="panel">
+    <h2><code>PaymentMethodApi.listPaymentMethods</code></h2>
+    <div th:if="${pmError}" class="alert error"><pre th:text="${pmError}"></pre></div>
+    <div th:if="${pm == null or pm.isEmpty()}" class="empty small">No payment methods returned.</div>
+    <table th:unless="${pm == null or pm.isEmpty()}">
+        <thead><tr><th>method</th><th>brand</th><th>resources</th><th>UA</th></tr></thead>
+        <tbody>
+        <tr th:each="m : ${pm}">
+            <td th:text="${m.paymentMethod}"></td>
+            <td th:text="${m.brand}"></td>
+            <td class="small" th:text="${m.resources}"></td>
+            <td class="small" th:text="${m.ua}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="panel">
+    <h2><code>CodeSettingApi.listCodePaymentMethods</code></h2>
+    <div th:if="${cpmError}" class="alert error"><pre th:text="${cpmError}"></pre></div>
+    <div th:if="${cpm == null or cpm.isEmpty()}" class="empty small">No code payment methods.</div>
+    <table th:unless="${cpm == null or cpm.isEmpty()}">
+        <thead><tr><th>method</th><th>brand</th><th>resources</th></tr></thead>
+        <tbody>
+        <tr th:each="m : ${cpm}">
+            <td th:text="${m.paymentMethod}"></td>
+            <td th:text="${m.brand}"></td>
+            <td class="small" th:text="${m.resources}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="panel">
+    <h2><code>DisputeApi.listDisputes</code></h2>
+    <form method="get" action="/diagnostics" class="grid">
+        <label>Filter by chargeId<input type="text" name="disputeChargeId" th:value="${disputeChargeId}"/></label>
+        <label>&nbsp;<button type="submit">Reload</button></label>
+    </form>
+    <div class="muted small" th:if="${disputeTotal != null}">total: <span th:text="${disputeTotal}"></span></div>
+    <div th:if="${disputeError}" class="alert error"><pre th:text="${disputeError}"></pre></div>
+    <div th:if="${disputes == null or disputes.isEmpty()}" class="empty small">
+        No disputes. Sandbox rarely produces disputes — the API call returning empty is itself a pass.
+    </div>
+    <table th:unless="${disputes == null or disputes.isEmpty()}">
+        <thead><tr><th>id</th><th>chargeId</th><th>amount</th><th>status</th><th>reason</th></tr></thead>
+        <tbody>
+        <tr th:each="d : ${disputes}">
+            <td class="mono small" th:text="${d.id}"></td>
+            <td class="mono small" th:text="${d.chargeId}"></td>
+            <td th:text="${d.amount + ' ' + d.currency}"></td>
+            <td><span class="chip" th:text="${d.status}"></span></td>
+            <td class="small" th:text="${d.reason}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="panel">
+    <h2><code>TerminalApi.listReaders / listLocations</code></h2>
+    <div th:if="${readerError}" class="alert error"><pre th:text="${readerError}"></pre></div>
+    <div class="muted small" th:if="${readerTotal != null}">readers total: <span th:text="${readerTotal}"></span></div>
+    <div th:if="${readers == null or readers.isEmpty()}" class="empty small">
+        No terminal readers. This API surfaces physical POS hardware — sandbox usually has none.
+    </div>
+    <table th:unless="${readers == null or readers.isEmpty()}">
+        <thead><tr><th>id</th><th>serialNumber</th><th>status</th><th>locationId</th></tr></thead>
+        <tbody>
+        <tr th:each="r : ${readers}">
+            <td class="mono small" th:text="${r.id}"></td>
+            <td th:text="${r.serialNumber}"></td>
+            <td><span class="chip" th:text="${r.status}"></span></td>
+            <td class="mono small" th:text="${r.locationId}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="muted small" style="margin-top:0.5rem" th:if="${terminalLocations != null}">
+        terminal locations: <span th:text="${terminalLocations.size()}"></span>
+    </div>
+</section>
+</body>
+</html>

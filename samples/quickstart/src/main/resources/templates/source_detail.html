@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Source — elepay Quickstart</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Source</h1>
+    <nav class="muted topnav">
+        <a href="/">Checkout</a>
+        <a href="/orders">Orders</a>
+        <a href="/customers">Customers</a>
+        <a th:href="@{'/customers/' + ${customerId}}">← back to customer</a>
+    </nav>
+</header>
+
+<div th:if="${error}" class="alert error"><pre th:text="${error}"></pre></div>
+<div th:if="${info}"  class="alert success"><pre th:text="${info}"></pre></div>
+
+<section class="panel" th:if="${source}">
+    <h2 style="margin:0"><code th:text="${source.id}"></code>
+        <span class="chip" th:text="${source.status}"></span></h2>
+    <dl class="mono small">
+        <div>customer: <a th:href="@{'/customers/' + ${customerId}}"><code th:text="${customerId}"></code></a></div>
+        <div>paymentMethod: <span th:text="${source.paymentMethod}"></span></div>
+        <div>resource: <span th:text="${source.resource}"></span></div>
+        <div>description: <span th:text="${source.description}"></span></div>
+        <div th:if="${sourceStatus}">live status: <span th:text="${sourceStatus.status}"></span></div>
+    </dl>
+    <details><summary>Raw SourceDto</summary><pre class="json" th:text="${sourceJsonView}"></pre></details>
+</section>
+
+<section class="panel" th:if="${source}">
+    <h3>Charge with this source</h3>
+    <p class="muted small">Creates a new <code>ChargeApi.createCharge</code>
+        request pre-bound to <code>customerId</code> + <code>sourceId</code>.
+        Works only while the source is <code>active</code>; otherwise elepay
+        rejects the charge and the retrieveSourceStatus button will tell you
+        why.</p>
+    <form method="post" action="/checkout" class="grid">
+        <input type="hidden" name="customerId"    th:value="${customerId}"/>
+        <input type="hidden" name="sourceId"      th:value="${sourceId}"/>
+        <input type="hidden" name="paymentMethod" th:value="${source.paymentMethod}"/>
+        <label>Amount<input type="number" name="amount" value="1000" min="1" required/></label>
+        <label>Currency
+            <select name="currency">
+                <option value="JPY" selected>JPY</option>
+                <option value="USD">USD</option>
+                <option value="CNY">CNY</option>
+            </select>
+        </label>
+        <label class="inline">
+            <input type="checkbox" name="capture" value="true" checked/> Capture
+        </label>
+        <label>&nbsp;<button type="submit">createCharge</button></label>
+    </form>
+</section>
+
+<section class="actions" th:if="${source}">
+    <form class="inline-form" method="post"
+          th:action="@{'/customers/' + ${customerId} + '/sources/' + ${sourceId} + '/refresh'}">
+        <button class="small secondary" type="submit">retrieveSourceStatus</button>
+    </form>
+    <form class="inline-form" method="post"
+          th:action="@{'/customers/' + ${customerId} + '/sources/' + ${sourceId} + '/delete'}">
+        <button class="small danger" type="submit">deleteSource</button>
+    </form>
+</section>
+</body>
+</html>

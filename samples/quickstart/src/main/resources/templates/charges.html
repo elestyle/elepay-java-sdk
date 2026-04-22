@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Remote charges — elepay Quickstart</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Remote <code>listCharges</code></h1>
+    <div class="muted">Charges known to the elepay account — independent of local demo state.</div>
+    <nav class="muted topnav">
+        <a href="/">Checkout</a>
+        <a href="/orders">Orders</a>
+        <a href="/charges">Remote charges</a>
+        <a href="/events">Events</a>
+    </nav>
+</header>
+
+<div th:if="${error}" class="alert error"><pre th:text="${error}"></pre></div>
+
+<form method="get" action="/charges" class="grid">
+    <label>Status
+        <select name="status">
+            <option value="">—</option>
+            <option th:each="s : ${statuses}" th:value="${s.value}"
+                    th:selected="${s.value == status}" th:text="${s.value}"></option>
+        </select>
+    </label>
+    <label>Method
+        <select name="method">
+            <option value="">—</option>
+            <option th:each="m : ${methods}" th:value="${m.value}"
+                    th:selected="${m.value == method}" th:text="${m.value}"></option>
+        </select>
+    </label>
+    <label>Limit<input type="number" name="limit" th:value="${limit}"/></label>
+    <label>&nbsp;<button type="submit">List</button></label>
+</form>
+
+<div class="muted small" th:if="${total != null}">total: <span th:text="${total}"></span></div>
+<div th:if="${charges == null or charges.isEmpty()}" class="empty">No charges.</div>
+<table th:unless="${charges == null or charges.isEmpty()}">
+    <thead><tr><th>id</th><th>orderNo</th><th>amount</th><th>method</th><th>status</th><th>paidTime</th></tr></thead>
+    <tbody>
+    <tr th:each="c : ${charges}">
+        <td class="mono small" th:text="${c.id}"></td>
+        <td th:text="${c.orderNo}"></td>
+        <td th:text="${c.amount + ' ' + c.currency}"></td>
+        <td th:text="${c.paymentMethod}"></td>
+        <td><span class="chip" th:text="${c.status}"></span></td>
+        <td class="mono small" th:text="${c.paidTime}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

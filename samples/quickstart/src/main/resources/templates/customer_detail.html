@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Customer — elepay Quickstart</title>
+    <script src="https://js.elepay.io/v1/elepay.js"></script>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Customer</h1>
+    <nav class="muted topnav">
+        <a href="/">Checkout</a>
+        <a href="/orders">Orders</a>
+        <a href="/customers">Customers</a>
+        <a href="/codes">Codes</a>
+        <a href="/subscriptions">Subscriptions</a>
+        <a href="/events">Events</a>
+    </nav>
+</header>
+
+<div th:if="${error}" class="alert error"><pre th:text="${error}"></pre></div>
+<div th:if="${info}"  class="alert success"><pre th:text="${info}"></pre></div>
+
+<div th:if="${sourceJson}" class="alert success">
+    <strong>Source activation</strong>
+    <div id="source-status" class="muted" style="margin-top:0.3rem">
+        Handing off to <code>elepay.handleSource(...)</code>…
+    </div>
+</div>
+<!--
+  Source creation returns a SourceDto just like charge creation returns a
+  ChargeDto. The browser drives activation (3DS, redirect to a wallet, …) via
+  elepay.js. Once handleSource resolves, click "retrieveSourceStatus" on the
+  row below to reconcile.
+-->
+<script th:if="${sourceJson}" th:inline="javascript">
+    (function() {
+        var publishableKey = /*[[${publishableKey}]]*/ "";
+        var source = JSON.parse(/*[[${sourceJson}]]*/ "{}");
+        var out = document.getElementById("source-status");
+        if (!publishableKey || publishableKey.indexOf("pk_test_your_") === 0) {
+            out.textContent = "publishableKey not configured — skipping elepay.handleSource()";
+            return;
+        }
+        if (typeof Elepay !== "function") {
+            out.textContent = "elepay.js failed to load";
+            return;
+        }
+        var elepay = new Elepay(publishableKey);
+        elepay.handleSource(source).then(function(result) {
+            if (result && result.type === "success") {
+                out.textContent = "elepay.handleSource → success — click retrieveSourceStatus to reconcile";
+            } else if (result && result.type === "cancel") {
+                out.textContent = "elepay.handleSource → cancelled";
+            } else {
+                out.textContent = "elepay.handleSource → " + JSON.stringify(result);
+            }
+        }).catch(function(err) {
+            out.textContent = "elepay.handleSource error: " + (err && err.message ? err.message : err);
+        });
+    })();
+</script>
+
+<section class="panel" th:if="${remote}">
+    <h2 style="margin:0"><code th:text="${remote.id}"></code>
+        <span class="chip" th:text="${remote.status}"></span></h2>
+    <dl class="mono small">
+        <div>name: <span th:text="${remote.name}"></span></div>
+        <div>email: <span th:text="${remote.email}"></span></div>
+        <div>phone: <span th:text="${remote.phone}"></span></div>
+        <div>description: <span th:text="${remote.description}"></span></div>
+        <div>defaultSource: <code th:text="${remote.defaultSource}"></code></div>
+        <div th:if="${localCustomer}">local orders: <span th:text="${localCustomer.orderNos.size()}"></span></div>
+    </dl>
+    <details><summary>Raw CustomerDto</summary><pre class="json" th:text="${remoteJson}"></pre></details>
+</section>
+
+<section th:if="${remote}">
+    <h3>Update (updateCustomer)</h3>
+    <form method="post" th:action="@{'/customers/' + ${remote.id} + '/update'}" class="grid">
+        <label>Name<input type="text" name="name" th:value="${remote.name}"/></label>
+        <label>Email<input type="email" name="email" th:value="${remote.email}"/></label>
+        <label>Phone<input type="text" name="phone" th:value="${remote.phone}"/></label>
+        <label>Description<input type="text" name="description" th:value="${remote.description}"/></label>
+        <label>Default source<input type="text" name="defaultSource" th:value="${remote.defaultSource}"/></label>
+        <label>&nbsp;<button type="submit">Update</button></label>
+    </form>
+    <form method="post" th:action="@{'/customers/' + ${remote.id} + '/delete'}" style="margin-top:0.5rem">
+        <button type="submit" class="danger small">Delete (deleteCustomer)</button>
+    </form>
+</section>
+
+<section class="mt">
+    <h3>Sources (CustomerApi.listSources)</h3>
+    <div th:if="${sources == null or sources.isEmpty()}" class="empty small">No sources yet. Create one below.</div>
+    <table th:unless="${sources == null or sources.isEmpty()}">
+        <thead><tr><th>id</th><th>method</th><th>resource</th><th>status</th><th></th></tr></thead>
+        <tbody>
+        <tr th:each="s : ${sources}">
+            <td class="mono small"><a th:href="@{'/customers/' + ${remote.id} + '/sources/' + ${s.id}}"
+                                       th:text="${s.id}"></a></td>
+            <td th:text="${s.paymentMethod}"></td>
+            <td th:text="${s.resource}"></td>
+            <td><span class="chip" th:text="${s.status}"></span></td>
+            <td>
+                <a class="muted small"
+                   th:href="@{'/customers/' + ${remote.id} + '/sources/' + ${s.id}}">details &amp; charge →</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 th:if="${remote}">Create source (createSource)</h3>
+    <p th:if="${remote}" class="muted small">Redirect-based methods (alipay, paypay, linepay) start in <code>pending</code>
+        until the buyer completes activation at the URL elepay.js opens. Use
+        <code>retrieveSourceStatus</code> to reconcile.</p>
+    <form th:if="${remote}" method="post" th:action="@{'/customers/' + ${remote.id} + '/sources/new'}" class="grid">
+        <label>Payment method
+            <select name="paymentMethod">
+                <option th:each="m : ${paymentMethods}" th:value="${m.value}" th:text="${m.value}"></option>
+            </select>
+        </label>
+        <label>Description<input type="text" name="description"/></label>
+        <label>&nbsp;<button type="submit">Create source</button></label>
+    </form>
+</section>
+
+<section class="mt">
+    <h3>Orders for this customer</h3>
+    <div th:if="${orders.isEmpty()}" class="empty small">No orders yet.</div>
+    <table th:unless="${orders.isEmpty()}">
+        <thead><tr><th>orderNo</th><th>type</th><th>amount</th><th>status</th></tr></thead>
+        <tbody>
+        <tr th:each="o : ${orders}">
+            <td><a th:href="@{'/orders/' + ${o.orderNo}}" th:text="${o.orderNo}"></a></td>
+            <td><span class="chip" th:classappend="${o.typeLabel}" th:text="${o.typeLabel}"></span></td>
+            <td th:text="${o.amountCurrency}"></td>
+            <td><span class="chip" th:classappend="${'status-' + o.businessStatusLabel}"
+                     th:text="${o.businessStatusLabel}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

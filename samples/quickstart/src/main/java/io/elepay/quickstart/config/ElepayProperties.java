@@ -1,20 +1,25 @@
-package com.example;
+package io.elepay.quickstart.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Typed binding for the {@code elepay.*} keys in {@code application.yaml}.
+ *
+ * <p>All three values are required for full functionality:
+ * <ul>
+ *   <li>{@code secretKey} ({@code sk_test_…}) — server-side bearer token used by the SDK.</li>
+ *   <li>{@code publishableKey} ({@code pk_test_…}) — sent to the browser so
+ *       {@code elepay.js} can call {@code handleCharge / handleSource / checkout}.</li>
+ *   <li>{@code webhookSigningSecret} — used by
+ *       {@link io.elepay.client.charge.webhook.Webhook#verifyHeader} to authenticate
+ *       inbound events.</li>
+ * </ul>
+ */
 @ConfigurationProperties(prefix = "elepay")
 public class ElepayProperties {
 
-    /** Test mode secret key, starts with {@code sk_test_}. Used by the server-side SDK. */
     private String secretKey = "";
-
-    /**
-     * Test mode publishable key, starts with {@code pk_test_}. Sent to the browser and
-     * passed to {@code new Elepay(...)} in the JS SDK.
-     */
     private String publishableKey = "";
-
-    /** Signing secret of the webhook endpoint registered in the elepay dashboard. */
     private String webhookSigningSecret = "";
 
     public String getSecretKey() { return secretKey; }

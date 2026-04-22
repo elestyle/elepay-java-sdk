@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Subscriptions — elepay Quickstart</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Subscriptions</h1>
+    <div class="muted">Drives <code>SubscriptionApi</code>. Requires a user; once created, remember <code>startSubscription</code> to begin billing.</div>
+    <nav class="muted topnav">
+        <a href="/">Checkout</a>
+        <a href="/orders">Orders</a>
+        <a href="/customers">Customers</a>
+        <a href="/codes">Codes</a>
+        <a href="/subscriptions">Subscriptions</a>
+        <a href="/events">Events</a>
+    </nav>
+</header>
+
+<div th:if="${error}" class="alert error"><pre th:text="${error}"></pre></div>
+<div th:if="${info}"  class="alert success"><pre th:text="${info}"></pre></div>
+
+<h2>Create subscription</h2>
+<form method="post" action="/subscriptions/new" class="grid">
+    <label>Name<input type="text" name="name" required/></label>
+    <label>User
+        <select name="customerId" required>
+            <option value="">— pick —</option>
+            <option th:each="c : ${customers}" th:value="${c.id}" th:text="${c.label}"></option>
+        </select>
+    </label>
+    <label>Amount<input type="number" name="amount" value="1000" required/></label>
+    <label>Currency
+        <select name="currency"><option value="JPY" selected>JPY</option><option value="USD">USD</option></select>
+    </label>
+    <label>Interval
+        <select name="interval">
+            <option th:each="i : ${intervals}" th:value="${i.value}" th:text="${i.value}"></option>
+        </select>
+    </label>
+    <label>Interval span<input type="number" name="intervalSpan" value="1" min="1"/></label>
+    <label>Initial amount<input type="number" name="initialAmount" placeholder="(optional)"/></label>
+    <label>&nbsp;<button type="submit">createSubscription</button></label>
+</form>
+
+<h2>Local subscriptions</h2>
+<div th:if="${localOrders.isEmpty()}" class="empty">None yet.</div>
+<table th:unless="${localOrders.isEmpty()}">
+    <thead><tr><th>orderNo</th><th>subscriptionId</th><th>amount</th><th>status</th><th>updated</th></tr></thead>
+    <tbody>
+    <tr th:each="o : ${localOrders}">
+        <td><a th:href="@{'/orders/' + ${o.orderNo}}" th:text="${o.orderNo}"></a></td>
+        <td class="mono small" th:text="${o.elepayResourceId}"></td>
+        <td th:text="${o.amountCurrency}"></td>
+        <td><span class="chip" th:classappend="${'status-' + o.businessStatusLabel}"
+                 th:text="${o.businessStatusLabel + ' · ' + o.rawStatus}"></span></td>
+        <td class="mono small" th:text="${o.lastUpdatedAt}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Remote <code>listSubscriptions</code></h2>
+<form method="get" action="/subscriptions" class="grid">
+    <label>Filter by customer
+        <select name="customerId">
+            <option value="">—</option>
+            <option th:each="c : ${customers}" th:value="${c.id}"
+                    th:selected="${c.id == customerId}" th:text="${c.label}"></option>
+        </select>
+    </label>
+    <label>&nbsp;<button type="submit">List</button></label>
+</form>
+<div class="muted small">remote total: <span th:text="${remoteTotal}">?</span></div>
+<table th:if="${remote != null and !remote.isEmpty()}">
+    <thead><tr><th>id</th><th>customerId</th><th>status</th><th>nextCharge</th></tr></thead>
+    <tbody>
+    <tr th:each="s : ${remote}">
+        <td class="mono small" th:text="${s.id}"></td>
+        <td th:text="${s.customerId}"></td>
+        <td><span class="chip" th:text="${s.status}"></span></td>
+        <td class="mono small" th:text="${s.nextChargeTime}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

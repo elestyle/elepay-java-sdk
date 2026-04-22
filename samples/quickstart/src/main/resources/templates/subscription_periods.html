@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Periods — elepay Quickstart</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<header>
+    <h1>Subscription periods</h1>
+    <nav class="muted topnav">
+        <a href="/orders">Orders</a>
+        <a href="/subscriptions">Subscriptions</a>
+        <a href="/events">Events</a>
+    </nav>
+</header>
+
+<div th:if="${error}" class="alert error"><pre th:text="${error}"></pre></div>
+
+<section th:if="${order}" class="panel">
+    <h2 style="margin:0"><code th:text="${order.orderNo}"></code></h2>
+    <div class="muted small">resource: <code th:text="${order.elepayResourceId}"></code></div>
+    <div class="muted small">total periods returned: <span th:text="${total}">?</span></div>
+</section>
+
+<div th:if="${periods == null or periods.isEmpty()}" class="empty">
+    No periods yet. Periods only populate after billing cycles run — sandbox rarely shows them during a short demo.
+</div>
+
+<table th:unless="${periods == null or periods.isEmpty()}">
+    <thead><tr><th>id</th><th>startTime</th><th>endTime</th><th>chargeId</th><th>chargeStatus</th></tr></thead>
+    <tbody>
+    <tr th:each="p : ${periods}">
+        <td class="mono small" th:text="${p.id}"></td>
+        <td class="mono small" th:text="${p.startTime}"></td>
+        <td class="mono small" th:text="${p.endTime}"></td>
+        <td class="mono small" th:text="${p.charge != null ? p.charge.id : ''}"></td>
+        <td><span th:if="${p.charge != null}" class="chip" th:text="${p.charge.status}"></span></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

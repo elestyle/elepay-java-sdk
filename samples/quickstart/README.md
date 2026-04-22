@@ -1,33 +1,79 @@
 # elepay-java-sdk quickstart (Spring Boot)
 
-A runnable Spring Boot app that drives the SDK against the real elepay test
-environment end-to-end:
+A runnable Spring Boot reference application that shows how to use **every
+SDK API** behind a **minimal merchant server**. Two in-memory aggregates
+(`Customer`, `Order`) tie the pieces together the way a production backend
+would.
 
-1. **Server creates a charge** with the Java SDK (`ChargeApi.createCharge`).
-2. **Browser pays via elepay.js** — the charge object is handed off to
-   `elepay.handleCharge(...)` which renders the hosted payment UI.
-3. **Status propagates back** via three complementary paths:
-   - **Webhook (primary).** elepay POSTs the signed event to `/webhook`; the
-     handler verifies with `Webhook.verifyHeader` and updates the charge record.
-   - **`frontUrl` return.** For redirect-based methods the buyer lands back on
-     `/return?orderNo=…`, which reconciles the status with one
-     `retrieveCharge` call — so the UI reflects reality the instant the user
-     is back.
-   - **Manual refresh.** A **Refresh** button on each row calls
-     `retrieveCharge` on demand. Useful when neither of the two above fired
-     (e.g. no webhook endpoint configured, no `frontUrl` round-trip).
+## What it covers
 
-   No background polling loop. Polling-per-charge is a demo anti-pattern; in
-   production you rely on webhooks and occasional reconciliation.
+| SDK API | Pages | Demonstrates |
+|---------|-------|--------------|
+| `ChargeApi`         | `/` · `/orders` · `/orders/{no}` · `/charges` | create, retrieve, list, capture, revoke, authorize→capture, refund-round-trip |
+| `RefundApi`         | on Order detail | createRefund, listChargesRefunds |
+| `CustomerApi`       | `/customers` · `/customers/{id}` | customer CRUD **plus** the Source sub-API: create/list/retrieve/delete/retrieveSourceStatus |
+| `CodeApi`           | `/codes` · `/orders/{no}` | EasyQR / EasyCheckout createCode/retrieveCode/closeCode, with optional source reuse and `shouldCreateSource` |
+| `CodeSettingApi`    | `/diagnostics` | listCodePaymentMethods |
+| `SubscriptionApi`   | `/subscriptions` · `/orders/{no}` · `/subscriptions/{no}/periods` | full 8-method flow |
+| `InvoiceApi`        | `/invoices` · `/orders/{no}` | draft → update → submit → send → paid → cancel |
+| `LocationApi`       | `/locations` | charge-location CRUD (transliteration DTOs) |
+| `DisputeApi`        | `/diagnostics` | listDisputes + retrieveDispute (read-only panel) |
+| `PaymentMethodApi`  | `/diagnostics` | listPaymentMethods |
+| `TerminalApi`       | `/diagnostics` | listReaders + listLocations (hardware-dependent, usually empty) |
+| `Webhook` verifier  | `/webhook` · `/events` | `Webhook.verifyHeader` on raw body; routes events to the matching Order by resource id |
+| `elepay.js`         | browser on `/`, `/customers/{id}`, `/orders/{no}` | `handleCharge(chargeDto)` · `handleSource(sourceDto)` · `checkout(codeId)` — server hands the DTO/id to the browser, js-sdk drives the hosted UI |
 
-Pages:
+## Architecture
 
-- **`/`** — create-charge form; shows the most recent charges with live status
-  and a Refresh button.
-- **`/events`** — timeline of webhook deliveries and status transitions;
-  auto-refreshes every 5s.
+Four packages, layered so you can scan any controller and find its SDK call
+in ~10 lines:
 
-## End-to-end flow
+```
+io.elepay.quickstart
+├── QuickstartApplication        Spring Boot entry point
+├── config/                      ElepayProperties + ElepayClientConfig (all API beans)
+├── domain/                      merchant aggregates: Customer, Order, OrderType, OrderStatus
+├── repository/                  in-memory stores: CustomerRepository, OrderRepository, EventLog
+└── web/                         one @Controller per SDK API + WebhookController + ApiExceptionAdvice
+```
+
+Dependency direction is strictly downward: `web → repository → domain`,
+with `config` providing the SDK beans that controllers inject.
+
+**Finding an SDK call.** Every line that calls into
+`io.elepay.client.charge.*` is prefixed with a `// --- elepay SDK ---`
+comment. Grep for it:
+
+```bash
+grep -rn "elepay SDK" src/main/java
+```
+
+### Domain model (in-memory only)
+
+```
+Customer (== elepay CustomerDto)
+ ├─ sourceIds[]    // SourceDto ids bound via CustomerApi.createSource
+ └─ orderNos[]     // merchant orders owned by this customer
+
+Order (the unit of merchant-side business that gets paid)
+ ├─ type                 // CHARGE | CODE | SUBSCRIPTION | INVOICE
+ ├─ elepayResourceId     // id of the underlying charge/code/subscription/invoice
+ ├─ customerId           // local Customer.id (also the elepay customer id)
+ ├─ businessStatus       // merchant rollup: PENDING/AUTHORIZED/PAID/REFUNDED/CANCELED/FAILED
+ ├─ rawStatus            // the verbatim elepay status string (for debugging)
+ └─ refunds[]            // RefundDto list, for charge orders
+```
+
+A webhook locates the owning Order via `elepayResourceId` — elepay events
+reference the resource id, not your merchant orderNo, so that mapping lives
+in `OrderRepository.resourceIdToOrderNo`. Unknown resources are recorded
+under `<family>.unknown` and otherwise ignored.
+
+State lives in `LinkedHashMap` / `ArrayDeque`; everything clears when the
+JVM exits. Swap the repositories for Spring Data JPA (or anything else) to
+make it durable — nothing else has to change.
+
+## End-to-end flow (charge)
 
 ```mermaid
 sequenceDiagram
@@ -39,7 +85,7 @@ sequenceDiagram
 
     Buyer->>Browser: POST /checkout
     Browser->>Merchant: form submit
-    Merchant->>Elepay: createCharge (with frontUrl in extra)
+    Merchant->>Elepay: createCharge (+ optional customerId, sourceId, capture=true|false)
     Elepay-->>Merchant: chargeDto (pending)
     Merchant-->>Browser: render page + charge JSON
     Browser->>Browser: elepay.handleCharge(chargeDto)
@@ -48,18 +94,15 @@ sequenceDiagram
 
     par Webhook push (primary)
         Elepay->>Merchant: POST /webhook (signed)
-        Merchant->>Merchant: verify + apply to tracker
+        Merchant->>Merchant: verify + route to Order
     and Return redirect (for redirect-based methods)
         Elepay-->>Browser: 302 frontUrl
         Browser->>Merchant: GET /return?orderNo=…
         Merchant->>Elepay: retrieveCharge
-        Elepay-->>Merchant: chargeDto
-    and Manual refresh (on demand)
-        Buyer->>Merchant: POST /refresh/{id}
-        Merchant->>Elepay: retrieveCharge
-        Elepay-->>Merchant: chargeDto
+    and Manual actions (per-order)
+        Buyer->>Merchant: POST /charges/{no}/{capture|revoke|refresh}
+        Merchant->>Elepay: captureCharge / revokeCharge / retrieveCharge
     end
-
 ```
 
 ## Setup
@@ -81,9 +124,9 @@ sequenceDiagram
 
    - `elepay.secret-key` — a `sk_test_...` from the elepay dashboard
    - `elepay.publishable-key` — the matching `pk_test_...`; handed to the browser so `elepay.js` can call `handleCharge`
-   - `elepay.webhook-signing-secret` — the `whsec_...` / `ws_test_...` from the registered webhook endpoint
+   - `elepay.webhook-signing-secret` — the signing secret of the registered webhook endpoint
 
-   `application.yaml` is `.gitignore`'d so the real keys stay local.
+   `application.yaml` is `.gitignore`'d.
 
 ## Run
 
@@ -94,12 +137,30 @@ mvn -q spring-boot:run
 
 ## Exercising the webhook path
 
-elepay has to be able to POST to your `/webhook` from the public internet. Expose
-the local port with a tunnel — e.g. `ngrok http 8080` — then register the HTTPS
-tunnel URL (`https://xxx.ngrok.app/webhook`) as a webhook endpoint in the elepay
-dashboard. Copy that endpoint's signing secret into `application.yaml`.
+elepay needs to POST to your `/webhook` from the public internet. Expose
+the local port with a tunnel (`ngrok http 8080`) and register the HTTPS URL
+(`https://xxx.ngrok.app/webhook`) in the elepay dashboard. Put that
+endpoint's signing secret into `application.yaml`.
 
-Create a charge from `/`, complete payment, and you'll see entries appear in
-`/events` — e.g. `type=charge.succeeded` from the webhook, and in the charges
-table the row's **Updated** column will flip from `(create)` to `(webhook)` or
-`(return)`.
+Every verified event shows up at `/events`, tagged by origin
+(`create` / `webhook` / `action` / `refresh` / `reject`) and resource
+(`charge.demo-123`, `code.code-456`, …). Unknown event types are recorded
+but don't mutate any order state.
+
+## Integration-test checklist
+
+Walk these in order to confirm the SDK is working end-to-end:
+
+- [ ] `/` → create charge with `capture=true` → pay → webhook flips status to `paid`
+- [ ] `/` → create charge with `capture=false` → pay → status `uncaptured` → click **captureCharge** → `paid`
+- [ ] Order detail → **createRefund** → status `refunded` or `partially_refunded`; webhook arrives
+- [ ] Order detail → **revokeCharge** on an `uncaptured` charge → status `revoked`
+- [ ] `/customers` → create customer → `/customers/{id}` → attach a source (redirect method) → complete activation → **retrieveSourceStatus** shows `active`
+- [ ] `/customers/{id}` → click **charge** on an active source row → completes without re-entering credentials
+- [ ] `/codes` → create code → pay via QR → `closeCode` closes any unpaid
+- [ ] `/subscriptions` → create → **startSubscription** → status `active` → `/subscriptions/{no}/periods` returns (likely empty)
+- [ ] `/invoices` → draft → submit → send → pay via email link → webhook flips to `paid`
+- [ ] `/locations` → CRUD
+- [ ] `/charges` → remote `listCharges` paginates
+- [ ] `/diagnostics` → all panels open without errors (empty is fine for disputes / readers)
+- [ ] `/events` → every step above produced a tagged entry
