@@ -73,17 +73,16 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
 
-      # On master we publish a floating -SNAPSHOT based on the next patch
-      # of the current pom version. Skipped on tag builds so the tagged
+      # On master we publish a floating -SNAPSHOT of the current pom version
+      # (e.g. 2.0.0 -> 2.0.0-SNAPSHOT). Skipped on tag builds so the tagged
       # release version is deployed as-is.
-      - name: Bump pom to next -SNAPSHOT (master only)
+      - name: Set pom to -SNAPSHOT (master only)
         if: github.ref == 'refs/heads/master'
         run: |
           set -euo pipefail
           CURRENT=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)
           BASE=${CURRENT%-SNAPSHOT}
-          IFS=. read -r MAJ MIN PATCH <<< "$BASE"
-          SNAP="${MAJ}.${MIN}.$((PATCH+1))-SNAPSHOT"
+          SNAP="${BASE}-SNAPSHOT"
           echo "Deploying snapshot version: $SNAP"
           mvn -B -ntp versions:set -DnewVersion="$SNAP" -DgenerateBackupPoms=false
 
