@@ -15,7 +15,6 @@ would.
 | `CodeApi`           | `/codes` · `/orders/{no}` | EasyQR / EasyCheckout createCode/retrieveCode/closeCode, with optional source reuse and `shouldCreateSource` |
 | `CodeSettingApi`    | `/diagnostics` | listCodePaymentMethods |
 | `SubscriptionApi`   | `/subscriptions` · `/orders/{no}` · `/subscriptions/{no}/periods` | full 8-method flow |
-| `LocationApi`       | `/locations` | charge-location CRUD (transliteration DTOs) |
 | `DisputeApi`        | `/diagnostics` | listDisputes + retrieveDispute (read-only panel) |
 | `PaymentMethodApi`  | `/diagnostics` | listPaymentMethods |
 | `TerminalApi`       | `/diagnostics` | listReaders + listLocations (hardware-dependent, usually empty) |
@@ -158,7 +157,6 @@ Walk these in order to confirm the SDK is working end-to-end:
 - [ ] `/customers/{id}` → click **charge** on an active source row → completes without re-entering credentials
 - [ ] `/codes` → create code → pay via QR → `closeCode` closes any unpaid
 - [ ] `/subscriptions` → create → **startSubscription** → status `active` → `/subscriptions/{no}/periods` returns (likely empty)
-- [ ] `/locations` → CRUD
 - [ ] `/charges` → remote `listCharges` paginates
 - [ ] `/diagnostics` → all panels open without errors (empty is fine for disputes / readers)
 - [ ] `/events` → every step above produced a tagged entry
